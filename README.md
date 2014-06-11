@@ -1,0 +1,1 @@
+http://www.omnipotent.net/jquery.sparkline
