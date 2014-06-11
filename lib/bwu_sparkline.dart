@@ -8,10 +8,9 @@ import 'src/sp_format.dart';
 import 'src/sp_tooltip.dart';
 
 part 'src/options.dart';
+part 'src/tooltip_options.dart';
 part 'src/range_map.dart';
 part 'src/mouse_handler.dart';
-
-
 
 /**
 *
@@ -228,42 +227,42 @@ part 'src/mouse_handler.dart';
 
 @CustomTag('bwu-sparkline')
 class BwuSparkline extends PolymerElement {
-  bool getDefaults;
-  String createClass;
-  int SPFormat;
-  int clipval;
-  int quartile;
-  int normalizeValue;
-  int normalizeValues;
-  int remove;
-  int isNumber;
-  int all;
-  int sum;
-  String addCSS;
-  int ensureArray;
-  int formatNumber;
-  int RangeMap;
-  int MouseHandler;
-  int Tooltip;
-  int barHighlightMixin;
-  int line;
-  int bar;
-  int tristate;
-  int discrete;
-  int bullet;
-  int pie;
-  int box;
-  int defaultStyles;
-  int initStyles;
-  int VShape;
-  int VCanvas_base;
-  int VCanvas_canvas;
-  int VCanvas_vml;
-  int pending;
-  int shapeCount = 0;
-  Map UNSET_OPTION = {};
+  BwuSparkline.created() : super.created();
+//  bool getDefaults;
+//  String createClass;
+//  int SPFormat;
+//  int clipval;
+//  int quartile;
+//  int normalizeValue;
+//  int normalizeValues;
+//  int remove;
+//  int isNumber;
+//  int all;
+//  int sum;
+//  String addCSS;
+//  int ensureArray;
+//  int formatNumber;
+//  int RangeMap;
+//  int MouseHandler;
+//  int Tooltip;
+//  int barHighlightMixin;
+//  int line;
+//  int bar;
+//  int tristate;
+//  int discrete;
+//  int bullet;
+//  int pie;
+//  int box;
+//  int defaultStyles;
+//  int initStyles;
+//  int VShape;
+//  int VCanvas_base;
+//  int VCanvas_canvas;
+//  int VCanvas_vml;
+//  int pending;
+//  int shapeCount = 0;
+//  Map UNSET_OPTION = {};
 
-}
 
 ///**
 // * Utilities
@@ -357,113 +356,122 @@ class BwuSparkline extends PolymerElement {
     canvas.rect(0, 0, canvas.canvas.width, canvas.canvas.height);
   }
 
-  void initStyles() {
-    addCSS(defaultStyles);
+  List pending = [];
+  List<int> _userValues;
+  Options _options;
+
+  void init(List<int> userValues, [Options userOptions]) {
+    _userValues = userValues;
+    _options = userOptions();
+//    return this.each(() {
+//        var options = new $.fn.sparkline.options(this, userOptions),
+//             $this = $(this),
+//             render, i;
+    if (($(this).html() && !_options.disableHiddenCheck && $(this).is(':hidden')) || !$(this).parents('body').length) {
+      if (!_options.composite && $.data(this, '_jqs_pending')) {
+        // remove any existing references to the element
+        for (int i = pending.length; i; i--) {
+          if (pending[i - 1][0] == this) {
+            pending.splice(i - 1, 1);
+          }
+        }
+      }
+      pending.add([this, render]);
+      $.data(this, '_jqs_pending', true);
+    } else {
+      render.call(this);
+    }
   }
 
-  $(initStyles);
+  void render () {
+    List<int> values;
+    int width;
+    int height;
+    int tmp;
+    Function mhandler;
+    int sp,
+    List<int> vals;
 
-  pending = [];
-  $.fn.sparkline = function (userValues, userOptions) {
-    return this.each(function () {
-        var options = new $.fn.sparkline.options(this, userOptions),
-             $this = $(this),
-             render, i;
-        render = function () {
-            var values, width, height, tmp, mhandler, sp, vals;
-            if (userValues === 'html' || userValues === undefined) {
-                vals = this.getAttribute(options.get('tagValuesAttribute'));
-                if (vals === undefined || vals === null) {
-                    vals = $this.html();
-                }
-                values = vals.replace(/(^\s*<!--)|(-->\s*$)|\s+/g, '').split(',');
-            } else {
-                values = userValues;
-            }
+    if (userValues == 'html' || userValues == null) {
+      vals = _options.tagValuesAttribute;
+      if (vals == null) {
+        vals = $this.html();
+      }
+      values = vals.replace(r'(^\s*<!--)|(-->\s*$)|\s+'/*/g*/, '').split(',');
+    } else {
+      values = userValues;
+    }
 
-            width = options.get('width') === 'auto' ? values.length * options.get('defaultPixelsPerValue') : options.get('width');
-            if (options.get('height') === 'auto') {
-                if (!options.get('composite') || !$.data(this, '_jqs_vcanvas')) {
-                    // must be a better way to get the line height
-                    tmp = document.createElement('span');
-                    tmp.innerHTML = 'a';
-                    $this.html(tmp);
-                    height = $(tmp).innerHeight() || $(tmp).height();
-                    $(tmp).remove();
-                    tmp = null;
-                }
-            } else {
-                height = options.get('height');
-            }
+    width = _options.width == 'auto' ? values.length * _options.defaultPixelsPerValue : _options.width;
+    if (_options.height == 'auto') {
+      if (!options.composite || !$.data(this, '_jqs_vcanvas')) {
+        // must be a better way to get the line height
+        tmp = document.createElement('span');
+        tmp.innerHTML = 'a';
+        $this.html(tmp);
+        height = $(tmp).innerHeight() || $(tmp).height();
+        $(tmp).remove();
+        tmp = null;
+      }
+    } else {
+      height = _options.height;
+    }
 
-            if (!options.get('disableInteraction')) {
-                mhandler = $.data(this, '_jqs_mhandler');
-                if (!mhandler) {
-                    mhandler = new MouseHandler(this, options);
-                    $.data(this, '_jqs_mhandler', mhandler);
-                } else if (!options.get('composite')) {
-                    mhandler.reset();
-                }
-            } else {
-                mhandler = false;
-            }
+    if (!options.disableInteraction) {
+      mhandler = $.data(this, '_jqs_mhandler');
+      if (!mhandler) {
+        mhandler = new MouseHandler(this, options);
+        $.data(this, '_jqs_mhandler', mhandler);
+      } else if (!options.get('composite')) {
+        mhandler.reset();
+      }
+    } else {
+      mhandler = null;
+    }
 
-            if (options.get('composite') && !$.data(this, '_jqs_vcanvas')) {
-                if (!$.data(this, '_jqs_errnotify')) {
-                    alert('Attempted to attach a composite sparkline to an element with no existing sparkline');
-                    $.data(this, '_jqs_errnotify', true);
-                }
-                return;
-            }
+    if (_options.composite && !$.data(this, '_jqs_vcanvas')) {
+      if (!$.data(this, '_jqs_errnotify')) {
+        alert('Attempted to attach a composite sparkline to an element with no existing sparkline');
+        $.data(this, '_jqs_errnotify', true);
+      }
+      return;
+    }
 
-            sp = new $.fn.sparkline[options.get('type')](this, values, options, width, height);
+    sp = new $.fn.sparkline[_options.type](this, values, _options, width, height);
 
-            sp.render();
+    sp.render();
 
-            if (mhandler) {
-                mhandler.registerSparkline(sp);
-            }
-        };
-        if (($(this).html() && !options.get('disableHiddenCheck') && $(this).is(':hidden')) || !$(this).parents('body').length) {
-            if (!options.get('composite') && $.data(this, '_jqs_pending')) {
-                // remove any existing references to the element
-                for (i = pending.length; i; i--) {
-                    if (pending[i - 1][0] == this) {
-                        pending.splice(i - 1, 1);
-                    }
-                }
-            }
-            pending.push([this, render]);
-            $.data(this, '_jqs_pending', true);
-        } else {
-            render.call(this);
-        }
-    });
-  };
-
-  $.fn.sparkline.defaults = getDefaults();
+    if (mhandler) {
+      mhandler.registerSparkline(sp);
+    }
+  }
 
 
-  $.sparkline_display_visible = function () {
-    var el, i, pl;
-    var done = [];
-    for (i = 0, pl = pending.length; i < pl; i++) {
-        el = pending[i][0];
-        if ($(el).is(':visible') && !$(el).parents().is(':hidden')) {
-            pending[i][1].call(el);
-            $.data(pending[i][0], '_jqs_pending', false);
-            done.push(i);
-        } else if (!$(el).closest('html').length && !$.data(el, '_jqs_pending')) {
-            // element has been inserted and removed from the DOM
-            // If it was not yet inserted into the dom then the .data request
-            // will return true.
-            // removing from the dom causes the data to be removed.
-            $.data(pending[i][0], '_jqs_pending', false);
-            done.push(i);
-        }
+//  $.fn.sparkline.defaults = getDefaults();
+
+
+  void displayVisible() {
+    dom.HtmlElement el;
+    int i;
+    int pl = pending.length;
+    List<int> done = [];
+    for (i = 0;  i < pl; i++) {
+      el = pending[i][0];
+      if ($(el).is(':visible') && !$(el).parents().is(':hidden')) {
+        pending[i][1].call(el);
+        $.data(pending[i][0], '_jqs_pending', false);
+        done.push(i);
+      } else if (!$(el).closest('html').length && !$.data(el, '_jqs_pending')) {
+        // element has been inserted and removed from the DOM
+        // If it was not yet inserted into the dom then the .data request
+        // will return true.
+        // removing from the dom causes the data to be removed.
+        $.data(pending[i][0], '_jqs_pending', false);
+        done.push(i);
+      }
     }
     for (i = done.length; i; i--) {
-        pending.splice(done[i - 1], 1);
+      pending.splice(done[i - 1], 1);
     }
   }
 
@@ -471,2006 +479,2092 @@ class BwuSparkline extends PolymerElement {
   /**
    * User option handler
    */
-  $.fn.sparkline.options = createClass({
-    init: function (tag, userOptions) {
-        var extendedOptions, defaults, base, tagOptionType;
-        this.userOptions = userOptions = userOptions || {};
-        this.tag = tag;
-        this.tagValCache = {};
-        defaults = $.fn.sparkline.defaults;
-        base = defaults.common;
-        this.tagOptionsPrefix = userOptions.enableTagOptions && (userOptions.tagOptionsPrefix || base.tagOptionsPrefix);
+  class UserOptions {
+    UserOptions(String tag, userOptions) {
+      var extendedOptions, defaults, base, tagOptionType;
+      this.userOptions = userOptions = userOptions || {};
+      this.tag = tag;
+      this.tagValCache = {};
+      defaults = $.fn.sparkline.defaults;
+      base = defaults.common;
+      this.tagOptionsPrefix = userOptions.enableTagOptions && (userOptions.tagOptionsPrefix || base.tagOptionsPrefix);
 
-        tagOptionType = this.getTagSetting('type');
-        if (tagOptionType === UNSET_OPTION) {
-            extendedOptions = defaults[userOptions.type || base.type];
+      tagOptionType = this.getTagSetting('type');
+      if (tagOptionType == UNSET_OPTION) {
+        extendedOptions = defaults[userOptions.type || base.type];
+      } else {
+        extendedOptions = defaults[tagOptionType];
+      }
+      this.mergedOptions = $.extend({}, base, extendedOptions, userOptions);
+    }
+
+    void getTagSetting(String key) {
+      bool prefix = this.tagOptionsPrefix;
+      int val;
+      int i;
+      int pairs;
+      String keyval;
+
+      if (prefix == null) {
+        return UNSET_OPTION;
+      }
+      if (this.tagValCache.hasOwnProperty(key)) {
+        val = this.tagValCache.key;
+      } else {
+        val = this.tag.getAttribute(prefix + key);
+        if (val == null) {
+            val = UNSET_OPTION;
+        } else if (val.substr(0, 1) == '[') {
+          val = val.substr(1, val.length - 2).split(',');
+          for (i = val.length; i--;) {
+              val[i] = normalizeValue(val[i].replace(r'(^\s*)|(\s*$)' /*/g*/, ''));
+          }
+        } else if (val.substr(0, 1) == '{') {
+          pairs = val.substr(1, val.length - 2).split(',');
+          val = {};
+          for (i = pairs.length; i--;) {
+            keyval = pairs[i].split(':', 2);
+            val[keyval[0].replace(r'(^\s*)|(\s*$)'/*/g*/, '')] = normalizeValue(keyval[1].replace(r'(^\s*)|(\s*$)'/*/g*/''));
+          }
         } else {
-            extendedOptions = defaults[tagOptionType];
+          val = normalizeValue(val);
         }
-        this.mergedOptions = $.extend({}, base, extendedOptions, userOptions);
-    },
+        this.tagValCache.key = val;
+      }
+      return val;
+    }
 
-
-    getTagSetting: function (key) {
-        var prefix = this.tagOptionsPrefix,
-            val, i, pairs, keyval;
-        if (prefix === false || prefix === undefined) {
-            return UNSET_OPTION;
-        }
-        if (this.tagValCache.hasOwnProperty(key)) {
-            val = this.tagValCache.key;
-        } else {
-            val = this.tag.getAttribute(prefix + key);
-            if (val === undefined || val === null) {
-                val = UNSET_OPTION;
-            } else if (val.substr(0, 1) === '[') {
-                val = val.substr(1, val.length - 2).split(',');
-                for (i = val.length; i--;) {
-                    val[i] = normalizeValue(val[i].replace(/(^\s*)|(\s*$)/g, ''));
-                }
-            } else if (val.substr(0, 1) === '{') {
-                pairs = val.substr(1, val.length - 2).split(',');
-                val = {};
-                for (i = pairs.length; i--;) {
-                    keyval = pairs[i].split(':', 2);
-                    val[keyval[0].replace(/(^\s*)|(\s*$)/g, '')] = normalizeValue(keyval[1].replace(/(^\s*)|(\s*$)/g, ''));
-                }
-            } else {
-                val = normalizeValue(val);
-            }
-            this.tagValCache.key = val;
-        }
-        return val;
-    },
-
-    get: function (key, defaultval) {
-        var tagOption = this.getTagSetting(key),
-            result;
-        if (tagOption !== UNSET_OPTION) {
-            return tagOption;
-        }
-        return (result = this.mergedOptions[key]) === undefined ? defaultval : result;
+    void get(String key, int defaultval) {
+      var tagOption = this.getTagSetting(key),
+          result;
+      if (tagOption !== UNSET_OPTION) {
+          return tagOption;
+      }
+      return (result = this.mergedOptions[key]) == undefined ? defaultval : result;
     }
   }
 
 
-  $.fn.sparkline._base = createClass({
-    disabled: false,
+  class _Base{
+    bool disabled = false;
 
-    init: function (el, values, options, width, height) {
-        this.el = el;
-        this.$el = $(el);
-        this.values = values;
-        this.options = options;
-        this.width = width;
-        this.height = height;
-        this.currentRegion = undefined;
-    },
+    _Base(dom.HtmlElement el, List<int> values, Options options, int width, int height) {
+      this.el = el;
+      this.$el = $(el);
+      this.values = values;
+      this.options = options;
+      this.width = width;
+      this.height = height;
+      this.currentRegion = undefined;
+    }
 
     /**
      * Setup the canvas
      */
-    initTarget: function () {
-        var interactive = !this.options.get('disableInteraction');
-        if (!(this.target = this.$el.simpledraw(this.width, this.height, this.options.get('composite'), interactive))) {
-            this.disabled = true;
-        } else {
-            this.canvasWidth = this.target.pixelWidth;
-            this.canvasHeight = this.target.pixelHeight;
-        }
-    },
+    void initTarget() {
+      var interactive = !this.options.disableInteraction;
+      if (!(this.target = this.$el.simpledraw(this.width, this.height, this.options.get('composite'), interactive))) {
+        this.disabled = true;
+      } else {
+        this.canvasWidth = this.target.pixelWidth;
+        this.canvasHeight = this.target.pixelHeight;
+      }
+    }
 
     /**
      * Actually render the chart to the canvas
      */
-    render: function () {
-        if (this.disabled) {
-            this.el.innerHTML = '';
-            return false;
-        }
-        return true;
-    },
+    void render() {
+      if (this.disabled) {
+        this.el.innerHTML = '';
+        return false;
+      }
+      return true;
+    }
 
     /**
      * Return a region id for a given x/y co-ordinate
      */
-    getRegion: function (x, y) {
-    },
+    void getRegion(int x, int y) {
+    }
 
     /**
      * Highlight an item based on the moused-over x,y co-ordinate
      */
-    setRegionHighlight: function (el, x, y) {
-        var currentRegion = this.currentRegion,
-            highlightEnabled = !this.options.get('disableHighlight'),
-            newRegion;
-        if (x > this.canvasWidth || y > this.canvasHeight || x < 0 || y < 0) {
-            return null;
+    bool setRegionHighlight(dom.HtmlElement el, int x, int y) {
+      var currentRegion = this.currentRegion,
+        highlightEnabled = !this.options.get('disableHighlight'),
+        newRegion;
+      if (x > this.canvasWidth || y > this.canvasHeight || x < 0 || y < 0) {
+        return null;
+      }
+      newRegion = this.getRegion(el, x, y);
+      if (currentRegion != newRegion) {
+        if (currentRegion != null && highlightEnabled) {
+          this.removeHighlight();
         }
-        newRegion = this.getRegion(el, x, y);
-        if (currentRegion !== newRegion) {
-            if (currentRegion !== undefined && highlightEnabled) {
-                this.removeHighlight();
-            }
-            this.currentRegion = newRegion;
-            if (newRegion !== undefined && highlightEnabled) {
-                this.renderHighlight();
-            }
-            return true;
+        this.currentRegion = newRegion;
+        if (newRegion != null && highlightEnabled) {
+          this.renderHighlight();
         }
-        return false;
-    },
+        return true;
+      }
+      return false;
+    }
 
     /**
      * Reset any currently highlighted item
      */
-    clearRegionHighlight: function () {
-        if (this.currentRegion !== undefined) {
-            this.removeHighlight();
-            this.currentRegion = undefined;
-            return true;
-        }
-        return false;
-    },
+    void clearRegionHighlight() {
+      if (this.currentRegion != null) {
+        this.removeHighlight();
+        this.currentRegion = undefined;
+        return true;
+      }
+      return false;
+    }
 
-    renderHighlight: function () {
+    void renderHighlight() {
         this.changeHighlight(true);
-    },
+    }
 
-    removeHighlight: function () {
-        this.changeHighlight(false);
-    },
+    void removeHighlight() {
+      this.changeHighlight(false);
+    }
 
-    changeHighlight: function (highlight)  {},
+    void changeHighlight(bool highlight) {}
 
     /**
      * Fetch the HTML to display as a tooltip
      */
-    getCurrentRegionTooltip: function () {
-        var options = this.options,
-            header = '',
-            entries = [],
-            fields, formats, formatlen, fclass, text, i,
-            showFields, showFieldsKey, newFields, fv,
-            formatter, format, fieldlen, j;
-        if (this.currentRegion === undefined) {
-            return '';
-        }
-        fields = this.getCurrentRegionFields();
-        formatter = options.get('tooltipFormatter');
-        if (formatter) {
-            return formatter(this, options, fields);
-        }
-        if (options.get('tooltipChartTitle')) {
-            header += '<div class="jqs jqstitle">' + options.get('tooltipChartTitle') + '</div>\n';
-        }
-        formats = this.options.get('tooltipFormat');
-        if (!formats) {
-            return '';
-        }
-        if (!$.isArray(formats)) {
-            formats = [formats];
-        }
-        if (!$.isArray(fields)) {
-            fields = [fields];
-        }
-        showFields = this.options.get('tooltipFormatFieldlist');
-        showFieldsKey = this.options.get('tooltipFormatFieldlistKey');
-        if (showFields && showFieldsKey) {
-            // user-selected ordering of fields
-            newFields = [];
-            for (i = fields.length; i--;) {
-                fv = fields[i][showFieldsKey];
-                if ((j = $.inArray(fv, showFields)) != -1) {
-                    newFields[j] = fields[i];
-                }
-            }
-            fields = newFields;
-        }
-        formatlen = formats.length;
-        fieldlen = fields.length;
-        for (i = 0; i < formatlen; i++) {
-            format = formats[i];
-            if (typeof format === 'string') {
-                format = new SPFormat(format);
-            }
-            fclass = format.fclass || 'jqsfield';
-            for (j = 0; j < fieldlen; j++) {
-                if (!fields[j].isNull || !options.get('tooltipSkipNull')) {
-                    $.extend(fields[j], {
-                        prefix: options.get('tooltipPrefix'),
-                        suffix: options.get('tooltipSuffix')
-                    });
-                    text = format.render(fields[j], options.get('tooltipValueLookups'), options);
-                    entries.push('<div class="' + fclass + '">' + text + '</div>');
-                }
-            }
-        }
-        if (entries.length) {
-            return header + entries.join('\n');
-        }
+    String getCurrentRegionTooltip() {
+      var options = this.options;
+      String header = '';
+      List<int> entries = [];
+      List<int> fields;
+      List<String> formats;
+      int formatlen;
+      int fclass;
+      String text;
+      int i;
+      bool showFields;
+      bool showFieldsKey;
+      List<int> newFields;
+      int fv;
+      int formatter;
+      String format;
+      int fieldlen;
+      int j;
+      if (this.currentRegion == null) {
         return '';
-    },
-
-    getCurrentRegionFields: function () {},
-
-    calcHighlightColor: function (color, options) {
-        var highlightColor = options.get('highlightColor'),
-            lighten = options.get('highlightLighten'),
-            parse, mult, rgbnew, i;
-        if (highlightColor) {
-            return highlightColor;
+      }
+      fields = this.getCurrentRegionFields();
+      formatter = options.tooltipFormatter;
+      if (formatter != null) {
+        return formatter(this, options, fields);
+      }
+      if (options.tooltipChartTitle) {
+        header += '<div class="jqs jqstitle">' + options.get('tooltipChartTitle') + '</div>\n';
+      }
+      formats = this.options.tooltipFormat;
+      if (!formats) {
+        return '';
+      }
+      if (!$.isArray(formats)) {
+        formats = [formats];
+      }
+      if (!$.isArray(fields)) {
+        fields = [fields];
+      }
+      showFields = this.options.get('tooltipFormatFieldlist');
+      showFieldsKey = this.options.get('tooltipFormatFieldlistKey');
+      if (showFields && showFieldsKey) {
+        // user-selected ordering of fields
+        newFields = [];
+        for (i = fields.length; i--;) {
+          fv = fields[i][showFieldsKey];
+          if ((j = $.inArray(fv, showFields)) != -1) {
+            newFields[j] = fields[i];
+          }
         }
-        if (lighten) {
-            // extract RGB values
-            parse = /^#([0-9a-f])([0-9a-f])([0-9a-f])$/i.exec(color) || /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(color);
-            if (parse) {
-                rgbnew = [];
-                mult = color.length === 4 ? 16 : 1;
-                for (i = 0; i < 3; i++) {
-                    rgbnew[i] = clipval(Math.round(parseInt(parse[i + 1], 16) * mult * lighten), 0, 255);
-                }
-                return 'rgb(' + rgbnew.join(',') + ')';
-            }
-
+        fields = newFields;
+      }
+      formatlen = formats.length;
+      fieldlen = fields.length;
+      for (i = 0; i < formatlen; i++) {
+        format = formats[i];
+        if (format is String) {
+          format = new SPFormat(format);
         }
-        return color;
+        fclass = format.fclass || 'jqsfield';
+        for (j = 0; j < fieldlen; j++) {
+          if (!fields[j].isNull || !options.get('tooltipSkipNull')) {
+            $.extend(fields[j], {
+              prefix: options.get('tooltipPrefix'),
+              suffix: options.get('tooltipSuffix')
+            });
+            text = format.render(fields[j], options.get('tooltipValueLookups'), options);
+            entries.push('<div class="' + fclass + '">' + text + '</div>');
+          }
+        }
+      }
+      if (entries.length > 0) {
+        return header + entries.join('\n');
+      }
+      return '';
+    }
+
+    void getCurrentRegionFields() {}
+
+    void calcHighlightColor(String color, Options options) {
+      String highlightColor = options.highlightColor;
+      bool lighten = options.highlightLighten;
+      bool parse;
+      bool mult;
+      String rgbnew;
+      int i;
+      if (highlightColor != null) {
+        return highlightColor;
+      }
+      if (lighten) {
+        // extract RGB values
+        parse = r'^#([0-9a-f])([0-9a-f])([0-9a-f])$'/*/i*/.exec(color) || r'^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$'/*/i*/.exec(color);
+        if (parse) {
+          rgbnew = [];
+          mult = color.length == 4 ? 16 : 1;
+          for (i = 0; i < 3; i++) {
+            rgbnew[i] = clipval(Math.round(parseInt(parse[i + 1], 16) * mult * lighten), 0, 255);
+          }
+          return 'rgb(' + rgbnew.join(',') + ')';
+        }
+      }
+      return color;
     }
   }
 
-  barHighlightMixin = {
-    changeHighlight: function (highlight) {
-        var currentRegion = this.currentRegion,
-            target = this.target,
-            shapeids = this.regionShapes[currentRegion],
-            newShapes;
-        // will be null if the region value was null
-        if (shapeids) {
-            newShapes = this.renderRegion(currentRegion, highlight);
-            if ($.isArray(newShapes) || $.isArray(shapeids)) {
-                target.replaceWithShapes(shapeids, newShapes);
-                this.regionShapes[currentRegion] = $.map(newShapes, function (newShape) {
-                    return newShape.id;
-                });
-            } else {
-                target.replaceWithShape(shapeids, newShapes);
-                this.regionShapes[currentRegion] = newShapes.id;
-            }
-        }
+  class BarHighlightMixin  {
+    void changeHighlight(bool highlight) {
+      int currentRegion = this.currentRegion;
+      int target = this.target;
+      int shapeids = this.regionShapes[currentRegion];
+      List<int> newShapes;
+      // will be null if the region value was null
+      if (shapeids != null) {
+        newShapes = this.renderRegion(currentRegion, highlight);
+        if ($.isArray(newShapes) || $.isArray(shapeids)) {
+          target.replaceWithShapes(shapeids, newShapes);
+          this.regionShapes[currentRegion] = $.map(newShapes, function (newShape) {
+            return newShape.id;
+          });
+        } else {
+          target.replaceWithShape(shapeids, newShapes);
+          this.regionShapes[currentRegion] = newShapes.id;
+       }
+      }
     }
 
-    render: function () {
-        var values = this.values,
-            target = this.target,
-            regionShapes = this.regionShapes,
-            shapes, ids, i, j;
+    void render() {
+      List<int> values = this.values;
+      int target = this.target;
+      List<int> regionShapes = this.regionShapes;
+      List<int> shapes;
+      List<int> ids;
+      int i;
+      int j;
 
-        if (!this.cls._super.render.call(this)) {
-            return;
-        }
-        for (i = values.length; i--;) {
-            shapes = this.renderRegion(i);
-            if (shapes) {
-                if ($.isArray(shapes)) {
-                    ids = [];
-                    for (j = shapes.length; j--;) {
-                        shapes[j].append();
-                        ids.push(shapes[j].id);
-                    }
-                    regionShapes[i] = ids;
-                } else {
-                    shapes.append();
-                    regionShapes[i] = shapes.id; // store just the shapeid
-                }
-            } else {
-                // null value
-                regionShapes[i] = null;
+      if (!super.render()) {
+        return;
+      }
+      for (i = values.length; i--; i > 0) {
+        shapes = this.renderRegion(i);
+        if (shapes != null) {
+          if (shapes is List) {
+            ids = [];
+            for (j = shapes.length; j--; j > 0) {
+              shapes[j].append();
+              ids.add(shapes[j].id);
             }
+            regionShapes[i] = ids;
+          } else {
+            shapes.append();
+            regionShapes[i] = shapes.id; // store just the shapeid
+          }
+        } else {
+          // null value
+          regionShapes[i] = null;
         }
-        target.render();
+      }
+      target.render();
     }
   }
 
   /**
    * Line charts
    */
-  $.fn.sparkline.line = line = createClass($.fn.sparkline._base, {
-    type: 'line',
+  class Line {
+    Line (dom.HtmlElement el, List<int> values, Options options, int width, int height) : super(el, values, options, width, height) {
+      List<int> vertices = [];
+      List<int> regionMap = [];
+      List<int> xvalues = [];
+      List<int> yvalues = [];
+      List<int> yminmax = [];
+      int hightlightSpotId = null;
+      int lastShapeId = null;
+      initTarget();
+    }
 
-    init: function (el, values, options, width, height) {
-        line._super.init.call(this, el, values, options, width, height);
-        this.vertices = [];
-        this.regionMap = [];
-        this.xvalues = [];
-        this.yvalues = [];
-        this.yminmax = [];
-        this.hightlightSpotId = null;
-        this.lastShapeId = null;
-        this.initTarget();
-    },
+    void getRegion(dom.HtmlElement el, int x, int y) {
+      int i,
+      Map regionMap = this.regionMap; // maps regions to value positions
+      for (i = regionMap.length; i--; i > 0) {
+        if (regionMap[i] != null && x >= regionMap[i][0] && x <= regionMap[i][1]) {
+          return regionMap[i][2];
+        }
+      }
+      return undefined;
+    }
 
-    getRegion: function (el, x, y) {
-        var i,
-            regionMap = this.regionMap; // maps regions to value positions
-        for (i = regionMap.length; i--;) {
-            if (regionMap[i] !== null && x >= regionMap[i][0] && x <= regionMap[i][1]) {
-                return regionMap[i][2];
+    void getCurrentRegionFields() {
+      var currentRegion = this.currentRegion;
+      return {
+        'isNull': this.yvalues[currentRegion] == null,
+        'x': this.xvalues[currentRegion],
+        'y': this.yvalues[currentRegion],
+        'color': this.options.lineColor,
+        'fillColor': this.options.fillColor,
+        'offset': currentRegion
+      };
+    }
+
+    void renderHighlight() {
+      int currentRegion = this.currentRegion;
+      int target = this.target;
+      int vertex = this.vertices[currentRegion];
+      Options options = this.options;
+      int spotRadius = options.spotRadius;
+      String highlightSpotColor = options.highlightSpotColor;
+      String highlightLineColor = options.highlightLineColor;
+      bool highlightSpot = false;
+      bool highlightLine = false;
+
+      if (vertex == null) {
+        return;
+      }
+      if (spotRadius && highlightSpotColor != null) {
+        highlightSpot = target.drawCircle(vertex[0], vertex[1],
+            spotRadius, undefined, highlightSpotColor);
+        this.highlightSpotId = highlightSpot.id;
+        target.insertAfterShape(this.lastShapeId, highlightSpot);
+      }
+      if (highlightLineColor != null) {
+          highlightLine = target.drawLine(vertex[0], this.canvasTop, vertex[0],
+              this.canvasTop + this.canvasHeight, highlightLineColor);
+          this.highlightLineId = highlightLine.id;
+          target.insertAfterShape(this.lastShapeId, highlightLine);
+      }
+    }
+
+    void removeHighlight() {
+      int target = this.target;
+      if (this.highlightSpotId != null) {
+        target.removeShapeId(this.highlightSpotId);
+        this.highlightSpotId = null;
+      }
+      if (this.highlightLineId != null) {
+          target.removeShapeId(this.highlightLineId);
+          this.highlightLineId = null;
+      }
+    }
+
+    void scanValues() {
+      List<int> values = this.values;
+      int valcount = values.length;
+      List<int>xvalues = this.xvalues;
+      List<int> yvalues = this.yvalues;
+      int yminmax = this.yminmax;
+      int i;
+      int val;
+      bool isStr;
+      bool isArray;
+      int sp;
+      for (i = 0; i < valcount; i++) {
+        val = values[i];
+        isStr = values[i] == is String;
+        isArray = values[i]) is List;
+        sp = isStr && values[i].split(':');
+        if (isStr && sp.length == 2) { // x:y
+          xvalues.add(Number(sp[0]));
+          yvalues.add(Number(sp[1]));
+          yminmax.add(Number(sp[1]));
+        } else if (isArray) {
+          xvalues.add(val[0]);
+          yvalues.add(val[1]);
+          yminmax.add(val[1]);
+        } else {
+          xvalues.add(i);
+          if (values[i] == null || values[i] == 'null') {
+            yvalues.push(null);
+          } else {
+            yvalues.push(Number(val));
+            yminmax.push(Number(val));
+          }
+        }
+      }
+      if (this.options.xvalues != null) {
+        xvalues = this.options.xvalues;
+      }
+
+      this.maxy = this.maxyorg = math.max(Math, yminmax);
+      this.miny = this.minyorg = math.min(Math, yminmax);
+
+      this.maxx = math.max(Math, xvalues);
+      this.minx = math.min(Math, xvalues);
+
+      this.xvalues = xvalues;
+      this.yvalues = yvalues;
+      this.yminmax = yminmax;
+    }
+
+    void processRangeOptions() {
+      Options options = this.options;
+      int normalRangeMin = options.normalRangeMin;
+      int normalRangeMax = options.normalRangeMax;
+
+      if (normalRangeMin != null) {
+        if (normalRangeMin < this.miny) {
+          this.miny = normalRangeMin;
+        }
+        if (normalRangeMax > this.maxy) {
+          this.maxy = normalRangeMax;
+        }
+      }
+      if (options.chartRangeMin != null && (options.chartRangeClip || options.chartRangeMin < this.miny)) {
+        this.miny = options.chartRangeMin;
+      }
+      if (options.chartRangeMax != null && (options.chartRangeClip || options.chartRangeMax > this.maxy)) {
+        this.maxy = options.chartRangeMax;
+      }
+      if (options.chartRangeMinX != null && (options.chartRangeClipX || options.chartRangeMinX < this.minx)) {
+        this.minx = options.chartRangeMinX;
+      }
+      if (options.chartRangeMaxX != null && (options.chartRangeClipX || options.chartRangeMaxX > this.maxx)) {
+        this.maxx = options.chartRangeMaxX;
+      }
+    }
+
+    void drawNormalRange(int canvasLeft, int canvasTop, int canvasHeight, int canvasWidth, int rangey) {
+      int normalRangeMin = this.options.normalRangeMin;
+      int normalRangeMax = this.options.normalRangeMax;
+      int ytop = canvasTop + (canvasHeight - (canvasHeight * ((normalRangeMax - this.miny) / rangey))).round();
+      int height = ((canvasHeight * (normalRangeMax - normalRangeMin)) / rangey).round();
+      this.target.drawRect(canvasLeft, ytop, canvasWidth, height, undefined, this.options.normalRangeColor).append();
+    }
+
+    void render() {
+      Options options = this.options;
+      int target = this.target;
+      int canvasWidth = this.canvasWidth;
+      int canvasHeight = this.canvasHeight;
+      List<int>vertices = this.vertices;
+      int spotRadius = options.spotRadius;
+      Map regionMap = this.regionMap;
+      int rangex;
+      int rangey;
+      int yvallast;
+      int canvasTop;
+      int canvasLeft;
+      int vertex;
+      int path;
+      List<int> paths;
+      int x;
+      int y;
+      int xnext;
+      int xpos;
+      int xposnext;
+      int last;
+      int next;
+      int yvalcount;
+      List<int> lineShapes;
+      List<int>fillShapes;
+      int plen;
+      int valueSpots;
+      bool hlSpotsEnabled;
+      String color;
+      List<int> xvalues;
+      List<int> yvalues;
+      int i;
+
+      if (!super.render()) {
+        return;
+      }
+
+      this.scanValues();
+      this.processRangeOptions();
+
+      xvalues = this.xvalues;
+      yvalues = this.yvalues;
+
+      if (!this.yminmax.length || this.yvalues.length < 2) {
+        // empty or all null valuess
+        return;
+      }
+
+      canvasTop = canvasLeft = 0;
+
+      rangex = this.maxx - this.minx == 0 ? 1 : this.maxx - this.minx;
+      rangey = this.maxy - this.miny == 0 ? 1 : this.maxy - this.miny;
+      yvallast = this.yvalues.length - 1;
+
+      if (spotRadius && (canvasWidth < (spotRadius * 4) || canvasHeight < (spotRadius * 4))) {
+        spotRadius = 0;
+      }
+      if (spotRadius) {
+        // adjust the canvas size as required so that spots will fit
+        hlSpotsEnabled = options.highlightSpotColor &&  !options.disableInteraction;
+        if (hlSpotsEnabled || options.minSpotColor || (options.spotColor && yvalues[yvallast] == this.miny)) {
+          canvasHeight -= spotRadius.ceil();
+        }
+        if (hlSpotsEnabled || options.maxSpotColor || (options.spotColor && yvalues[yvallast] == this.maxy)) {
+            canvasHeight -= spotRadius.ceil();
+            canvasTop += spotRadius.ceil();
+        }
+        if (hlSpotsEnabled ||
+             ((options.minSpotColor || options.maxSpotColor) && (yvalues[0] == this.miny || yvalues[0] == this.maxy))) {
+            canvasLeft += spotRadius.ceil();
+            canvasWidth -= spotRadius.ceil();
+        }
+        if (hlSpotsEnabled || options.spotColor ||
+          (options.minSpotColor || options.maxSpotColor &&
+            (yvalues[yvallast] == this.miny || yvalues[yvallast] == this.maxy))) {
+          canvasWidth -= Math.ceil(spotRadius);
+        }
+      }
+
+
+      canvasHeight--;
+
+      if (options.normalRangeMin != null && !options.drawNormalOnTop) {
+        this.drawNormalRange(canvasLeft, canvasTop, canvasHeight, canvasWidth, rangey);
+      }
+
+      path = [];
+      paths = [path];
+      last = next = null;
+      yvalcount = yvalues.length;
+      for (i = 0; i < yvalcount; i++) {
+        x = xvalues[i];
+        xnext = xvalues[i + 1];
+        y = yvalues[i];
+        xpos = canvasLeft + ((x - this.minx) * (canvasWidth / rangex)).round();
+        xposnext = i < yvalcount - 1 ? canvasLeft + ((xnext - this.minx) * (canvasWidth / rangex)).round() : canvasWidth;
+        next = xpos + ((xposnext - xpos) / 2);
+        regionMap[i] = [last || 0, next, i];
+        last = next;
+        if (y == null) {
+          if (i != 0) {
+            if (yvalues[i - 1] != null) {
+              path = [];
+              paths.add(path);
             }
+            vertices.add(null);
+          }
+        } else {
+          if (y < this.miny) {
+            y = this.miny;
+          }
+          if (y > this.maxy) {
+            y = this.maxy;
+          }
+          if (!path.length) {
+            // previous value was null
+            path.add([xpos, canvasTop + canvasHeight]);
+          }
+          vertex = [xpos, canvasTop + Math.round(canvasHeight - (canvasHeight * ((y - this.miny) / rangey)))];
+          path.add(vertex);
+          vertices.add(vertex);
         }
-        return undefined;
-    },
+      }
 
-    getCurrentRegionFields: function () {
-        var currentRegion = this.currentRegion;
-        return {
-            isNull: this.yvalues[currentRegion] === null,
-            x: this.xvalues[currentRegion],
-            y: this.yvalues[currentRegion],
-            color: this.options.get('lineColor'),
-            fillColor: this.options.get('fillColor'),
-            offset: currentRegion
-        };
-    },
-
-    renderHighlight: function () {
-        var currentRegion = this.currentRegion,
-            target = this.target,
-            vertex = this.vertices[currentRegion],
-            options = this.options,
-            spotRadius = options.get('spotRadius'),
-            highlightSpotColor = options.get('highlightSpotColor'),
-            highlightLineColor = options.get('highlightLineColor'),
-            highlightSpot, highlightLine;
-
-        if (!vertex) {
-            return;
+      lineShapes = [];
+      fillShapes = [];
+      plen = paths.length;
+      for (i = 0; i < plen; i++) {
+        path = paths[i];
+        if (path.length > 0) {
+          if (options.fillColor) {
+            path.add([path[path.length - 1][0], (canvasTop + canvasHeight)]);
+            fillShapes.add(path.slice(0));
+            path.pop();
+          }
+          // if there's only a single point in this path, then we want to display it
+          // as a vertical line which means we keep path[0]  as is
+          if (path.length > 2) {
+            // else we want the first value
+            path[0] = [path[0][0], path[1][1]];
+          }
+          lineShapes.add(path);
         }
-        if (spotRadius && highlightSpotColor) {
-            highlightSpot = target.drawCircle(vertex[0], vertex[1],
-                spotRadius, undefined, highlightSpotColor);
-            this.highlightSpotId = highlightSpot.id;
-            target.insertAfterShape(this.lastShapeId, highlightSpot);
+      }
+
+      // draw the fill first, then optionally the normal range, then the line on top of that
+      plen = fillShapes.length;
+      for (i = 0; i < plen; i++) {
+        target.drawShape(fillShapes[i],
+            options.fillColor, options.fillColor).append();
+      }
+
+      if (options.normalRangeMin != null && options.drawNormalOnTop) {
+        this.drawNormalRange(canvasLeft, canvasTop, canvasHeight, canvasWidth, rangey);
+      }
+
+      plen = lineShapes.length;
+      for (i = 0; i < plen; i++) {
+        target.drawShape(lineShapes[i], options.lineColor, null,
+            options.lineWidth).append();
+      }
+
+      if (spotRadius && options.valueSpots) {
+        valueSpots = options.valueSpots;
+        if (valueSpots.get == null) {
+          valueSpots = new RangeMap(valueSpots);
         }
-        if (highlightLineColor) {
-            highlightLine = target.drawLine(vertex[0], this.canvasTop, vertex[0],
-                this.canvasTop + this.canvasHeight, highlightLineColor);
-            this.highlightLineId = highlightLine.id;
-            target.insertAfterShape(this.lastShapeId, highlightLine);
-        }
-    },
-
-    removeHighlight: function () {
-        var target = this.target;
-        if (this.highlightSpotId) {
-            target.removeShapeId(this.highlightSpotId);
-            this.highlightSpotId = null;
-        }
-        if (this.highlightLineId) {
-            target.removeShapeId(this.highlightLineId);
-            this.highlightLineId = null;
-        }
-    },
-
-    scanValues: function () {
-        var values = this.values,
-            valcount = values.length,
-            xvalues = this.xvalues,
-            yvalues = this.yvalues,
-            yminmax = this.yminmax,
-            i, val, isStr, isArray, sp;
-        for (i = 0; i < valcount; i++) {
-            val = values[i];
-            isStr = typeof(values[i]) === 'string';
-            isArray = typeof(values[i]) === 'object' && values[i] instanceof Array;
-            sp = isStr && values[i].split(':');
-            if (isStr && sp.length === 2) { // x:y
-                xvalues.push(Number(sp[0]));
-                yvalues.push(Number(sp[1]));
-                yminmax.push(Number(sp[1]));
-            } else if (isArray) {
-                xvalues.push(val[0]);
-                yvalues.push(val[1]);
-                yminmax.push(val[1]);
-            } else {
-                xvalues.push(i);
-                if (values[i] === null || values[i] === 'null') {
-                    yvalues.push(null);
-                } else {
-                    yvalues.push(Number(val));
-                    yminmax.push(Number(val));
-                }
-            }
-        }
-        if (this.options.get('xvalues')) {
-            xvalues = this.options.get('xvalues');
-        }
-
-        this.maxy = this.maxyorg = Math.max.apply(Math, yminmax);
-        this.miny = this.minyorg = Math.min.apply(Math, yminmax);
-
-        this.maxx = Math.max.apply(Math, xvalues);
-        this.minx = Math.min.apply(Math, xvalues);
-
-        this.xvalues = xvalues;
-        this.yvalues = yvalues;
-        this.yminmax = yminmax;
-
-    },
-
-    processRangeOptions: function () {
-        var options = this.options,
-            normalRangeMin = options.get('normalRangeMin'),
-            normalRangeMax = options.get('normalRangeMax');
-
-        if (normalRangeMin !== undefined) {
-            if (normalRangeMin < this.miny) {
-                this.miny = normalRangeMin;
-            }
-            if (normalRangeMax > this.maxy) {
-                this.maxy = normalRangeMax;
-            }
-        }
-        if (options.get('chartRangeMin') !== undefined && (options.get('chartRangeClip') || options.get('chartRangeMin') < this.miny)) {
-            this.miny = options.get('chartRangeMin');
-        }
-        if (options.get('chartRangeMax') !== undefined && (options.get('chartRangeClip') || options.get('chartRangeMax') > this.maxy)) {
-            this.maxy = options.get('chartRangeMax');
-        }
-        if (options.get('chartRangeMinX') !== undefined && (options.get('chartRangeClipX') || options.get('chartRangeMinX') < this.minx)) {
-            this.minx = options.get('chartRangeMinX');
-        }
-        if (options.get('chartRangeMaxX') !== undefined && (options.get('chartRangeClipX') || options.get('chartRangeMaxX') > this.maxx)) {
-            this.maxx = options.get('chartRangeMaxX');
-        }
-
-    },
-
-    drawNormalRange: function (canvasLeft, canvasTop, canvasHeight, canvasWidth, rangey) {
-        var normalRangeMin = this.options.get('normalRangeMin'),
-            normalRangeMax = this.options.get('normalRangeMax'),
-            ytop = canvasTop + Math.round(canvasHeight - (canvasHeight * ((normalRangeMax - this.miny) / rangey))),
-            height = Math.round((canvasHeight * (normalRangeMax - normalRangeMin)) / rangey);
-        this.target.drawRect(canvasLeft, ytop, canvasWidth, height, undefined, this.options.get('normalRangeColor')).append();
-    },
-
-    render: function () {
-        var options = this.options,
-            target = this.target,
-            canvasWidth = this.canvasWidth,
-            canvasHeight = this.canvasHeight,
-            vertices = this.vertices,
-            spotRadius = options.get('spotRadius'),
-            regionMap = this.regionMap,
-            rangex, rangey, yvallast,
-            canvasTop, canvasLeft,
-            vertex, path, paths, x, y, xnext, xpos, xposnext,
-            last, next, yvalcount, lineShapes, fillShapes, plen,
-            valueSpots, hlSpotsEnabled, color, xvalues, yvalues, i;
-
-        if (!line._super.render.call(this)) {
-            return;
-        }
-
-        this.scanValues();
-        this.processRangeOptions();
-
-        xvalues = this.xvalues;
-        yvalues = this.yvalues;
-
-        if (!this.yminmax.length || this.yvalues.length < 2) {
-            // empty or all null valuess
-            return;
-        }
-
-        canvasTop = canvasLeft = 0;
-
-        rangex = this.maxx - this.minx === 0 ? 1 : this.maxx - this.minx;
-        rangey = this.maxy - this.miny === 0 ? 1 : this.maxy - this.miny;
-        yvallast = this.yvalues.length - 1;
-
-        if (spotRadius && (canvasWidth < (spotRadius * 4) || canvasHeight < (spotRadius * 4))) {
-            spotRadius = 0;
-        }
-        if (spotRadius) {
-            // adjust the canvas size as required so that spots will fit
-            hlSpotsEnabled = options.get('highlightSpotColor') &&  !options.get('disableInteraction');
-            if (hlSpotsEnabled || options.get('minSpotColor') || (options.get('spotColor') && yvalues[yvallast] === this.miny)) {
-                canvasHeight -= Math.ceil(spotRadius);
-            }
-            if (hlSpotsEnabled || options.get('maxSpotColor') || (options.get('spotColor') && yvalues[yvallast] === this.maxy)) {
-                canvasHeight -= Math.ceil(spotRadius);
-                canvasTop += Math.ceil(spotRadius);
-            }
-            if (hlSpotsEnabled ||
-                 ((options.get('minSpotColor') || options.get('maxSpotColor')) && (yvalues[0] === this.miny || yvalues[0] === this.maxy))) {
-                canvasLeft += Math.ceil(spotRadius);
-                canvasWidth -= Math.ceil(spotRadius);
-            }
-            if (hlSpotsEnabled || options.get('spotColor') ||
-                (options.get('minSpotColor') || options.get('maxSpotColor') &&
-                    (yvalues[yvallast] === this.miny || yvalues[yvallast] === this.maxy))) {
-                canvasWidth -= Math.ceil(spotRadius);
-            }
-        }
-
-
-        canvasHeight--;
-
-        if (options.get('normalRangeMin') !== undefined && !options.get('drawNormalOnTop')) {
-            this.drawNormalRange(canvasLeft, canvasTop, canvasHeight, canvasWidth, rangey);
-        }
-
-        path = [];
-        paths = [path];
-        last = next = null;
-        yvalcount = yvalues.length;
         for (i = 0; i < yvalcount; i++) {
-            x = xvalues[i];
-            xnext = xvalues[i + 1];
-            y = yvalues[i];
-            xpos = canvasLeft + Math.round((x - this.minx) * (canvasWidth / rangex));
-            xposnext = i < yvalcount - 1 ? canvasLeft + Math.round((xnext - this.minx) * (canvasWidth / rangex)) : canvasWidth;
-            next = xpos + ((xposnext - xpos) / 2);
-            regionMap[i] = [last || 0, next, i];
-            last = next;
-            if (y === null) {
-                if (i) {
-                    if (yvalues[i - 1] !== null) {
-                        path = [];
-                        paths.push(path);
-                    }
-                    vertices.push(null);
-                }
-            } else {
-                if (y < this.miny) {
-                    y = this.miny;
-                }
-                if (y > this.maxy) {
-                    y = this.maxy;
-                }
-                if (!path.length) {
-                    // previous value was null
-                    path.push([xpos, canvasTop + canvasHeight]);
-                }
-                vertex = [xpos, canvasTop + Math.round(canvasHeight - (canvasHeight * ((y - this.miny) / rangey)))];
-                path.push(vertex);
-                vertices.push(vertex);
-            }
+          color = valueSpots.get(yvalues[i]);
+          if (color) {
+              target.drawCircle(canvasLeft + Math.round((xvalues[i] - this.minx) * (canvasWidth / rangex)),
+                  canvasTop + Math.round(canvasHeight - (canvasHeight * ((yvalues[i] - this.miny) / rangey))),
+                  spotRadius, undefined,
+                  color).append();
+          }
         }
-
-        lineShapes = [];
-        fillShapes = [];
-        plen = paths.length;
-        for (i = 0; i < plen; i++) {
-            path = paths[i];
-            if (path.length) {
-                if (options.get('fillColor')) {
-                    path.push([path[path.length - 1][0], (canvasTop + canvasHeight)]);
-                    fillShapes.push(path.slice(0));
-                    path.pop();
-                }
-                // if there's only a single point in this path, then we want to display it
-                // as a vertical line which means we keep path[0]  as is
-                if (path.length > 2) {
-                    // else we want the first value
-                    path[0] = [path[0][0], path[1][1]];
-                }
-                lineShapes.push(path);
-            }
+      }
+      if (spotRadius && options.spotColor && yvalues[yvallast] != null) {
+        target.drawCircle(canvasLeft + ((xvalues[xvalues.length - 1] - this.minx) * (canvasWidth / rangex)).round(),
+            canvasTop + Math.round(canvasHeight - (canvasHeight * ((yvalues[yvallast] - this.miny) / rangey))),
+            spotRadius, undefined,
+            options.spotColor).append();
+      }
+      if (this.maxy != this.minyorg) {
+        if (spotRadius && options.minSpotColor != null) {
+          x = xvalues[$.inArray(this.minyorg, yvalues)];
+          target.drawCircle(canvasLeft + Math.round((x - this.minx) * (canvasWidth / rangex)),
+              canvasTop + (canvasHeight - (canvasHeight * ((this.minyorg - this.miny) / rangey))).round(),
+              spotRadius, undefined,
+              options.minSpotColor).append();
         }
-
-        // draw the fill first, then optionally the normal range, then the line on top of that
-        plen = fillShapes.length;
-        for (i = 0; i < plen; i++) {
-            target.drawShape(fillShapes[i],
-                options.get('fillColor'), options.get('fillColor')).append();
-        }
-
-        if (options.get('normalRangeMin') !== undefined && options.get('drawNormalOnTop')) {
-            this.drawNormalRange(canvasLeft, canvasTop, canvasHeight, canvasWidth, rangey);
-        }
-
-        plen = lineShapes.length;
-        for (i = 0; i < plen; i++) {
-            target.drawShape(lineShapes[i], options.get('lineColor'), undefined,
-                options.get('lineWidth')).append();
-        }
-
-        if (spotRadius && options.get('valueSpots')) {
-            valueSpots = options.get('valueSpots');
-            if (valueSpots.get === undefined) {
-                valueSpots = new RangeMap(valueSpots);
-            }
-            for (i = 0; i < yvalcount; i++) {
-                color = valueSpots.get(yvalues[i]);
-                if (color) {
-                    target.drawCircle(canvasLeft + Math.round((xvalues[i] - this.minx) * (canvasWidth / rangex)),
-                        canvasTop + Math.round(canvasHeight - (canvasHeight * ((yvalues[i] - this.miny) / rangey))),
-                        spotRadius, undefined,
-                        color).append();
-                }
-            }
-
-        }
-        if (spotRadius && options.get('spotColor') && yvalues[yvallast] !== null) {
-            target.drawCircle(canvasLeft + Math.round((xvalues[xvalues.length - 1] - this.minx) * (canvasWidth / rangex)),
-                canvasTop + Math.round(canvasHeight - (canvasHeight * ((yvalues[yvallast] - this.miny) / rangey))),
+        if (spotRadius && options.maxSpotColor != null) {
+            x = xvalues[$.inArray(this.maxyorg, yvalues)];
+            target.drawCircle(canvasLeft + ((x - this.minx) * (canvasWidth / rangex)).round(),
+                canvasTop + (canvasHeight - (canvasHeight * ((this.maxyorg - this.miny) / rangey))).round(),
                 spotRadius, undefined,
-                options.get('spotColor')).append();
+                options.maxSpotColor).append();
         }
-        if (this.maxy !== this.minyorg) {
-            if (spotRadius && options.get('minSpotColor')) {
-                x = xvalues[$.inArray(this.minyorg, yvalues)];
-                target.drawCircle(canvasLeft + Math.round((x - this.minx) * (canvasWidth / rangex)),
-                    canvasTop + Math.round(canvasHeight - (canvasHeight * ((this.minyorg - this.miny) / rangey))),
-                    spotRadius, undefined,
-                    options.get('minSpotColor')).append();
-            }
-            if (spotRadius && options.get('maxSpotColor')) {
-                x = xvalues[$.inArray(this.maxyorg, yvalues)];
-                target.drawCircle(canvasLeft + Math.round((x - this.minx) * (canvasWidth / rangex)),
-                    canvasTop + Math.round(canvasHeight - (canvasHeight * ((this.maxyorg - this.miny) / rangey))),
-                    spotRadius, undefined,
-                    options.get('maxSpotColor')).append();
-            }
-        }
+      }
 
-        this.lastShapeId = target.getLastShapeId();
-        this.canvasTop = canvasTop;
-        target.render();
+      this.lastShapeId = target.getLastShapeId();
+      this.canvasTop = canvasTop;
+      target.render();
     }
   }
 
   /**
    * Bar charts
    */
-  $.fn.sparkline.bar = bar = createClass($.fn.sparkline._base, barHighlightMixin, {
-    type: 'bar',
+  class Bar extends _Base with BarHighlightMixin {
+    Bar(dom.HemlElement el, List<int> values, Options options, int width, int height) : super(el, values, options, width, height) {
+      int barWidth = parseInt(options.get('barWidth'), 10);
+      int barSpacing = parseInt(options.get('barSpacing'), 10);
+      int chartRangeMin = options.chartRangeMin;
+      int chartRangeMax = options.chartRangeMax;
+      int chartRangeClip = options.chartRangeClip;
+      int stackMin = double.INFINITY;
+      int stackMax = double.NEGATIVE_INFINITY;
+      bool isStackString;
+      int groupMin;
+      int groupMax;
+      int stackRanges;
+      List<int> numValues;
+      int i;
+      int vlen;
+      int range;
+      int zeroAxis;
+      int xaxisOffset;
+      int min;
+      int max;
+      int clipMin;
+      int clipMax;
+      bool stacked;
+      int vlist;
+      int j;
+      int slen;
+      int svals;
+      int val;
+      int yoffset;
+      int yMaxCalc;
+      int canvasHeightEf;
 
-    init: function (el, values, options, width, height) {
-        var barWidth = parseInt(options.get('barWidth'), 10),
-            barSpacing = parseInt(options.get('barSpacing'), 10),
-            chartRangeMin = options.get('chartRangeMin'),
-            chartRangeMax = options.get('chartRangeMax'),
-            chartRangeClip = options.get('chartRangeClip'),
-            stackMin = Infinity,
-            stackMax = -Infinity,
-            isStackString, groupMin, groupMax, stackRanges,
-            numValues, i, vlen, range, zeroAxis, xaxisOffset, min, max, clipMin, clipMax,
-            stacked, vlist, j, slen, svals, val, yoffset, yMaxCalc, canvasHeightEf;
-        bar._super.init.call(this, el, values, options, width, height);
+      // scan values to determine whether to stack bars
+      vlen = values.length;
+      for (i = 0; i < vlen; i++) {
+        val = values[i];
+        isStackString = val is String && val.indexOf(':') > -1;
+        if (isStackString || val is List) {
+          stacked = true;
+          if (isStackString) {
+            val = values[i] = normalizeValues(val.split(':'));
+          }
+          val = remove(val, null); // min/max will treat null as zero
+          groupMin = Math.min.apply(Math, val);
+          groupMax = Math.max.apply(Math, val);
+          if (groupMin < stackMin) {
+            stackMin = groupMin;
+          }
+          if (groupMax > stackMax) {
+            stackMax = groupMax;
+          }
+        }
+      }
 
-        // scan values to determine whether to stack bars
-        for (i = 0, vlen = values.length; i < vlen; i++) {
-            val = values[i];
-            isStackString = typeof(val) === 'string' && val.indexOf(':') > -1;
-            if (isStackString || $.isArray(val)) {
-                stacked = true;
-                if (isStackString) {
-                    val = values[i] = normalizeValues(val.split(':'));
+      this.stacked = stacked;
+      this.regionShapes = {};
+      this.barWidth = barWidth;
+      this.barSpacing = barSpacing;
+      this.totalBarWidth = barWidth + barSpacing;
+      this.width = width = (values.length * barWidth) + ((values.length - 1) * barSpacing);
+
+      this.initTarget();
+
+      if (chartRangeClip != null) {
+        clipMin = chartRangeMin == null ? double.NEGATIVE_INFINITY : chartRangeMin;
+        clipMax = chartRangeMax == null ? double.INFINITY: chartRangeMax;
+      }
+
+      numValues = [];
+      stackRanges = stacked ? [] : numValues;
+      var stackTotals = [];
+      var stackRangesNeg = [];
+      vlen = values.length;
+      for (i = 0; i < vlen; i++) {
+        if (stacked) {
+          vlist = values[i];
+          values[i] = svals = [];
+          stackTotals[i] = 0;
+          stackRanges[i] = stackRangesNeg[i] = 0;
+          for (j = 0, slen = vlist.length; j < slen; j++) {
+            val = svals[j] = chartRangeClip ? clipval(vlist[j], clipMin, clipMax) : vlist[j];
+            if (val != null) {
+              if (val > 0) {
+                stackTotals[i] += val;
+              }
+              if (stackMin < 0 && stackMax > 0) {
+                if (val < 0) {
+                  stackRangesNeg[i] += val.abs();
+                } else {
+                  stackRanges[i] += val;
                 }
-                val = remove(val, null); // min/max will treat null as zero
-                groupMin = Math.min.apply(Math, val);
-                groupMax = Math.max.apply(Math, val);
-                if (groupMin < stackMin) {
-                    stackMin = groupMin;
-                }
-                if (groupMax > stackMax) {
-                    stackMax = groupMax;
-                }
+              } else {
+                stackRanges[i] += (val - (val < 0 ? stackMax : stackMin)).abs();
+              }
+              numValues.add(val);
+            }
+          }
+        } else {
+            val = chartRangeClip ? clipval(values[i], clipMin, clipMax) : values[i];
+            val = values[i] = normalizeValue(val);
+            if (val != null) {
+              numValues.add(val);
             }
         }
+      }
+      this.max = max = math.max(Math, numValues);
+      this.min = min = math.min(Math, numValues);
+      this.stackMax = stackMax = stacked ? math.max(Math, stackTotals) : max;
+      this.stackMin = stackMin = stacked ? math.min(Math, numValues) : min;
 
-        this.stacked = stacked;
-        this.regionShapes = {};
-        this.barWidth = barWidth;
-        this.barSpacing = barSpacing;
-        this.totalBarWidth = barWidth + barSpacing;
-        this.width = width = (values.length * barWidth) + ((values.length - 1) * barSpacing);
+      if (options.chartRangeMin != null && (options.chartRangeClip || options.chartRangeMin < min)) {
+        min = options.chartRangeMin;
+      }
+      if (options.chartRangeMax != null && (options.chartRangeClip || options.chartRangeMax > max)) {
+        max = options.chartRangeMax;
+      }
 
-        this.initTarget();
+      this.zeroAxis = zeroAxis = options.get('zeroAxis', true);
+      if (min <= 0 && max >= 0 && zeroAxis) {
+        xaxisOffset = 0;
+      } else if (zeroAxis == false) {
+        xaxisOffset = min;
+      } else if (min > 0) {
+        xaxisOffset = min;
+      } else {
+        xaxisOffset = max;
+      }
+      this.xaxisOffset = xaxisOffset;
 
-        if (chartRangeClip) {
-            clipMin = chartRangeMin === undefined ? -Infinity : chartRangeMin;
-            clipMax = chartRangeMax === undefined ? Infinity : chartRangeMax;
+      range = stacked ? (math.max(Math, stackRanges) + math.max(Math, stackRangesNeg)) : max - min;
+
+      // as we plot zero/min values a single pixel line, we add a pixel to all other
+      // values - Reduce the effective canvas size to suit
+      this.canvasHeightEf = (zeroAxis && min < 0) ? this.canvasHeight - 2 : this.canvasHeight - 1;
+
+      if (min < xaxisOffset) {
+        yMaxCalc = (stacked && max >= 0) ? stackMax : max;
+        yoffset = (yMaxCalc - xaxisOffset) / range * this.canvasHeight;
+        if (yoffset != yoffset.ceil()) {
+          this.canvasHeightEf -= 2;
+          yoffset = Math.ceil(yoffset);
         }
+      } else {
+        yoffset = this.canvasHeight;
+      }
+      this.yoffset = yoffset;
 
-        numValues = [];
-        stackRanges = stacked ? [] : numValues;
-        var stackTotals = [];
-        var stackRangesNeg = [];
-        for (i = 0, vlen = values.length; i < vlen; i++) {
-            if (stacked) {
-                vlist = values[i];
-                values[i] = svals = [];
-                stackTotals[i] = 0;
-                stackRanges[i] = stackRangesNeg[i] = 0;
-                for (j = 0, slen = vlist.length; j < slen; j++) {
-                    val = svals[j] = chartRangeClip ? clipval(vlist[j], clipMin, clipMax) : vlist[j];
-                    if (val !== null) {
-                        if (val > 0) {
-                            stackTotals[i] += val;
-                        }
-                        if (stackMin < 0 && stackMax > 0) {
-                            if (val < 0) {
-                                stackRangesNeg[i] += Math.abs(val);
-                            } else {
-                                stackRanges[i] += val;
-                            }
-                        } else {
-                            stackRanges[i] += Math.abs(val - (val < 0 ? stackMax : stackMin));
-                        }
-                        numValues.push(val);
-                    }
-                }
-            } else {
-                val = chartRangeClip ? clipval(values[i], clipMin, clipMax) : values[i];
-                val = values[i] = normalizeValue(val);
-                if (val !== null) {
-                    numValues.push(val);
-                }
-            }
+      if (options.colorMap is List) {
+        this.colorMapByIndex = options.colorMap;
+        this.colorMapByValue = null;
+      } else {
+        this.colorMapByIndex = null;
+        this.colorMapByValue = options.colorMap;
+        if (this.colorMapByValue && this.colorMapByValue.get == null) {
+          this.colorMapByValue = new RangeMap(this.colorMapByValue);
         }
-        this.max = max = Math.max.apply(Math, numValues);
-        this.min = min = Math.min.apply(Math, numValues);
-        this.stackMax = stackMax = stacked ? Math.max.apply(Math, stackTotals) : max;
-        this.stackMin = stackMin = stacked ? Math.min.apply(Math, numValues) : min;
+      }
 
-        if (options.get('chartRangeMin') !== undefined && (options.get('chartRangeClip') || options.get('chartRangeMin') < min)) {
-            min = options.get('chartRangeMin');
-        }
-        if (options.get('chartRangeMax') !== undefined && (options.get('chartRangeClip') || options.get('chartRangeMax') > max)) {
-            max = options.get('chartRangeMax');
-        }
+      this.range = range;
+    }
 
-        this.zeroAxis = zeroAxis = options.get('zeroAxis', true);
-        if (min <= 0 && max >= 0 && zeroAxis) {
-            xaxisOffset = 0;
-        } else if (zeroAxis == false) {
-            xaxisOffset = min;
-        } else if (min > 0) {
-            xaxisOffset = min;
-        } else {
-            xaxisOffset = max;
-        }
-        this.xaxisOffset = xaxisOffset;
+    void getRegion(dom.HtmlElement el, int x, int y) {
+      var result = (x / this.totalBarWidth).floor();
+      return (result < 0 || result >= this.values.length) ? undefined : result;
+    }
 
-        range = stacked ? (Math.max.apply(Math, stackRanges) + Math.max.apply(Math, stackRangesNeg)) : max - min;
+    Map getCurrentRegionFields() {
+      var currentRegion = this.currentRegion;
+      List<int> values = ensureArray(this.values[currentRegion]);
+      List<int> result = [];
+      int value;
+      int i;
+      for (i = values.length; i--; i > 0) {
+        value = values[i];
+        result.add({
+          'isNull': value == null,
+          'value': value,
+          'color': this.calcColor(i, value, currentRegion),
+          'offset': currentRegion
+        });
+      }
+      return result;
+    }
 
-        // as we plot zero/min values a single pixel line, we add a pixel to all other
-        // values - Reduce the effective canvas size to suit
-        this.canvasHeightEf = (zeroAxis && min < 0) ? this.canvasHeight - 2 : this.canvasHeight - 1;
-
-        if (min < xaxisOffset) {
-            yMaxCalc = (stacked && max >= 0) ? stackMax : max;
-            yoffset = (yMaxCalc - xaxisOffset) / range * this.canvasHeight;
-            if (yoffset !== Math.ceil(yoffset)) {
-                this.canvasHeightEf -= 2;
-                yoffset = Math.ceil(yoffset);
-            }
-        } else {
-            yoffset = this.canvasHeight;
-        }
-        this.yoffset = yoffset;
-
-        if ($.isArray(options.get('colorMap'))) {
-            this.colorMapByIndex = options.get('colorMap');
-            this.colorMapByValue = null;
-        } else {
-            this.colorMapByIndex = null;
-            this.colorMapByValue = options.get('colorMap');
-            if (this.colorMapByValue && this.colorMapByValue.get === undefined) {
-                this.colorMapByValue = new RangeMap(this.colorMapByValue);
-            }
-        }
-
-        this.range = range;
-    },
-
-    getRegion: function (el, x, y) {
-        var result = Math.floor(x / this.totalBarWidth);
-        return (result < 0 || result >= this.values.length) ? undefined : result;
-    },
-
-    getCurrentRegionFields: function () {
-        var currentRegion = this.currentRegion,
-            values = ensureArray(this.values[currentRegion]),
-            result = [],
-            value, i;
-        for (i = values.length; i--;) {
-            value = values[i];
-            result.push({
-                isNull: value === null,
-                value: value,
-                color: this.calcColor(i, value, currentRegion),
-                offset: currentRegion
-            });
-        }
-        return result;
-    },
-
-    calcColor: function (stacknum, value, valuenum) {
-        var colorMapByIndex = this.colorMapByIndex,
-            colorMapByValue = this.colorMapByValue,
-            options = this.options,
-            color, newColor;
-        if (this.stacked) {
-            color = options.get('stackedBarColor');
-        } else {
-            color = (value < 0) ? options.get('negBarColor') : options.get('barColor');
-        }
-        if (value === 0 && options.get('zeroColor') !== undefined) {
-            color = options.get('zeroColor');
-        }
-        if (colorMapByValue && (newColor = colorMapByValue.get(value))) {
-            color = newColor;
-        } else if (colorMapByIndex && colorMapByIndex.length > valuenum) {
-            color = colorMapByIndex[valuenum];
-        }
-        return $.isArray(color) ? color[stacknum % color.length] : color;
-    },
+    void calcColor(int stacknum, int value, int valuenum) {
+      var colorMapByIndex = this.colorMapByIndex;
+      int colorMapByValue = this.colorMapByValue;
+      Options options = this.options;
+      String color;
+      String newColor;
+      if (this.stacked) {
+        color = options.stackedBarColor;
+      } else {
+        color = (value < 0) ? options.negBarColor : options.barColor;
+      }
+      if (value == 0 && options.zeroColor != null) {
+        color = options.zeroColor;
+      }
+      if (colorMapByValue != null && (newColor = colorMapByValue.get(value))) {
+        color = newColor;
+      } else if (colorMapByIndex && colorMapByIndex.length > valuenum) {
+        color = colorMapByIndex[valuenum];
+      }
+      return color is List ? color[stacknum % color.length] : color;
+    }
 
     /**
      * Render bar(s) for a region
      */
-    renderRegion: function (valuenum, highlight) {
-        var vals = this.values[valuenum],
-            options = this.options,
-            xaxisOffset = this.xaxisOffset,
-            result = [],
-            range = this.range,
-            stacked = this.stacked,
-            target = this.target,
-            x = valuenum * this.totalBarWidth,
-            canvasHeightEf = this.canvasHeightEf,
-            yoffset = this.yoffset,
-            y, height, color, isNull, yoffsetNeg, i, valcount, val, minPlotted, allMin;
+    void renderRegion(int valuenum, bool highlight) {
+      var vals = this.values[valuenum];
+      Options options = this.options;
+      int xaxisOffset = this.xaxisOffset;
+      List<int> result = [];
+      int range = this.range;
+      bool stacked = this.stacked;
+      int target = this.target;
+      int x = valuenum * this.totalBarWidth;
+      int canvasHeightEf = this.canvasHeightEf;
+      int yoffset = this.yoffset;
+      int y;
+      int height;
+      String color;
+      bool isNull;
+      int yoffsetNeg;
+      int i;
+      int valcount;
+      int val;
+      bool minPlotted;
+      bool allMin;
 
-        vals = $.isArray(vals) ? vals : [vals];
-        valcount = vals.length;
-        val = vals[0];
-        isNull = all(null, vals);
-        allMin = all(xaxisOffset, vals, true);
+      vals = vals is List ? vals : [vals];
+      valcount = vals.length;
+      val = vals[0];
+      isNull = all(null, vals);
+      allMin = all(xaxisOffset, vals, true);
 
-        if (isNull) {
-            if (options.get('nullColor')) {
-                color = highlight ? options.get('nullColor') : this.calcHighlightColor(options.get('nullColor'), options);
-                y = (yoffset > 0) ? yoffset - 1 : yoffset;
-                return target.drawRect(x, y, this.barWidth - 1, 0, color, color);
-            } else {
-                return undefined;
-            }
+      if (isNull) {
+        if (options.nullColor) {
+          color = highlight ? options.nullColor : this.calcHighlightColor(options.nullColor, options);
+          y = (yoffset > 0) ? yoffset - 1 : yoffset;
+          return target.drawRect(x, y, this.barWidth - 1, 0, color, color);
+        } else {
+          return undefined;
         }
-        yoffsetNeg = yoffset;
-        for (i = 0; i < valcount; i++) {
-            val = vals[i];
+      }
+      yoffsetNeg = yoffset;
+      for (i = 0; i < valcount; i++) {
+        val = vals[i];
 
-            if (stacked && val === xaxisOffset) {
-                if (!allMin || minPlotted) {
-                    continue;
-                }
-                minPlotted = true;
-            }
+        if (stacked && val == xaxisOffset) {
+          if (!allMin || minPlotted) {
+            continue;
+          }
+          minPlotted = true;
+        }
 
-            if (range > 0) {
-                height = Math.floor(canvasHeightEf * ((Math.abs(val - xaxisOffset) / range))) + 1;
-            } else {
-                height = 1;
-            }
-            if (val < xaxisOffset || (val === xaxisOffset && yoffset === 0)) {
-                y = yoffsetNeg;
-                yoffsetNeg += height;
-            } else {
-                y = yoffset - height;
-                yoffset -= height;
-            }
-            color = this.calcColor(i, val, valuenum);
-            if (highlight) {
-                color = this.calcHighlightColor(color, options);
-            }
-            result.push(target.drawRect(x, y, this.barWidth - 1, height - 1, color, color));
+        if (range > 0) {
+          height = (canvasHeightEf * ((Math.abs(val - xaxisOffset) / range))).floor() + 1;
+        } else {
+          height = 1;
         }
-        if (result.length === 1) {
-            return result[0];
+        if (val < xaxisOffset || (val == xaxisOffset && yoffset == 0)) {
+          y = yoffsetNeg;
+          yoffsetNeg += height;
+        } else {
+          y = yoffset - height;
+          yoffset -= height;
         }
-        return result;
+        color = this.calcColor(i, val, valuenum);
+        if (highlight) {
+          color = this.calcHighlightColor(color, options);
+        }
+        result.add(target.drawRect(x, y, this.barWidth - 1, height - 1, color, color));
+      }
+      if (result.length == 1) {
+        return result[0];
+      }
+      return result;
     }
   }
 
   /**
    * Tristate charts
    */
-  $.fn.sparkline.tristate = tristate = createClass($.fn.sparkline._base, barHighlightMixin, {
-    type: 'tristate',
+  class Tristate extends _Base with BarHighlightMixin {
+    Tristate(dom.HtmlElement el, List<int> values, Options options, int width, int height)
+        : super(el, values, options, width, height){
+      int barWidth = parseInt(options.barWidth, 10);
+      int barSpacing = parseInt(options.barSpacing, 10);
 
-    init: function (el, values, options, width, height) {
-        var barWidth = parseInt(options.get('barWidth'), 10),
-            barSpacing = parseInt(options.get('barSpacing'), 10);
-        tristate._super.init.call(this, el, values, options, width, height);
+      this.regionShapes = {};
+      this.barWidth = barWidth;
+      this.barSpacing = barSpacing;
+      this.totalBarWidth = barWidth + barSpacing;
+      this.values = $.map(values, Number);
+      this.width = width = (values.length * barWidth) + ((values.length - 1) * barSpacing);
 
-        this.regionShapes = {};
-        this.barWidth = barWidth;
-        this.barSpacing = barSpacing;
-        this.totalBarWidth = barWidth + barSpacing;
-        this.values = $.map(values, Number);
-        this.width = width = (values.length * barWidth) + ((values.length - 1) * barSpacing);
-
-        if ($.isArray(options.get('colorMap'))) {
-            this.colorMapByIndex = options.get('colorMap');
-            this.colorMapByValue = null;
-        } else {
-            this.colorMapByIndex = null;
-            this.colorMapByValue = options.get('colorMap');
-            if (this.colorMapByValue && this.colorMapByValue.get === undefined) {
-                this.colorMapByValue = new RangeMap(this.colorMapByValue);
-            }
+      if ($.isArray(options.colorMap)) {
+        this.colorMapByIndex = options.colorMap;
+        this.colorMapByValue = null;
+      } else {
+        this.colorMapByIndex = null;
+        this.colorMapByValue = options.colorMap;
+        if (this.colorMapByValue && this.colorMapByValue.get == null) {
+            this.colorMapByValue = new RangeMap(this.colorMapByValue);
         }
-        this.initTarget();
-    },
+      }
+      this.initTarget();
+    }
 
-    getRegion: function (el, x, y) {
-        return Math.floor(x / this.totalBarWidth);
-    },
+    void getRegion(dom.HtmlElement el, int x, int y) {
+      return (x / this.totalBarWidth).floor();
+    }
 
-    getCurrentRegionFields: function () {
-        var currentRegion = this.currentRegion;
-        return {
-            isNull: this.values[currentRegion] === undefined,
-            value: this.values[currentRegion],
-            color: this.calcColor(this.values[currentRegion], currentRegion),
-            offset: currentRegion
-        };
-    },
+    Map getCurrentRegionFields() {
+      var currentRegion = this.currentRegion;
+      return {
+        'isNull': this.values[currentRegion] == null,
+        'value': this.values[currentRegion],
+        'color': this.calcColor(this.values[currentRegion], currentRegion),
+        'offset': currentRegion
+      };
+    }
 
-    calcColor: function (value, valuenum) {
-        var values = this.values,
-            options = this.options,
-            colorMapByIndex = this.colorMapByIndex,
-            colorMapByValue = this.colorMapByValue,
-            color, newColor;
+    String calcColor(int value, int valuenum) {
+      var values = this.values;
+      Options options = this.options;
+      int colorMapByIndex = this.colorMapByIndex;
+      int colorMapByValue = this.colorMapByValue;
+      String color;
+      String newColor;
 
-        if (colorMapByValue && (newColor = colorMapByValue.get(value))) {
-            color = newColor;
-        } else if (colorMapByIndex && colorMapByIndex.length > valuenum) {
-            color = colorMapByIndex[valuenum];
-        } else if (values[valuenum] < 0) {
-            color = options.get('negBarColor');
-        } else if (values[valuenum] > 0) {
-            color = options.get('posBarColor');
-        } else {
-            color = options.get('zeroBarColor');
-        }
-        return color;
-    },
+      if (colorMapByValue && (newColor = colorMapByValue.get(value))) {
+        color = newColor;
+      } else if (colorMapByIndex && colorMapByIndex.length > valuenum) {
+        color = colorMapByIndex[valuenum];
+      } else if (values[valuenum] < 0) {
+        color = options.negBarColor;
+      } else if (values[valuenum] > 0) {
+        color = options.posBarColor;
+      } else {
+        color = options.zeroBarColor;
+      }
+      return color;
+    }
 
-    renderRegion: function (valuenum, highlight) {
-        var values = this.values,
-            options = this.options,
-            target = this.target,
-            canvasHeight, height, halfHeight,
-            x, y, color;
+    void renderRegion(int valuenum, int highlight) {
+      List<int> values = this.values;
+      Options options = this.options;
+      int target = this.target;
+      int canvasHeight;
+      int height;
+      int halfHeight;
+      int x;
+      int y;
+      String color;
 
-        canvasHeight = target.pixelHeight;
-        halfHeight = Math.round(canvasHeight / 2);
+      canvasHeight = target.pixelHeight;
+      halfHeight = (canvasHeight / 2).round();
 
-        x = valuenum * this.totalBarWidth;
-        if (values[valuenum] < 0) {
-            y = halfHeight;
-            height = halfHeight - 1;
-        } else if (values[valuenum] > 0) {
-            y = 0;
-            height = halfHeight - 1;
-        } else {
-            y = halfHeight - 1;
-            height = 2;
-        }
-        color = this.calcColor(values[valuenum], valuenum);
-        if (color === null) {
-            return;
-        }
-        if (highlight) {
-            color = this.calcHighlightColor(color, options);
-        }
-        return target.drawRect(x, y, this.barWidth - 1, height - 1, color, color);
+      x = valuenum * this.totalBarWidth;
+      if (values[valuenum] < 0) {
+        y = halfHeight;
+        height = halfHeight - 1;
+      } else if (values[valuenum] > 0) {
+        y = 0;
+        height = halfHeight - 1;
+      } else {
+        y = halfHeight - 1;
+        height = 2;
+      }
+      color = this.calcColor(values[valuenum], valuenum);
+      if (color == null) {
+          return;
+      }
+      if (highlight) {
+        color = this.calcHighlightColor(color, options);
+      }
+      return target.drawRect(x, y, this.barWidth - 1, height - 1, color, color);
     }
   }
 
   /**
    * Discrete charts
    */
-  $.fn.sparkline.discrete = discrete = createClass($.fn.sparkline._base, barHighlightMixin, {
-    type: 'discrete',
+  class Discrete extends _Base with BarHighlightMixin {
+    Discrete (dom.HtmlElement el, List<int> values, Options options, int width, int height)
+        : super(this, el, values, options, width, height){
+      this.regionShapes = {};
+      this.values = values = $.map(values, Number);
+      this.min = Math.min.apply(Math, values);
+      this.max = Math.max.apply(Math, values);
+      this.range = this.max - this.min;
+      this.width = width = options.width == 'auto' ? values.length * 2 : this.width;
+      this.interval = (width / values.length).floor();
+      this.itemWidth = width / values.length;
+      if (options.chartRangeMin != null && (options.chartRangeClip || options.chartRangeMin < this.min)) {
+          this.min = options.chartRangeMin;
+      }
+      if (options.chartRangeMax != null && (options.chartRangeClip || options.chartRangeMax > this.max)) {
+        this.max = options.chartRangeMax;
+      }
+      this.initTarget();
+      if (this.target) {
+        this.lineHeight = options.lineHeight == 'auto' ? (this.canvasHeight * 0.3).round() : options.lineHeight;
+      }
+    }
 
-    init: function (el, values, options, width, height) {
-        discrete._super.init.call(this, el, values, options, width, height);
+    int getRegion(dom.HtmlElement el, int x, int y) {
+        return (x / this.itemWidth).floor();
+    }
 
-        this.regionShapes = {};
-        this.values = values = $.map(values, Number);
-        this.min = Math.min.apply(Math, values);
-        this.max = Math.max.apply(Math, values);
-        this.range = this.max - this.min;
-        this.width = width = options.get('width') === 'auto' ? values.length * 2 : this.width;
-        this.interval = Math.floor(width / values.length);
-        this.itemWidth = width / values.length;
-        if (options.get('chartRangeMin') !== undefined && (options.get('chartRangeClip') || options.get('chartRangeMin') < this.min)) {
-            this.min = options.get('chartRangeMin');
-        }
-        if (options.get('chartRangeMax') !== undefined && (options.get('chartRangeClip') || options.get('chartRangeMax') > this.max)) {
-            this.max = options.get('chartRangeMax');
-        }
-        this.initTarget();
-        if (this.target) {
-            this.lineHeight = options.get('lineHeight') === 'auto' ? Math.round(this.canvasHeight * 0.3) : options.get('lineHeight');
-        }
-    },
+    Map getCurrentRegionFields() {
+      var currentRegion = this.currentRegion;
+      return {
+          'isNull': this.values[currentRegion] == null,
+          'value': this.values[currentRegion],
+          'offset': currentRegion
+      };
+    }
 
-    getRegion: function (el, x, y) {
-        return Math.floor(x / this.itemWidth);
-    },
+    void renderRegion(int valuenum, bool highlight) {
+      var values = this.values;
+      Options options = this.options;
+      int min = this.min;
+      int max = this.max;
+      int range = this.range;
+      int interval = this.interval;
+      int target = this.target;
+      int canvasHeight = this.canvasHeight;
+      int lineHeight = this.lineHeight;
+      int pheight = canvasHeight - lineHeight;
+      int ytop;
+      int val;
+      String color;
+      int x;
 
-    getCurrentRegionFields: function () {
-        var currentRegion = this.currentRegion;
-        return {
-            isNull: this.values[currentRegion] === undefined,
-            value: this.values[currentRegion],
-            offset: currentRegion
-        };
-    },
-
-    renderRegion: function (valuenum, highlight) {
-        var values = this.values,
-            options = this.options,
-            min = this.min,
-            max = this.max,
-            range = this.range,
-            interval = this.interval,
-            target = this.target,
-            canvasHeight = this.canvasHeight,
-            lineHeight = this.lineHeight,
-            pheight = canvasHeight - lineHeight,
-            ytop, val, color, x;
-
-        val = clipval(values[valuenum], min, max);
-        x = valuenum * interval;
-        ytop = Math.round(pheight - pheight * ((val - min) / range));
-        color = (options.get('thresholdColor') && val < options.get('thresholdValue')) ? options.get('thresholdColor') : options.get('lineColor');
-        if (highlight) {
-            color = this.calcHighlightColor(color, options);
-        }
-        return target.drawLine(x, ytop, x, ytop + lineHeight, color);
+      val = clipval(values[valuenum], min, max);
+      x = valuenum * interval;
+      ytop = (pheight - pheight * ((val - min) / range)).round();
+      color = (options.thresholdColor && val < options.thresholdValue) ? options.thresholdColor : options.lineColor;
+      if (highlight) {
+        color = this.calcHighlightColor(color, options);
+      }
+      return target.drawLine(x, ytop, x, ytop + lineHeight, color);
     }
   }
 
   /**
    * Bullet charts
    */
-  $.fn.sparkline.bullet = bullet = createClass($.fn.sparkline._base, {
-    type: 'bullet',
+  class Bullet extends _Base {
+    Bullet(dom.HtmlElement el, List<int> values, Options options, int width, int height)
+      : super(el, values, options, width, height) {
+      int min;
+      int max;
+      List<int> vals;
 
-    init: function (el, values, options, width, height) {
-        var min, max, vals;
-        bullet._super.init.call(this, el, values, options, width, height);
+      // values: target, performance, range1, range2, range3
+      this.values = values = normalizeValues(values);
+      // target or performance could be null
+      vals = values.slice();
+      vals[0] = vals[0] == null ? vals[2] : vals[0];
+      vals[1] = values[1] == null ? vals[2] : vals[1];
+      min = math.min(Math, values);
+      max = math.max(Math, values);
+      if (options.base == null) {
+        min = min < 0 ? min : 0;
+      } else {
+        min = options.base;
+      }
+      this.min = min;
+      this.max = max;
+      this.range = max - min;
+      this.shapes = {};
+      this.valueShapes = {};
+      this.regiondata = {};
+      this.width = width = options.width == 'auto' ? '4.0em' : width;
+      this.target = this.$el.simpledraw(width, height, options.composite);
+      if (values.length == 0) {
+        this.disabled = true;
+      }
+      this.initTarget();
+    }
 
-        // values: target, performance, range1, range2, range3
-        this.values = values = normalizeValues(values);
-        // target or performance could be null
-        vals = values.slice();
-        vals[0] = vals[0] === null ? vals[2] : vals[0];
-        vals[1] = values[1] === null ? vals[2] : vals[1];
-        min = Math.min.apply(Math, values);
-        max = Math.max.apply(Math, values);
-        if (options.get('base') === undefined) {
-            min = min < 0 ? min : 0;
-        } else {
-            min = options.get('base');
-        }
-        this.min = min;
-        this.max = max;
-        this.range = max - min;
-        this.shapes = {};
-        this.valueShapes = {};
-        this.regiondata = {};
-        this.width = width = options.get('width') === 'auto' ? '4.0em' : width;
-        this.target = this.$el.simpledraw(width, height, options.get('composite'));
-        if (!values.length) {
-            this.disabled = true;
-        }
-        this.initTarget();
-    },
+    void getRegion(dom.HtmlElement el, int x, int y) {
+      var shapeid = this.target.getShapeAt(el, x, y);
+      return (shapeid != null && this.shapes[shapeid] != null) ? this.shapes[shapeid] : null;
+    }
 
-    getRegion: function (el, x, y) {
-        var shapeid = this.target.getShapeAt(el, x, y);
-        return (shapeid !== undefined && this.shapes[shapeid] !== undefined) ? this.shapes[shapeid] : undefined;
-    },
+    Map getCurrentRegionFields() {
+      var currentRegion = this.currentRegion;
+      return {
+        'fieldkey': currentRegion.substr(0, 1),
+        'value': this.values[currentRegion.substr(1)],
+        'region': currentRegion
+      };
+    }
 
-    getCurrentRegionFields: function () {
-        var currentRegion = this.currentRegion;
-        return {
-            fieldkey: currentRegion.substr(0, 1),
-            value: this.values[currentRegion.substr(1)],
-            region: currentRegion
-        };
-    },
+    void changeHighlight(bool highlight) {
+      int currentRegion = this.currentRegion;
+      int shapeid = this.valueShapes[currentRegion];
+      int shape;
+      delete this.shapes[shapeid];
+      switch (currentRegion.substr(0, 1)) {
+        case 'r':
+          shape = this.renderRange(currentRegion.substr(1), highlight);
+          break;
+        case 'p':
+          shape = this.renderPerformance(highlight);
+          break;
+        case 't':
+          shape = this.renderTarget(highlight);
+          break;
+      }
+      this.valueShapes[currentRegion] = shape.id;
+      this.shapes[shape.id] = currentRegion;
+      this.target.replaceWithShape(shapeid, shape);
+    }
 
-    changeHighlight: function (highlight) {
-        var currentRegion = this.currentRegion,
-            shapeid = this.valueShapes[currentRegion],
-            shape;
-        delete this.shapes[shapeid];
-        switch (currentRegion.substr(0, 1)) {
-            case 'r':
-                shape = this.renderRange(currentRegion.substr(1), highlight);
-                break;
-            case 'p':
-                shape = this.renderPerformance(highlight);
-                break;
-            case 't':
-                shape = this.renderTarget(highlight);
-                break;
-        }
-        this.valueShapes[currentRegion] = shape.id;
-        this.shapes[shape.id] = currentRegion;
-        this.target.replaceWithShape(shapeid, shape);
-    },
+    void renderRange(int rn, bool highlight) {
+      int rangeval = this.values[rn];
+      int rangewidth = (this.canvasWidth * ((rangeval - this.min) / this.range)).round();
+      String color = this.options.rangeColors[rn - 2];
+      if (highlight) {
+        color = this.calcHighlightColor(color, this.options);
+      }
+      return this.target.drawRect(0, 0, rangewidth - 1, this.canvasHeight - 1, color, color);
+    }
 
-    renderRange: function (rn, highlight) {
-        var rangeval = this.values[rn],
-            rangewidth = Math.round(this.canvasWidth * ((rangeval - this.min) / this.range)),
-            color = this.options.get('rangeColors')[rn - 2];
-        if (highlight) {
-            color = this.calcHighlightColor(color, this.options);
-        }
-        return this.target.drawRect(0, 0, rangewidth - 1, this.canvasHeight - 1, color, color);
-    },
+    void renderPerformance(bool highlight) {
+      int perfval = this.values[1],
+      int perfwidth = (this.canvasWidth * ((perfval - this.min) / this.range)).round();
+      String color = this.options.get('performanceColor');
+      if (highlight) {
+        color = this.calcHighlightColor(color, this.options);
+      }
+      return this.target.drawRect(0, Math.round(this.canvasHeight * 0.3), perfwidth - 1,
+          (this.canvasHeight * 0.4).round() - 1, color, color);
+    }
 
-    renderPerformance: function (highlight) {
-        var perfval = this.values[1],
-            perfwidth = Math.round(this.canvasWidth * ((perfval - this.min) / this.range)),
-            color = this.options.get('performanceColor');
-        if (highlight) {
-            color = this.calcHighlightColor(color, this.options);
-        }
-        return this.target.drawRect(0, Math.round(this.canvasHeight * 0.3), perfwidth - 1,
-            Math.round(this.canvasHeight * 0.4) - 1, color, color);
-    },
+    void renderTarget(bool highlight) {
+      int targetval = this.values[0];
+      int x = (this.canvasWidth * ((targetval - this.min) / this.range) - (this.options.targetWidth / 2)).round();
+      int targettop = (this.canvasHeight * 0.10).round();
+      int targetheight = this.canvasHeight - (targettop * 2);
+      String color = this.options.targetColor;
+      if (highlight) {
+        color = this.calcHighlightColor(color, this.options);
+      }
+      return this.target.drawRect(x, targettop, this.options.targetWidth - 1, targetheight - 1, color, color);
+    }
 
-    renderTarget: function (highlight) {
-        var targetval = this.values[0],
-            x = Math.round(this.canvasWidth * ((targetval - this.min) / this.range) - (this.options.get('targetWidth') / 2)),
-            targettop = Math.round(this.canvasHeight * 0.10),
-            targetheight = this.canvasHeight - (targettop * 2),
-            color = this.options.get('targetColor');
-        if (highlight) {
-            color = this.calcHighlightColor(color, this.options);
-        }
-        return this.target.drawRect(x, targettop, this.options.get('targetWidth') - 1, targetheight - 1, color, color);
-    },
-
-    render: function () {
-        var vlen = this.values.length,
-            target = this.target,
-            i, shape;
-        if (!bullet._super.render.call(this)) {
-            return;
-        }
-        for (i = 2; i < vlen; i++) {
-            shape = this.renderRange(i).append();
-            this.shapes[shape.id] = 'r' + i;
-            this.valueShapes['r' + i] = shape.id;
-        }
-        if (this.values[1] !== null) {
-            shape = this.renderPerformance().append();
-            this.shapes[shape.id] = 'p1';
-            this.valueShapes.p1 = shape.id;
-        }
-        if (this.values[0] !== null) {
-            shape = this.renderTarget().append();
-            this.shapes[shape.id] = 't0';
-            this.valueShapes.t0 = shape.id;
-        }
-        target.render();
+    void render() {
+      int vlen = this.values.length,
+      int target = this.target;
+      int i;
+      int shape;
+      if (!super.render(this)) {
+        return;
+      }
+      for (i = 2; i < vlen; i++) {
+        shape = this.renderRange(i).append();
+        this.shapes[shape.id] = 'r' + i;
+        this.valueShapes['r' + i] = shape.id;
+      }
+      if (this.values[1] != null) {
+        shape = this.renderPerformance().append();
+        this.shapes[shape.id] = 'p1';
+        this.valueShapes.p1 = shape.id;
+      }
+      if (this.values[0] != null) {
+        shape = this.renderTarget().append();
+        this.shapes[shape.id] = 't0';
+        this.valueShapes.t0 = shape.id;
+      }
+      target.render();
     }
   }
 
   /**
    * Pie charts
    */
-  $.fn.sparkline.pie = pie = createClass($.fn.sparkline._base, {
-    type: 'pie',
+  class Pie extends _Base {
 
-    init: function (el, values, options, width, height) {
-        var total = 0, i;
+    Pie(dom.HtmlElement el, List<int> values, Options options, int width, int height)
+        : super(el, values, options, width, height){
+      int total = 0;
+      int i;
 
-        pie._super.init.call(this, el, values, options, width, height);
+      this.shapes = {}; // map shape ids to value offsets
+      this.valueShapes = {}; // maps value offsets to shape ids
+      this.values = values = $.map(values, Number);
 
-        this.shapes = {}; // map shape ids to value offsets
-        this.valueShapes = {}; // maps value offsets to shape ids
-        this.values = values = $.map(values, Number);
+      if (options.width == 'auto') {
+        this.width = this.height;
+      }
 
-        if (options.get('width') === 'auto') {
-            this.width = this.height;
-        }
-
-        if (values.length > 0) {
-            for (i = values.length; i--;) {
-                total += values[i];
-            }
-        }
-        this.total = total;
-        this.initTarget();
-        this.radius = Math.floor(Math.min(this.canvasWidth, this.canvasHeight) / 2);
-    },
-
-    getRegion: function (el, x, y) {
-        var shapeid = this.target.getShapeAt(el, x, y);
-        return (shapeid !== undefined && this.shapes[shapeid] !== undefined) ? this.shapes[shapeid] : undefined;
-    },
-
-    getCurrentRegionFields: function () {
-        var currentRegion = this.currentRegion;
-        return {
-            isNull: this.values[currentRegion] === undefined,
-            value: this.values[currentRegion],
-            percent: this.values[currentRegion] / this.total * 100,
-            color: this.options.get('sliceColors')[currentRegion % this.options.get('sliceColors').length],
-            offset: currentRegion
-        };
-    },
-
-    changeHighlight: function (highlight) {
-        var currentRegion = this.currentRegion,
-             newslice = this.renderSlice(currentRegion, highlight),
-             shapeid = this.valueShapes[currentRegion];
-        delete this.shapes[shapeid];
-        this.target.replaceWithShape(shapeid, newslice);
-        this.valueShapes[currentRegion] = newslice.id;
-        this.shapes[newslice.id] = currentRegion;
-    },
-
-    renderSlice: function (valuenum, highlight) {
-        var target = this.target,
-            options = this.options,
-            radius = this.radius,
-            borderWidth = options.get('borderWidth'),
-            offset = options.get('offset'),
-            circle = 2 * Math.PI,
-            values = this.values,
-            total = this.total,
-            next = offset ? (2*Math.PI)*(offset/360) : 0,
-            start, end, i, vlen, color;
-
-        vlen = values.length;
-        for (i = 0; i < vlen; i++) {
-            start = next;
-            end = next;
-            if (total > 0) {  // avoid divide by zero
-                end = next + (circle * (values[i] / total));
-            }
-            if (valuenum === i) {
-                color = options.get('sliceColors')[i % options.get('sliceColors').length];
-                if (highlight) {
-                    color = this.calcHighlightColor(color, options);
-                }
-
-                return target.drawPieSlice(radius, radius, radius - borderWidth, start, end, undefined, color);
-            }
-            next = end;
-        }
-    },
-
-    render: function () {
-        var target = this.target,
-            values = this.values,
-            options = this.options,
-            radius = this.radius,
-            borderWidth = options.get('borderWidth'),
-            shape, i;
-
-        if (!pie._super.render.call(this)) {
-            return;
-        }
-        if (borderWidth) {
-            target.drawCircle(radius, radius, Math.floor(radius - (borderWidth / 2)),
-                options.get('borderColor'), undefined, borderWidth).append();
-        }
+      if (values.length > 0) {
         for (i = values.length; i--;) {
-            if (values[i]) { // don't render zero values
-                shape = this.renderSlice(i).append();
-                this.valueShapes[i] = shape.id; // store just the shapeid
-                this.shapes[shape.id] = i;
-            }
+          total += values[i];
         }
-        target.render();
+      }
+      this.total = total;
+      this.initTarget();
+      this.radius = (math.min(this.canvasWidth, this.canvasHeight) / 2).floor();
+    }
+
+    void getRegion(dom.HtmlElement el, int x, int y) {
+        int shapeid = this.target.getShapeAt(el, x, y);
+        return (shapeid != null && this.shapes[shapeid] != null) ? this.shapes[shapeid] : null;
+    }
+
+    void getCurrentRegionFields() {
+      int currentRegion = this.currentRegion;
+      return {
+        'isNull': this.values[currentRegion] == null,
+        'value': this.values[currentRegion],
+        'percent': this.values[currentRegion] / this.total * 100,
+        'color': this.options.sliceColors[currentRegion % this.options.sliceColors.length],
+        'offset': currentRegion
+      };
+    }
+
+    void changeHighlight(bool highlight) {
+      int currentRegion = this.currentRegion;
+      int newslice = this.renderSlice(currentRegion, highlight);
+      int shapeid = this.valueShapes[currentRegion];
+      delete this.shapes[shapeid];
+      this.target.replaceWithShape(shapeid, newslice);
+      this.valueShapes[currentRegion] = newslice.id;
+      this.shapes[newslice.id] = currentRegion;
+    }
+
+    void renderSlice(int valuenum, bool highlight) {
+      int target = this.target;
+      Options options = this.options;
+      int radius = this.radius;
+      int borderWidth = options.borderWidth;
+      int offset = options.offset;
+      int circle = 2 * math.PI;
+      List<int> values = this.values;
+      int total = this.total;
+      int next = offset ? (2 * math.PI) * (offset/360) : 0;
+      int start;
+      int end;
+      int i;
+      int vlen;
+      String color;
+
+      vlen = values.length;
+      for (i = 0; i < vlen; i++) {
+        start = next;
+        end = next;
+        if (total > 0) {  // avoid divide by zero
+          end = next + (circle * (values[i] / total));
+        }
+        if (valuenum == i) {
+          color = options.sliceColors[i % options.sliceColors.length];
+          if (highlight) {
+            color = this.calcHighlightColor(color, options);
+          }
+
+          return target.drawPieSlice(radius, radius, radius - borderWidth, start, end, undefined, color);
+        }
+        next = end;
+      }
+    }
+
+    void render() {
+      int target = this.target;
+      List<int> values = this.values;
+      Options options = this.options;
+      int radius = this.radius;
+      int borderWidth = options.borderWidth;
+      int shape;
+      int i;
+
+      if (!super.render()) {
+        return;
+      }
+      if (borderWidth == null) {
+        target.drawCircle(radius, radius, Math.floor(radius - (borderWidth / 2)),
+            options.borderColor, null, borderWidth).append();
+      }
+      for (i = values.length; i--;) {
+        if (values[i]) { // don't render zero values
+          shape = this.renderSlice(i).append();
+          this.valueShapes[i] = shape.id; // store just the shapeid
+          this.shapes[shape.id] = i;
+        }
+      }
+      target.render();
     }
   }
 
   /**
    * Box plots
    */
-  $.fn.sparkline.box = box = createClass($.fn.sparkline._base, {
-    type: 'box',
-
-    init: function (el, values, options, width, height) {
-        box._super.init.call(this, el, values, options, width, height);
-        this.values = $.map(values, Number);
-        this.width = options.get('width') === 'auto' ? '4.0em' : width;
-        this.initTarget();
-        if (!this.values.length) {
-            this.disabled = 1;
-        }
-    },
+  class Box extends _Base {
+    Box(dom.HtmlElement el, List<int> values, Options options, int width, int height)
+        : super (el, values, options, width, height) {
+      this.values = $.map(values, Number);
+      this.width = options.width == 'auto' ? '4.0em' : width;
+      this.initTarget();
+      if (!this.values.length) {
+          this.disabled = 1;
+      }
+    }
 
     /**
      * Simulate a single region
      */
-    getRegion: function () {
+    int getRegion() {
         return 1;
-    },
+    }
 
-    getCurrentRegionFields: function () {
-        var result = [
-            { field: 'lq', value: this.quartiles[0] },
-            { field: 'med', value: this.quartiles[1] },
-            { field: 'uq', value: this.quartiles[2] }
-        ];
-        if (this.loutlier !== undefined) {
-            result.push({ field: 'lo', value: this.loutlier});
-        }
-        if (this.routlier !== undefined) {
-            result.push({ field: 'ro', value: this.routlier});
-        }
-        if (this.lwhisker !== undefined) {
-            result.push({ field: 'lw', value: this.lwhisker});
-        }
-        if (this.rwhisker !== undefined) {
-            result.push({ field: 'rw', value: this.rwhisker});
-        }
-        return result;
-    },
+    void getCurrentRegionFields() {
+      var result = [
+          { 'field': 'lq', 'value': this.quartiles[0] },
+          { 'field': 'med', 'value': this.quartiles[1] },
+          { 'field': 'uq', 'value': this.quartiles[2] }
+      ];
+      if (this.loutlier != null) {
+          result.add({ 'field': 'lo', 'value': this.loutlier});
+      }
+      if (this.routlier != null) {
+          result.add({ 'field': 'ro', 'value': this.routlier});
+      }
+      if (this.lwhisker != null) {
+          result.push({ 'field': 'lw', 'value': this.lwhisker});
+      }
+      if (this.rwhisker != null) {
+          result.push({ 'field': 'rw', 'value': this.rwhisker});
+      }
+      return result;
+    }
 
-    render: function () {
-        var target = this.target,
-            values = this.values,
-            vlen = values.length,
-            options = this.options,
-            canvasWidth = this.canvasWidth,
-            canvasHeight = this.canvasHeight,
-            minValue = options.get('chartRangeMin') === undefined ? Math.min.apply(Math, values) : options.get('chartRangeMin'),
-            maxValue = options.get('chartRangeMax') === undefined ? Math.max.apply(Math, values) : options.get('chartRangeMax'),
-            canvasLeft = 0,
-            lwhisker, loutlier, iqr, q1, q2, q3, rwhisker, routlier, i,
-            size, unitSize;
+    void render() {
+      int target = this.target;
+      List<int> values = this.values;
+      int vlen = values.length;
+      Options options = this.options;
+      int canvasWidth = this.canvasWidth;
+      int canvasHeight = this.canvasHeight;
+      int minValue = options.chartRangeMin == null ? math.min(Math, values) : options.chartRangeMin;
+      int maxValue = options.chartRangeMax == null ? math.max(Math, values) : options.chartRangeMax;
+      int canvasLeft = 0;
+      int lwhisker;
+      int loutlier;
+      int iqr;
+      int q1;
+      int q2;
+      int q3;
+      int rwhisker;
+      int routlier;
+      int i;
+      int size;
+      int unitSize;
 
-        if (!box._super.render.call(this)) {
-            return;
-        }
+      if (!super.render()) {
+        return;
+      }
 
-        if (options.get('raw')) {
-            if (options.get('showOutliers') && values.length > 5) {
-                loutlier = values[0];
-                lwhisker = values[1];
-                q1 = values[2];
-                q2 = values[3];
-                q3 = values[4];
-                rwhisker = values[5];
-                routlier = values[6];
-            } else {
-                lwhisker = values[0];
-                q1 = values[1];
-                q2 = values[2];
-                q3 = values[3];
-                rwhisker = values[4];
-            }
+      if (options.raw) {
+        if (options.showOutliers && values.length > 5) {
+          loutlier = values[0];
+          lwhisker = values[1];
+          q1 = values[2];
+          q2 = values[3];
+          q3 = values[4];
+          rwhisker = values[5];
+          routlier = values[6];
         } else {
-            values.sort(function (a, b) { return a - b; });
-            q1 = quartile(values, 1);
-            q2 = quartile(values, 2);
-            q3 = quartile(values, 3);
-            iqr = q3 - q1;
-            if (options.get('showOutliers')) {
-                lwhisker = rwhisker = undefined;
-                for (i = 0; i < vlen; i++) {
-                    if (lwhisker === undefined && values[i] > q1 - (iqr * options.get('outlierIQR'))) {
-                        lwhisker = values[i];
-                    }
-                    if (values[i] < q3 + (iqr * options.get('outlierIQR'))) {
-                        rwhisker = values[i];
-                    }
-                }
-                loutlier = values[0];
-                routlier = values[vlen - 1];
-            } else {
-                lwhisker = values[0];
-                rwhisker = values[vlen - 1];
-            }
+          lwhisker = values[0];
+          q1 = values[1];
+          q2 = values[2];
+          q3 = values[3];
+          rwhisker = values[4];
         }
-        this.quartiles = [q1, q2, q3];
-        this.lwhisker = lwhisker;
-        this.rwhisker = rwhisker;
-        this.loutlier = loutlier;
-        this.routlier = routlier;
+      } else {
+        values.sort((a, b) { return a - b; });
+        q1 = quartile(values, 1);
+        q2 = quartile(values, 2);
+        q3 = quartile(values, 3);
+        iqr = q3 - q1;
+        if (options.showOutliers) {
+          lwhisker = rwhisker = undefined;
+          for (i = 0; i < vlen; i++) {
+            if (lwhisker == null && values[i] > q1 - (iqr * options.outlierIQR))) {
+              lwhisker = values[i];
+            }
+            if (values[i] < q3 + (iqr * options.outlierIQR)) {
+              rwhisker = values[i];
+            }
+          }
+          loutlier = values[0];
+          routlier = values[vlen - 1];
+        } else {
+          lwhisker = values[0];
+          rwhisker = values[vlen - 1];
+        }
+      }
+      this.quartiles = [q1, q2, q3];
+      this.lwhisker = lwhisker;
+      this.rwhisker = rwhisker;
+      this.loutlier = loutlier;
+      this.routlier = routlier;
 
+      unitSize = canvasWidth / (maxValue - minValue + 1);
+      if (options.showOutliers) {
+        canvasLeft = (options.spotRadius).ceil();
+        canvasWidth -= 2 * (options.spotRadius).ceil();
         unitSize = canvasWidth / (maxValue - minValue + 1);
-        if (options.get('showOutliers')) {
-            canvasLeft = Math.ceil(options.get('spotRadius'));
-            canvasWidth -= 2 * Math.ceil(options.get('spotRadius'));
-            unitSize = canvasWidth / (maxValue - minValue + 1);
-            if (loutlier < lwhisker) {
-                target.drawCircle((loutlier - minValue) * unitSize + canvasLeft,
-                    canvasHeight / 2,
-                    options.get('spotRadius'),
-                    options.get('outlierLineColor'),
-                    options.get('outlierFillColor')).append();
-            }
-            if (routlier > rwhisker) {
-                target.drawCircle((routlier - minValue) * unitSize + canvasLeft,
-                    canvasHeight / 2,
-                    options.get('spotRadius'),
-                    options.get('outlierLineColor'),
-                    options.get('outlierFillColor')).append();
-            }
+        if (loutlier < lwhisker) {
+          target.drawCircle((loutlier - minValue) * unitSize + canvasLeft,
+              canvasHeight / 2,
+              options.spotRadius,
+              options.outlierLineColor,
+              options.outlierFillColor).append();
         }
+        if (routlier > rwhisker) {
+          target.drawCircle((routlier - minValue) * unitSize + canvasLeft,
+              canvasHeight / 2,
+              options.spotRadius,
+              options.outlierLineColor,
+              options.outlierFillColor).append();
+        }
+      }
 
-        // box
-        target.drawRect(
-            Math.round((q1 - minValue) * unitSize + canvasLeft),
-            Math.round(canvasHeight * 0.1),
-            Math.round((q3 - q1) * unitSize),
-            Math.round(canvasHeight * 0.8),
-            options.get('boxLineColor'),
-            options.get('boxFillColor')).append();
-        // left whisker
+      // box
+      target.drawRect(
+          ((q1 - minValue) * unitSize + canvasLeft).round(),
+          (canvasHeight * 0.1).round(),
+          ((q3 - q1) * unitSize).round(),
+          (canvasHeight * 0.8).round(),
+          options.boxLineColor,
+          options.boxFillColor).append();
+      // left whisker
+      target.drawLine(
+          ((lwhisker - minValue) * unitSize + canvasLeft).round(),
+          (canvasHeight / 2).round(),
+          ((q1 - minValue) * unitSize + canvasLeft).round(),
+          (canvasHeight / 2).round(),
+          options.lineColor).append();
+      target.drawLine(
+          ((lwhisker - minValue) * unitSize + canvasLeft).round(),
+          (canvasHeight / 4).round(),
+          ((lwhisker - minValue) * unitSize + canvasLeft).round(),
+          (canvasHeight - canvasHeight / 4).round(),
+          options.whiskerColor).append();
+      // right whisker
+      target.drawLine(((rwhisker - minValue) * unitSize + canvasLeft).round(),
+          (canvasHeight / 2).round(),
+          ((q3 - minValue) * unitSize + canvasLeft).round(),
+          (canvasHeight / 2).round(),
+          options.lineColor).append();
+      target.drawLine(
+          ((rwhisker - minValue) * unitSize + canvasLeft).round(),
+          (canvasHeight / 4).round(),
+          ((rwhisker - minValue) * unitSize + canvasLeft).round(),
+          (canvasHeight - canvasHeight / 4).round(),
+          options.whiskerColor).append();
+      // median line
+      target.drawLine(
+          ((q2 - minValue) * unitSize + canvasLeft).round(),
+          (canvasHeight * 0.1).round(),
+          ((q2 - minValue) * unitSize + canvasLeft).round(),
+          (canvasHeight * 0.9).round(),
+          options.medianColor).append();
+      if (options.target) {
+        size = (options.get('spotRadius')).ciel();
         target.drawLine(
-            Math.round((lwhisker - minValue) * unitSize + canvasLeft),
-            Math.round(canvasHeight / 2),
-            Math.round((q1 - minValue) * unitSize + canvasLeft),
-            Math.round(canvasHeight / 2),
-            options.get('lineColor')).append();
+            ((options.target - minValue) * unitSize + canvasLeft).round(),
+            ((canvasHeight / 2) - size).round(),
+            ((options.target - minValue) * unitSize + canvasLeft).round(),
+            ((canvasHeight / 2) + size).round(),
+            options.targetColor).append();
         target.drawLine(
-            Math.round((lwhisker - minValue) * unitSize + canvasLeft),
-            Math.round(canvasHeight / 4),
-            Math.round((lwhisker - minValue) * unitSize + canvasLeft),
-            Math.round(canvasHeight - canvasHeight / 4),
-            options.get('whiskerColor')).append();
-        // right whisker
-        target.drawLine(Math.round((rwhisker - minValue) * unitSize + canvasLeft),
-            Math.round(canvasHeight / 2),
-            Math.round((q3 - minValue) * unitSize + canvasLeft),
-            Math.round(canvasHeight / 2),
-            options.get('lineColor')).append();
-        target.drawLine(
-            Math.round((rwhisker - minValue) * unitSize + canvasLeft),
-            Math.round(canvasHeight / 4),
-            Math.round((rwhisker - minValue) * unitSize + canvasLeft),
-            Math.round(canvasHeight - canvasHeight / 4),
-            options.get('whiskerColor')).append();
-        // median line
-        target.drawLine(
-            Math.round((q2 - minValue) * unitSize + canvasLeft),
-            Math.round(canvasHeight * 0.1),
-            Math.round((q2 - minValue) * unitSize + canvasLeft),
-            Math.round(canvasHeight * 0.9),
-            options.get('medianColor')).append();
-        if (options.get('target')) {
-            size = Math.ceil(options.get('spotRadius'));
-            target.drawLine(
-                Math.round((options.get('target') - minValue) * unitSize + canvasLeft),
-                Math.round((canvasHeight / 2) - size),
-                Math.round((options.get('target') - minValue) * unitSize + canvasLeft),
-                Math.round((canvasHeight / 2) + size),
-                options.get('targetColor')).append();
-            target.drawLine(
-                Math.round((options.get('target') - minValue) * unitSize + canvasLeft - size),
-                Math.round(canvasHeight / 2),
-                Math.round((options.get('target') - minValue) * unitSize + canvasLeft + size),
-                Math.round(canvasHeight / 2),
-                options.get('targetColor')).append();
-        }
-        target.render();
+            ((options.get('target') - minValue) * unitSize + canvasLeft - size).round(),
+            (canvasHeight / 2).round(),
+            ((options.target - minValue) * unitSize + canvasLeft + size).round(),
+            (canvasHeight / 2).round(),
+            options.targetColor).append();
+      }
+      target.render();
     }
   }
 
   // Setup a very simple "virtual canvas" to make drawing the few shapes we need easier
   // This is accessible as $(foo).simpledraw()
 
-  VShape = createClass({
-    init: function (target, id, type, args) {
-        this.target = target;
-        this.id = id;
-        this.type = type;
-        this.args = args;
-    },
-    append: function () {
-        this.target.appendShape(this);
-        return this;
+  abstract class VShape  {
+    VShape (dom.HtmlElement target, int id, String type, int args) {
+      this.target = target;
+      this.id = id;
+      this.type = type;
+      this.args = args;
+    }
+    VShape append() {
+      this.target.appendShape(this);
+      return this;
     }
   }
 
-  VCanvas_base = createClass({
-    _pxregex: /(\d+)(px)?\s*$/i,
+  class VCanvasBase {
+    String _pxregex = r'(\d+)(px)?\s*$' /*/i*/;
 
-    init: function (width, height, target) {
-        if (!width) {
-            return;
-        }
-        this.width = width;
-        this.height = height;
-        this.target = target;
-        this.lastShapeId = null;
-        if (target[0]) {
-            target = target[0];
-        }
-        $.data(target, '_jqs_vcanvas', this);
-    },
+    VCanvas (int width, int height, dom.HtmlElement target) {
+      if (width == null) {
+        return;
+      }
+      this.width = width;
+      this.height = height;
+      this.target = target;
+      this.lastShapeId = null;
+      if (target[0]) {
+          target = target[0];
+      }
+      $.data(target, '_jqs_vcanvas', this);
+    }
 
-    drawLine: function (x1, y1, x2, y2, lineColor, lineWidth) {
-        return this.drawShape([[x1, y1], [x2, y2]], lineColor, lineWidth);
-    },
+    void drawLine(int x1, int y1, int x2, int y2, String lineColor, int lineWidth) {
+      return this.drawShape([[x1, y1], [x2, y2]], lineColor, lineWidth);
+    }
 
-    drawShape: function (path, lineColor, fillColor, lineWidth) {
-        return this._genShape('Shape', [path, lineColor, fillColor, lineWidth]);
-    },
+    void drawShape(List<int> path, String lineColor, String fillColor, int lineWidth) {
+      return this._genShape('Shape', [path, lineColor, fillColor, lineWidth]);
+    }
 
-    drawCircle: function (x, y, radius, lineColor, fillColor, lineWidth) {
-        return this._genShape('Circle', [x, y, radius, lineColor, fillColor, lineWidth]);
-    },
+    void drawCircle(int x, int y, int radius, String lineColor, String fillColor, int lineWidth) {
+      return this._genShape('Circle', [x, y, radius, lineColor, fillColor, lineWidth]);
+    }
 
-    drawPieSlice: function (x, y, radius, startAngle, endAngle, lineColor, fillColor) {
-        return this._genShape('PieSlice', [x, y, radius, startAngle, endAngle, lineColor, fillColor]);
-    },
+    void drawPieSlice(int x, int y, int radius, int startAngle, int endAngle, String lineColor, String fillColor) {
+      return this._genShape('PieSlice', [x, y, radius, startAngle, endAngle, lineColor, fillColor]);
+    }
 
-    drawRect: function (x, y, width, height, lineColor, fillColor) {
-        return this._genShape('Rect', [x, y, width, height, lineColor, fillColor]);
-    },
+    int drawRect(int x, int y, int width, int height, String lineColor, String fillColor) {
+      return this._genShape('Rect', [x, y, width, height, lineColor, fillColor]);
+    }
 
-    getElement: function () {
-        return this.canvas;
-    },
+    int getElement() {
+      return this.canvas;
+    }
 
     /**
      * Return the most recently inserted shape id
      */
-    getLastShapeId: function () {
-        return this.lastShapeId;
-    },
+    itn getLastShapeId() {
+      return this.lastShapeId;
+    }
 
     /**
      * Clear and reset the canvas
      */
-    reset: function () {
-        alert('reset not implemented');
-    },
+    void reset(); /* {
+      throw 'reset not implemented';
+    }*/
 
-    _insert: function (el, target) {
-        $(target).html(el);
-    },
+    vid _insert(dom.HtmlElement el, dom.HtmlElement target) {
+      $(target).html(el);
+    }
 
     /**
      * Calculate the pixel dimensions of the canvas
      */
-    _calculatePixelDims: function (width, height, canvas) {
-        // XXX This should probably be a configurable option
-        var match;
-        match = this._pxregex.exec(height);
-        if (match) {
-            this.pixelHeight = match[1];
-        } else {
-            this.pixelHeight = $(canvas).height();
-        }
-        match = this._pxregex.exec(width);
-        if (match) {
-            this.pixelWidth = match[1];
-        } else {
-            this.pixelWidth = $(canvas).width();
-        }
-    },
+    int _calculatePixelDims(int width, int height, int canvas) {
+      // TODO This should probably be a configurable option
+      var match;
+      match = this._pxregex.exec(height);
+      if (match) {
+        this.pixelHeight = match[1];
+      } else {
+        this.pixelHeight = $(canvas).height();
+      }
+      match = this._pxregex.exec(width);
+      if (match) {
+        this.pixelWidth = match[1];
+      } else {
+        this.pixelWidth = $(canvas).width();
+      }
+    }
 
     /**
      * Generate a shape object and id for later rendering
      */
-    _genShape: function (shapetype, shapeargs) {
-        var id = shapeCount++;
-        shapeargs.unshift(id);
-        return new VShape(this, id, shapetype, shapeargs);
-    },
+    void _genShape (String shapetype, int shapeargs) {
+      var id = shapeCount++;
+      shapeargs.unshift(id);
+      return new VShape(this, id, shapetype, shapeargs);
+    }
 
     /**
      * Add a shape to the end of the render queue
      */
-    appendShape: function (shape) {
-        alert('appendShape not implemented');
-    },
+    void appendShape(Shape shape); /* {
+      throw 'appendShape not implemented';
+    }*/
 
     /**
      * Replace one shape with another
      */
-    replaceWithShape: function (shapeid, shape) {
-        alert('replaceWithShape not implemented');
-    },
+    void replaceWithShape(int shapeid, Shape shape); /* {
+      throw 'replaceWithShape not implemented';
+    }*/
 
     /**
      * Insert one shape after another in the render queue
      */
-    insertAfterShape: function (shapeid, shape) {
-        alert('insertAfterShape not implemented');
-    },
+    void insertAfterShape(int shapeid, Shape shape); /* {
+      throw 'insertAfterShape not implemented';
+    }*/
 
     /**
      * Remove a shape from the queue
      */
-    removeShapeId: function (shapeid) {
-        alert('removeShapeId not implemented');
-    },
+    void removeShapeId(int shapeid); /* {
+      throw('removeShapeId not implemented');
+    },*/
 
     /**
      * Find a shape at the specified x/y co-ordinates
      */
-    getShapeAt: function (el, x, y) {
+    void getShapeAt(dom.HtmlElement el, int x, int y); /* {
         alert('getShapeAt not implemented');
-    },
+    },*/
 
     /**
      * Render all queued shapes onto the canvas
      */
-    render: function () {
+    void render(); /* {
         alert('render not implemented');
-    }
+    }*/
   }
 
-  VCanvas_canvas = createClass(VCanvas_base, {
-    init: function (width, height, target, interact) {
-        VCanvas_canvas._super.init.call(this, width, height, target);
-        this.canvas = document.createElement('canvas');
-        if (target[0]) {
-            target = target[0];
+  class VCanvasCanvas extends VCanvasBase {
+    VCanvasCanvas(int width, int height, dom.HtmlElement target, bool interact)
+        : super(width, height, target) {
+      this.canvas = dom.document.createElement('canvas');
+      if (target[0]) {
+        target = target[0];
+      }
+      $.data(target, '_jqs_vcanvas', this);
+      $(this.canvas).css({ display: 'inline-block', width: width, height: height, verticalAlign: 'top' });
+      this._insert(this.canvas, target);
+      this._calculatePixelDims(width, height, this.canvas);
+      this.canvas.width = this.pixelWidth;
+      this.canvas.height = this.pixelHeight;
+      this.interact = interact;
+      this.shapes = {};
+      this.shapeseq = [];
+      this.currentTargetShapeId = null;
+      $(this.canvas).css({width: this.pixelWidth, height: this.pixelHeight});
+    }
+
+    void _getContext(String lineColor, String fillColor, int lineWidth) {
+      var context = this.canvas.getContext('2d');
+      if (lineColor != null) {
+        context.strokeStyle = lineColor;
+      }
+      context.lineWidth = lineWidth == null? 1 : lineWidth;
+      if (fillColor != null) {
+        context.fillStyle = fillColor;
+      }
+      return context;
+    }
+
+    void reset() {
+      var context = this._getContext();
+      context.clearRect(0, 0, this.pixelWidth, this.pixelHeight);
+      this.shapes = {};
+      this.shapeseq = [];
+      this.currentTargetShapeId = undefined;
+    }
+
+    void _drawShape(int shapeid, List<int> path, String lineColor, String fillColor, int lineWidth) {
+      int context = this._getContext(lineColor, fillColor, lineWidth);
+      int i;
+      int plen= path.length;
+      context.beginPath();
+      context.moveTo(path[0][0] + 0.5, path[0][1] + 0.5);
+      for (i = 1; i < plen; i++) {
+        context.lineTo(path[i][0] + 0.5, path[i][1] + 0.5); // the 0.5 offset gives us crisp pixel-width lines
+      }
+      if (lineColor != null) {
+        context.stroke();
+      }
+      if (fillColor != null) {
+        context.fill();
+      }
+      if (this.targetX != null && this.targetY != null &&
+        context.isPointInPath(this.targetX, this.targetY)) {
+        this.currentTargetShapeId = shapeid;
+      }
+    }
+
+    void _drawCircle(int shapeid, int x, int y, int radius, String lineColor, String fillColor, int lineWidth) {
+      var context = this._getContext(lineColor, fillColor, lineWidth);
+      context.beginPath();
+      context.arc(x, y, radius, 0, 2 * Math.PI, false);
+      if (this.targetX != null && this.targetY != null &&
+        context.isPointInPath(this.targetX, this.targetY)) {
+        this.currentTargetShapeId = shapeid;
+      }
+      if (lineColor != null) {
+        context.stroke();
+      }
+      if (fillColor != null) {
+        context.fill();
+      }
+    }
+
+    void _drawPieSlice(int shapeid, int x, int y, int radius, int startAngle, int endAngle, String lineColor, String fillColor) {
+      int context = this._getContext(lineColor, fillColor);
+      context.beginPath();
+      context.moveTo(x, y);
+      context.arc(x, y, radius, startAngle, endAngle, false);
+      context.lineTo(x, y);
+      context.closePath();
+      if (lineColor != null) {
+        context.stroke();
+      }
+      if (fillColor) {
+        context.fill();
+      }
+      if (this.targetX != null && this.targetY != null &&
+        context.isPointInPath(this.targetX, this.targetY)) {
+        this.currentTargetShapeId = shapeid;
+      }
+    }
+
+    void _drawRect(int shapeid, int x, int y, int width, int height, String lineColor, String fillColor) {
+      return this._drawShape(shapeid, [[x, y], [x + width, y], [x + width, y + height], [x, y + height], [x, y]], lineColor, fillColor);
+    }
+
+    void appendShape(Shape shape) {
+      this.shapes[shape.id] = shape;
+      this.shapeseq.push(shape.id);
+      this.lastShapeId = shape.id;
+      return shape.id;
+    }
+
+    void replaceWithShape(int shapeid, Shape shape) {
+      int  shapeseq = this.shapeseq;
+      int  i;
+      this.shapes[shape.id] = shape;
+      for (i = shapeseq.length; i--;) {
+        if (shapeseq[i] == shapeid) {
+          shapeseq[i] = shape.id;
         }
-        $.data(target, '_jqs_vcanvas', this);
-        $(this.canvas).css({ display: 'inline-block', width: width, height: height, verticalAlign: 'top' });
-        this._insert(this.canvas, target);
-        this._calculatePixelDims(width, height, this.canvas);
-        this.canvas.width = this.pixelWidth;
-        this.canvas.height = this.pixelHeight;
-        this.interact = interact;
+      }
+      delete this.shapes[shapeid];
+    }
+
+    void replaceWithShapes(List<int> shapeids, List<Shape> shapes) {
+      int shapeseq = this.shapeseq;
+      Map shapemap = {};
+      int sid;
+      int i;
+      int first;
+
+      for (i = shapeids.length; i--; i > 0) {
+        shapemap[shapeids[i]] = true;
+      }
+      for (i = shapeseq.length; i--; I > 0) {
+        sid = shapeseq[i];
+        if (shapemap[sid]) {
+          shapeseq.splice(i, 1);
+          delete this.shapes[sid];
+          first = i;
+        }
+      }
+      for (i = shapes.length; i--;) {
+        shapeseq.splice(first, 0, shapes[i].id);
+        this.shapes[shapes[i].id] = shapes[i];
+      }
+    }
+
+    void insertAfterShape(int shapeid, Shape shape) {
+      int shapeseq = this.shapeseq;
+      int i;
+      for (i = shapeseq.length; i--; i > 0) {
+        if (shapeseq[i] == shapeid) {
+          shapeseq.splice(i + 1, 0, shape.id);
+          this.shapes[shape.id] = shape;
+          return;
+        }
+      }
+    }
+
+    void removeShapeId(int shapeid) {
+      int shapeseq = this.shapeseq;
+      int i;
+      for (i = shapeseq.length; i--; i > 0) {
+        if (shapeseq[i] == shapeid) {
+          shapeseq.splice(i, 1);
+          break;
+        }
+      }
+      delete this.shapes[shapeid];
+    }
+
+    void getShapeAt(dom.HtmlElement el, int x, int y) {
+      this.targetX = x;
+      this.targetY = y;
+      this.render();
+      return this.currentTargetShapeId;
+    }
+
+    void render() {
+      int shapeseq = this.shapeseq;
+      List<Shape> shapes = this.shapes;
+      int shapeCount = shapeseq.length;
+      int context = this._getContext();
+      int shapeid;
+      Shape shape;
+      int i;
+      context.clearRect(0, 0, this.pixelWidth, this.pixelHeight);
+      for (i = 0; i < shapeCount; i++) {
+        shapeid = shapeseq[i];
+        shape = shapes[shapeid];
+        this['_draw' + shape.type].apply(this, shape.args);
+      }
+      if (!this.interact) {
+        // not interactive so no need to keep the shapes array
         this.shapes = {};
         this.shapeseq = [];
-        this.currentTargetShapeId = undefined;
-        $(this.canvas).css({width: this.pixelWidth, height: this.pixelHeight});
-    },
-
-    _getContext: function (lineColor, fillColor, lineWidth) {
-        var context = this.canvas.getContext('2d');
-        if (lineColor !== undefined) {
-            context.strokeStyle = lineColor;
-        }
-        context.lineWidth = lineWidth === undefined ? 1 : lineWidth;
-        if (fillColor !== undefined) {
-            context.fillStyle = fillColor;
-        }
-        return context;
-    },
-
-    reset: function () {
-        var context = this._getContext();
-        context.clearRect(0, 0, this.pixelWidth, this.pixelHeight);
-        this.shapes = {};
-        this.shapeseq = [];
-        this.currentTargetShapeId = undefined;
-    },
-
-    _drawShape: function (shapeid, path, lineColor, fillColor, lineWidth) {
-        var context = this._getContext(lineColor, fillColor, lineWidth),
-            i, plen;
-        context.beginPath();
-        context.moveTo(path[0][0] + 0.5, path[0][1] + 0.5);
-        for (i = 1, plen = path.length; i < plen; i++) {
-            context.lineTo(path[i][0] + 0.5, path[i][1] + 0.5); // the 0.5 offset gives us crisp pixel-width lines
-        }
-        if (lineColor !== undefined) {
-            context.stroke();
-        }
-        if (fillColor !== undefined) {
-            context.fill();
-        }
-        if (this.targetX !== undefined && this.targetY !== undefined &&
-            context.isPointInPath(this.targetX, this.targetY)) {
-            this.currentTargetShapeId = shapeid;
-        }
-    },
-
-    _drawCircle: function (shapeid, x, y, radius, lineColor, fillColor, lineWidth) {
-        var context = this._getContext(lineColor, fillColor, lineWidth);
-        context.beginPath();
-        context.arc(x, y, radius, 0, 2 * Math.PI, false);
-        if (this.targetX !== undefined && this.targetY !== undefined &&
-            context.isPointInPath(this.targetX, this.targetY)) {
-            this.currentTargetShapeId = shapeid;
-        }
-        if (lineColor !== undefined) {
-            context.stroke();
-        }
-        if (fillColor !== undefined) {
-            context.fill();
-        }
-    },
-
-    _drawPieSlice: function (shapeid, x, y, radius, startAngle, endAngle, lineColor, fillColor) {
-        var context = this._getContext(lineColor, fillColor);
-        context.beginPath();
-        context.moveTo(x, y);
-        context.arc(x, y, radius, startAngle, endAngle, false);
-        context.lineTo(x, y);
-        context.closePath();
-        if (lineColor !== undefined) {
-            context.stroke();
-        }
-        if (fillColor) {
-            context.fill();
-        }
-        if (this.targetX !== undefined && this.targetY !== undefined &&
-            context.isPointInPath(this.targetX, this.targetY)) {
-            this.currentTargetShapeId = shapeid;
-        }
-    },
-
-    _drawRect: function (shapeid, x, y, width, height, lineColor, fillColor) {
-        return this._drawShape(shapeid, [[x, y], [x + width, y], [x + width, y + height], [x, y + height], [x, y]], lineColor, fillColor);
-    },
-
-    appendShape: function (shape) {
-        this.shapes[shape.id] = shape;
-        this.shapeseq.push(shape.id);
-        this.lastShapeId = shape.id;
-        return shape.id;
-    },
-
-    replaceWithShape: function (shapeid, shape) {
-        var shapeseq = this.shapeseq,
-            i;
-        this.shapes[shape.id] = shape;
-        for (i = shapeseq.length; i--;) {
-            if (shapeseq[i] == shapeid) {
-                shapeseq[i] = shape.id;
-            }
-        }
-        delete this.shapes[shapeid];
-    },
-
-    replaceWithShapes: function (shapeids, shapes) {
-        var shapeseq = this.shapeseq,
-            shapemap = {},
-            sid, i, first;
-
-        for (i = shapeids.length; i--;) {
-            shapemap[shapeids[i]] = true;
-        }
-        for (i = shapeseq.length; i--;) {
-            sid = shapeseq[i];
-            if (shapemap[sid]) {
-                shapeseq.splice(i, 1);
-                delete this.shapes[sid];
-                first = i;
-            }
-        }
-        for (i = shapes.length; i--;) {
-            shapeseq.splice(first, 0, shapes[i].id);
-            this.shapes[shapes[i].id] = shapes[i];
-        }
-
-    },
-
-    insertAfterShape: function (shapeid, shape) {
-        var shapeseq = this.shapeseq,
-            i;
-        for (i = shapeseq.length; i--;) {
-            if (shapeseq[i] === shapeid) {
-                shapeseq.splice(i + 1, 0, shape.id);
-                this.shapes[shape.id] = shape;
-                return;
-            }
-        }
-    },
-
-    removeShapeId: function (shapeid) {
-        var shapeseq = this.shapeseq,
-            i;
-        for (i = shapeseq.length; i--;) {
-            if (shapeseq[i] === shapeid) {
-                shapeseq.splice(i, 1);
-                break;
-            }
-        }
-        delete this.shapes[shapeid];
-    },
-
-    getShapeAt: function (el, x, y) {
-        this.targetX = x;
-        this.targetY = y;
-        this.render();
-        return this.currentTargetShapeId;
-    },
-
-    render: function () {
-        var shapeseq = this.shapeseq,
-            shapes = this.shapes,
-            shapeCount = shapeseq.length,
-            context = this._getContext(),
-            shapeid, shape, i;
-        context.clearRect(0, 0, this.pixelWidth, this.pixelHeight);
-        for (i = 0; i < shapeCount; i++) {
-            shapeid = shapeseq[i];
-            shape = shapes[shapeid];
-            this['_draw' + shape.type].apply(this, shape.args);
-        }
-        if (!this.interact) {
-            // not interactive so no need to keep the shapes array
-            this.shapes = {};
-            this.shapeseq = [];
-        }
+      }
     }
   }
 
-  VCanvas_vml = createClass(VCanvas_base, {
-    init: function (width, height, target) {
-        var groupel;
-        VCanvas_vml._super.init.call(this, width, height, target);
-        if (target[0]) {
-            target = target[0];
-        }
-        $.data(target, '_jqs_vcanvas', this);
-        this.canvas = document.createElement('span');
-        $(this.canvas).css({ display: 'inline-block', position: 'relative', overflow: 'hidden', width: width, height: height, margin: '0px', padding: '0px', verticalAlign: 'top'});
-        this._insert(this.canvas, target);
-        this._calculatePixelDims(width, height, this.canvas);
-        this.canvas.width = this.pixelWidth;
-        this.canvas.height = this.pixelHeight;
-        groupel = '<v:group coordorigin="0 0" coordsize="' + this.pixelWidth + ' ' + this.pixelHeight + '"' +
-                ' style="position:absolute;top:0;left:0;width:' + this.pixelWidth + 'px;height=' + this.pixelHeight + 'px;"></v:group>';
-        this.canvas.insertAdjacentHTML('beforeEnd', groupel);
-        this.group = $(this.canvas).children()[0];
-        this.rendered = false;
-        this.prerender = '';
-    },
-
-    _drawShape: function (shapeid, path, lineColor, fillColor, lineWidth) {
-        var vpath = [],
-            initial, stroke, fill, closed, vel, plen, i;
-        for (i = 0, plen = path.length; i < plen; i++) {
-            vpath[i] = '' + (path[i][0]) + ',' + (path[i][1]);
-        }
-        initial = vpath.splice(0, 1);
-        lineWidth = lineWidth === undefined ? 1 : lineWidth;
-        stroke = lineColor === undefined ? ' stroked="false" ' : ' strokeWeight="' + lineWidth + 'px" strokeColor="' + lineColor + '" ';
-        fill = fillColor === undefined ? ' filled="false"' : ' fillColor="' + fillColor + '" filled="true" ';
-        closed = vpath[0] === vpath[vpath.length - 1] ? 'x ' : '';
-        vel = '<v:shape coordorigin="0 0" coordsize="' + this.pixelWidth + ' ' + this.pixelHeight + '" ' +
-             ' id="jqsshape' + shapeid + '" ' +
-             stroke +
-             fill +
-            ' style="position:absolute;left:0px;top:0px;height:' + this.pixelHeight + 'px;width:' + this.pixelWidth + 'px;padding:0px;margin:0px;" ' +
-            ' path="m ' + initial + ' l ' + vpath.join(', ') + ' ' + closed + 'e">' +
-            ' </v:shape>';
-        return vel;
-    },
-
-    _drawCircle: function (shapeid, x, y, radius, lineColor, fillColor, lineWidth) {
-        var stroke, fill, vel;
-        x -= radius;
-        y -= radius;
-        stroke = lineColor === undefined ? ' stroked="false" ' : ' strokeWeight="' + lineWidth + 'px" strokeColor="' + lineColor + '" ';
-        fill = fillColor === undefined ? ' filled="false"' : ' fillColor="' + fillColor + '" filled="true" ';
-        vel = '<v:oval ' +
-             ' id="jqsshape' + shapeid + '" ' +
-            stroke +
-            fill +
-            ' style="position:absolute;top:' + y + 'px; left:' + x + 'px; width:' + (radius * 2) + 'px; height:' + (radius * 2) + 'px"></v:oval>';
-        return vel;
-
-    },
-
-    _drawPieSlice: function (shapeid, x, y, radius, startAngle, endAngle, lineColor, fillColor) {
-        var vpath, startx, starty, endx, endy, stroke, fill, vel;
-        if (startAngle === endAngle) {
-            return '';  // VML seems to have problem when start angle equals end angle.
-        }
-        if ((endAngle - startAngle) === (2 * Math.PI)) {
-            startAngle = 0.0;  // VML seems to have a problem when drawing a full circle that doesn't start 0
-            endAngle = (2 * Math.PI);
-        }
-
-        startx = x + Math.round(Math.cos(startAngle) * radius);
-        starty = y + Math.round(Math.sin(startAngle) * radius);
-        endx = x + Math.round(Math.cos(endAngle) * radius);
-        endy = y + Math.round(Math.sin(endAngle) * radius);
-
-        if (startx === endx && starty === endy) {
-            if ((endAngle - startAngle) < Math.PI) {
-                // Prevent very small slices from being mistaken as a whole pie
-                return '';
-            }
-            // essentially going to be the entire circle, so ignore startAngle
-            startx = endx = x + radius;
-            starty = endy = y;
-        }
-
-        if (startx === endx && starty === endy && (endAngle - startAngle) < Math.PI) {
-            return '';
-        }
-
-        vpath = [x - radius, y - radius, x + radius, y + radius, startx, starty, endx, endy];
-        stroke = lineColor === undefined ? ' stroked="false" ' : ' strokeWeight="1px" strokeColor="' + lineColor + '" ';
-        fill = fillColor === undefined ? ' filled="false"' : ' fillColor="' + fillColor + '" filled="true" ';
-        vel = '<v:shape coordorigin="0 0" coordsize="' + this.pixelWidth + ' ' + this.pixelHeight + '" ' +
-             ' id="jqsshape' + shapeid + '" ' +
-             stroke +
-             fill +
-            ' style="position:absolute;left:0px;top:0px;height:' + this.pixelHeight + 'px;width:' + this.pixelWidth + 'px;padding:0px;margin:0px;" ' +
-            ' path="m ' + x + ',' + y + ' wa ' + vpath.join(', ') + ' x e">' +
-            ' </v:shape>';
-        return vel;
-    },
-
-    _drawRect: function (shapeid, x, y, width, height, lineColor, fillColor) {
-        return this._drawShape(shapeid, [[x, y], [x, y + height], [x + width, y + height], [x + width, y], [x, y]], lineColor, fillColor);
-    },
-
-    reset: function () {
-        this.group.innerHTML = '';
-    },
-
-    appendShape: function (shape) {
-        var vel = this['_draw' + shape.type].apply(this, shape.args);
-        if (this.rendered) {
-            this.group.insertAdjacentHTML('beforeEnd', vel);
-        } else {
-            this.prerender += vel;
-        }
-        this.lastShapeId = shape.id;
-        return shape.id;
-    },
-
-    replaceWithShape: function (shapeid, shape) {
-        var existing = $('#jqsshape' + shapeid),
-            vel = this['_draw' + shape.type].apply(this, shape.args);
-        existing[0].outerHTML = vel;
-    },
-
-    replaceWithShapes: function (shapeids, shapes) {
-        // replace the first shapeid with all the new shapes then toast the remaining old shapes
-        var existing = $('#jqsshape' + shapeids[0]),
-            replace = '',
-            slen = shapes.length,
-            i;
-        for (i = 0; i < slen; i++) {
-            replace += this['_draw' + shapes[i].type].apply(this, shapes[i].args);
-        }
-        existing[0].outerHTML = replace;
-        for (i = 1; i < shapeids.length; i++) {
-            $('#jqsshape' + shapeids[i]).remove();
-        }
-    },
-
-    insertAfterShape: function (shapeid, shape) {
-        var existing = $('#jqsshape' + shapeid),
-             vel = this['_draw' + shape.type].apply(this, shape.args);
-        existing[0].insertAdjacentHTML('afterEnd', vel);
-    },
-
-    removeShapeId: function (shapeid) {
-        var existing = $('#jqsshape' + shapeid);
-        this.group.removeChild(existing[0]);
-    },
-
-    getShapeAt: function (el, x, y) {
-        var shapeid = el.id.substr(8);
-        return shapeid;
-    },
-
-    render: function () {
-        if (!this.rendered) {
-            // batch the intial render into a single repaint
-            this.group.innerHTML = this.prerender;
-            this.rendered = true;
-        }
-    }
-  }
-}
+//  VCanvas_vml = createClass(VCanvas_base, {
+//    init: function (width, height, target) {
+//        var groupel;
+//        VCanvas_vml._super.init.call(this, width, height, target);
+//        if (target[0]) {
+//            target = target[0];
+//        }
+//        $.data(target, '_jqs_vcanvas', this);
+//        this.canvas = document.createElement('span');
+//        $(this.canvas).css({ display: 'inline-block', position: 'relative', overflow: 'hidden', width: width, height: height, margin: '0px', padding: '0px', verticalAlign: 'top'});
+//        this._insert(this.canvas, target);
+//        this._calculatePixelDims(width, height, this.canvas);
+//        this.canvas.width = this.pixelWidth;
+//        this.canvas.height = this.pixelHeight;
+//        groupel = '<v:group coordorigin="0 0" coordsize="' + this.pixelWidth + ' ' + this.pixelHeight + '"' +
+//                ' style="position:absolute;top:0;left:0;width:' + this.pixelWidth + 'px;height=' + this.pixelHeight + 'px;"></v:group>';
+//        this.canvas.insertAdjacentHTML('beforeEnd', groupel);
+//        this.group = $(this.canvas).children()[0];
+//        this.rendered = false;
+//        this.prerender = '';
+//    },
+//
+//    _drawShape: function (shapeid, path, lineColor, fillColor, lineWidth) {
+//        var vpath = [],
+//            initial, stroke, fill, closed, vel, plen, i;
+//        for (i = 0, plen = path.length; i < plen; i++) {
+//            vpath[i] = '' + (path[i][0]) + ',' + (path[i][1]);
+//        }
+//        initial = vpath.splice(0, 1);
+//        lineWidth = lineWidth === undefined ? 1 : lineWidth;
+//        stroke = lineColor === undefined ? ' stroked="false" ' : ' strokeWeight="' + lineWidth + 'px" strokeColor="' + lineColor + '" ';
+//        fill = fillColor === undefined ? ' filled="false"' : ' fillColor="' + fillColor + '" filled="true" ';
+//        closed = vpath[0] === vpath[vpath.length - 1] ? 'x ' : '';
+//        vel = '<v:shape coordorigin="0 0" coordsize="' + this.pixelWidth + ' ' + this.pixelHeight + '" ' +
+//             ' id="jqsshape' + shapeid + '" ' +
+//             stroke +
+//             fill +
+//            ' style="position:absolute;left:0px;top:0px;height:' + this.pixelHeight + 'px;width:' + this.pixelWidth + 'px;padding:0px;margin:0px;" ' +
+//            ' path="m ' + initial + ' l ' + vpath.join(', ') + ' ' + closed + 'e">' +
+//            ' </v:shape>';
+//        return vel;
+//    },
+//
+//    _drawCircle: function (shapeid, x, y, radius, lineColor, fillColor, lineWidth) {
+//        var stroke, fill, vel;
+//        x -= radius;
+//        y -= radius;
+//        stroke = lineColor === undefined ? ' stroked="false" ' : ' strokeWeight="' + lineWidth + 'px" strokeColor="' + lineColor + '" ';
+//        fill = fillColor === undefined ? ' filled="false"' : ' fillColor="' + fillColor + '" filled="true" ';
+//        vel = '<v:oval ' +
+//             ' id="jqsshape' + shapeid + '" ' +
+//            stroke +
+//            fill +
+//            ' style="position:absolute;top:' + y + 'px; left:' + x + 'px; width:' + (radius * 2) + 'px; height:' + (radius * 2) + 'px"></v:oval>';
+//        return vel;
+//
+//    },
+//
+//    _drawPieSlice: function (shapeid, x, y, radius, startAngle, endAngle, lineColor, fillColor) {
+//        var vpath, startx, starty, endx, endy, stroke, fill, vel;
+//        if (startAngle === endAngle) {
+//            return '';  // VML seems to have problem when start angle equals end angle.
+//        }
+//        if ((endAngle - startAngle) === (2 * Math.PI)) {
+//            startAngle = 0.0;  // VML seems to have a problem when drawing a full circle that doesn't start 0
+//            endAngle = (2 * Math.PI);
+//        }
+//
+//        startx = x + Math.round(Math.cos(startAngle) * radius);
+//        starty = y + Math.round(Math.sin(startAngle) * radius);
+//        endx = x + Math.round(Math.cos(endAngle) * radius);
+//        endy = y + Math.round(Math.sin(endAngle) * radius);
+//
+//        if (startx === endx && starty === endy) {
+//            if ((endAngle - startAngle) < Math.PI) {
+//                // Prevent very small slices from being mistaken as a whole pie
+//                return '';
+//            }
+//            // essentially going to be the entire circle, so ignore startAngle
+//            startx = endx = x + radius;
+//            starty = endy = y;
+//        }
+//
+//        if (startx === endx && starty === endy && (endAngle - startAngle) < Math.PI) {
+//            return '';
+//        }
+//
+//        vpath = [x - radius, y - radius, x + radius, y + radius, startx, starty, endx, endy];
+//        stroke = lineColor === undefined ? ' stroked="false" ' : ' strokeWeight="1px" strokeColor="' + lineColor + '" ';
+//        fill = fillColor === undefined ? ' filled="false"' : ' fillColor="' + fillColor + '" filled="true" ';
+//        vel = '<v:shape coordorigin="0 0" coordsize="' + this.pixelWidth + ' ' + this.pixelHeight + '" ' +
+//             ' id="jqsshape' + shapeid + '" ' +
+//             stroke +
+//             fill +
+//            ' style="position:absolute;left:0px;top:0px;height:' + this.pixelHeight + 'px;width:' + this.pixelWidth + 'px;padding:0px;margin:0px;" ' +
+//            ' path="m ' + x + ',' + y + ' wa ' + vpath.join(', ') + ' x e">' +
+//            ' </v:shape>';
+//        return vel;
+//    },
+//
+//    _drawRect: function (shapeid, x, y, width, height, lineColor, fillColor) {
+//        return this._drawShape(shapeid, [[x, y], [x, y + height], [x + width, y + height], [x + width, y], [x, y]], lineColor, fillColor);
+//    },
+//
+//    reset: function () {
+//        this.group.innerHTML = '';
+//    },
+//
+//    appendShape: function (shape) {
+//        var vel = this['_draw' + shape.type].apply(this, shape.args);
+//        if (this.rendered) {
+//            this.group.insertAdjacentHTML('beforeEnd', vel);
+//        } else {
+//            this.prerender += vel;
+//        }
+//        this.lastShapeId = shape.id;
+//        return shape.id;
+//    },
+//
+//    replaceWithShape: function (shapeid, shape) {
+//        var existing = $('#jqsshape' + shapeid),
+//            vel = this['_draw' + shape.type].apply(this, shape.args);
+//        existing[0].outerHTML = vel;
+//    },
+//
+//    replaceWithShapes: function (shapeids, shapes) {
+//        // replace the first shapeid with all the new shapes then toast the remaining old shapes
+//        var existing = $('#jqsshape' + shapeids[0]),
+//            replace = '',
+//            slen = shapes.length,
+//            i;
+//        for (i = 0; i < slen; i++) {
+//            replace += this['_draw' + shapes[i].type].apply(this, shapes[i].args);
+//        }
+//        existing[0].outerHTML = replace;
+//        for (i = 1; i < shapeids.length; i++) {
+//            $('#jqsshape' + shapeids[i]).remove();
+//        }
+//    },
+//
+//    insertAfterShape: function (shapeid, shape) {
+//        var existing = $('#jqsshape' + shapeid),
+//             vel = this['_draw' + shape.type].apply(this, shape.args);
+//        existing[0].insertAdjacentHTML('afterEnd', vel);
+//    },
+//
+//    removeShapeId: function (shapeid) {
+//        var existing = $('#jqsshape' + shapeid);
+//        this.group.removeChild(existing[0]);
+//    },
+//
+//    getShapeAt: function (el, x, y) {
+//        var shapeid = el.id.substr(8);
+//        return shapeid;
+//    },
+//
+//    render: function () {
+//        if (!this.rendered) {
+//            // batch the intial render into a single repaint
+//            this.group.innerHTML = this.prerender;
+//            this.rendered = true;
+//        }
+//    }
+//  }

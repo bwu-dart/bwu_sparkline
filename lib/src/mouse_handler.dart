@@ -8,14 +8,17 @@ class MouseHandler {
   List<BwuSparkline> splist = [];
   SpTooltip tooltip = null;
   bool over = false;
-  bool displayTooltips = !options.disableTooltips;
-  bool highlightEnabled = !options.disableHighlight;
+  bool displayTooltips;
+  bool highlightEnabled;
   dom.CanvasRenderingContext2D canvas;
   dom.HtmlElement currentEl;
 
   dom.HtmlElement _el;
 
-  MouseHandler (this._el, this._options);
+  MouseHandler (this._el, this._options) {
+    displayTooltips = !_options.disableTooltips;
+    highlightEnabled = !_options.disableHighlight;
+  }
 
   void registerSparkline(BwuSparkline sp) {
     splist.add(sp);

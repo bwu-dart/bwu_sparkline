@@ -6,7 +6,7 @@ part of bwu_sparkline;
 
 typedef String NumberFormatterFn(String val);
 
-class Options {
+abstract class Options {
   // Settings common to most/all chart types
   String type;
   String lineColor;
@@ -20,9 +20,6 @@ class Options {
   bool enableTagOptions;
   bool enableHighlight;
   double highlightLighten;
-  bool tooltipSkipNull;
-  String tooltipPrefix;
-  String tooltipSuffix;
   bool disableHiddenCheck;
   NumberFormatterFn numberFormatter;
   int numberDigitGroupCount;
@@ -30,56 +27,49 @@ class Options {
   String numberDecimalMark;
   bool disableTooltips;
   bool disableInteraction;
+  //bool disableHighlight;
+  TooltipOptions tooltipOptions;
 
-  LineOptions lineOptions;
-  BarOptions barOptions;
-  TristateOptions tristateOptions;
-  DiscreteOptions discreteOptions;
-  BulletOptions bulletOptions;
-  PieOptions pieOptions;
-  BoxOptions boxOptions;
-
-
-
-  Options({
-    this.type : 'line',
-    this.lineColor : '#00f',
-    this.fillColor : '#cdf',
-    this.defaultPixelsPerValue : 3,
-    this.width : 'auto',
-    this.height : 'auto',
-    this.composite : false,
-    this.tagValuesAttribute : 'values',
-    this.tagOptionsPrefix : 'spark',
-    this.enableTagOptions : false,
-    this.enableHighlight : true,
-    this.highlightLighten : 1.4,
-    this.tooltipSkipNull : true,
-    this.tooltipPrefix : '',
-    this.tooltipSuffix : '',
-    this.disableHiddenCheck : false,
+  Options(
+    this.type,
+    this.lineColor,
+    this.fillColor,
+    this.defaultPixelsPerValue,
+    this.width,
+    this.height,
+    this.composite,
+    this.tagValuesAttribute,
+    this.tagOptionsPrefix,
+    this.enableTagOptions,
+    this.enableHighlight,
+    this.highlightLighten,
+    this.disableHiddenCheck,
     this.numberFormatter,
-    this.numberDigitGroupCount : 3,
-    this.numberDigitGroupSep : ',',
-    this.numberDecimalMark : '.',
-    this.disableTooltips : false,
-    this.disableInteraction : false,
-
-    this.lineOptions,
-    this.barOptions,
-    this.tristateOptions,
-    this.discreteOptions,
-    this.bulletOptions,
-    this.pieOptions,
-    this.boxOptions
-  }) {
-    if(lineOptions == null) lineOptions = new LineOptions();
-    if(barOptions == null) barOptions = new BarOptions();
-    if(tristateOptions == null) tristateOptions = new TristateOptions();
-    if(discreteOptions == null) discreteOptions = new DiscreteOptions();
-    if(bulletOptions == null) bulletOptions = new BulletOptions();
-    if(pieOptions == null) pieOptions = new PieOptions();
-    if(boxOptions == null) boxOptions = new BoxOptions();
+    this.numberDigitGroupCount,
+    this.numberDigitGroupSep,
+    this.numberDecimalMark,
+    this.disableTooltips,
+    this.disableInteraction
+  ) {
+    if(type == null) type =  'line';
+    if(lineColor == null) lineColor = '#00f';
+    if(fillColor == null) fillColor = '#cdf';
+    if(defaultPixelsPerValue == null) defaultPixelsPerValue = 3;
+    if(width == null) width = 'auto';
+    if(height == null) height = 'auto';
+    if(composite == null) composite = false;
+    if(tagValuesAttribute == null) tagValuesAttribute = 'values';
+    if(tagOptionsPrefix == null) tagOptionsPrefix = 'spark';
+    if(enableTagOptions == null) enableTagOptions = false;
+    if(enableHighlight == null) enableHighlight = true;
+    if(highlightLighten == null) highlightLighten = 1.4;
+    if(disableHiddenCheck == null) disableHiddenCheck = false;
+    //if(numberFormatter == null) numberFormatter =;
+    if(numberDigitGroupCount == null) numberDigitGroupCount = 3;
+    if(numberDigitGroupSep == null) numberDigitGroupSep = ',';
+    if(numberDecimalMark == null) numberDecimalMark = '.';
+    if(disableTooltips == null) disableTooltips = false;
+    if(disableInteraction == null) disableInteraction = false;
   }
 
   Options.uninitialized();
@@ -98,9 +88,6 @@ class Options {
     if(o.enableTagOptions != null) enableTagOptions = o.enableTagOptions;
     if(o.enableHighlight != null) enableHighlight = o.enableHighlight;
     if(o.highlightLighten != null) highlightLighten = o.highlightLighten;
-    if(o.tooltipSkipNull != null) tooltipSkipNull = o.tooltipSkipNull;
-    if(o.tooltipPrefix != null) tooltipPrefix = o.tooltipPrefix;
-    if(o.tooltipSuffix != null) tooltipSuffix = o.tooltipSuffix;
     if(o.disableHiddenCheck != null) disableHiddenCheck = o.disableHiddenCheck;
     if(o.numberFormatter != null) numberFormatter = o.numberFormatter;
     if(o.numberDigitGroupCount != null) numberDigitGroupCount = o.numberDigitGroupCount;
@@ -108,19 +95,11 @@ class Options {
     if(o.numberDecimalMark != null) numberDecimalMark = o.numberDecimalMark;
     if(o.disableTooltips != null) disableTooltips = o.disableTooltips;
     if(o.disableInteraction != null) disableInteraction = o.disableInteraction;
-
-    if(o.lineOptions != null) lineOptions.extend(o.lineOptions);
-    if(o.barOptions != null) barOptions.extend(o.barOptions);
-    if(o.tristateOptions != null) tristateOptions.extend(o.tristateOptions);
-    if(o.discreteOptions != null) discreteOptions.extend(o.discreteOptions);
-    if(o.bulletOptions != null) bulletOptions.extend(o.bulletOptions);
-    if(o.pieOptions != null) pieOptions.extend(o.pieOptions);
-    if(o.boxOptions != null) boxOptions.extend(o.boxOptions);
   }
 }
 
 // Defaults for line charts
-class LineOptions {
+class LineOptions extends Options {
   String spotColor;
   String highlightSpotColor;
   String highlightLineColor;
@@ -136,9 +115,29 @@ class LineOptions {
   int chartRangeMax;
   int chartRangeMinX;
   int chartRangeMaxX;
-  SPFormat tooltipFormat;
+  LineChartTooltipOptions tooltipOptions;
 
   LineOptions({
+    String type,
+    String lineColor,
+    String fillColor,
+    int defaultPixelsPerValue,
+    String width,
+    String height,
+    bool composite,
+    String tagValuesAttribute,
+    String tagOptionsPrefix,
+    bool enableTagOptions,
+    bool enableHighlight,
+    double highlightLighten,
+    bool disableHiddenCheck,
+    NumberFormatterFn numberFormatter,
+    int numberDigitGroupCount,
+    String numberDigitGroupSep,
+    String numberDecimalMark,
+    bool disableTooltips,
+    bool disableInteraction,
+
     this.spotColor : '#f80',
     this.highlightSpotColor : '#5f5',
     this.highlightLineColor : '#f22',
@@ -154,15 +153,32 @@ class LineOptions {
     this.chartRangeMax,
     this.chartRangeMinX,
     this.chartRangeMaxX,
-    this.tooltipFormat
-  }) {
-    if(this.tooltipFormat == null) {
-      tooltipFormat =  new SPFormat('<span style="color: {{color}}">&#9679;</span> {{prefix}}{{y}}{{suffix}}');
-    }
-  }
+    this.tooltipOptions
+  }) : super(
+      type,
+      lineColor,
+      fillColor,
+      defaultPixelsPerValue,
+      width,
+      height,
+      composite,
+      tagValuesAttribute,
+      tagOptionsPrefix,
+      enableTagOptions,
+      enableHighlight,
+      highlightLighten,
+      disableHiddenCheck,
+      numberFormatter,
+      numberDigitGroupCount,
+      numberDigitGroupSep,
+      numberDecimalMark,
+      disableTooltips,
+      disableInteraction
+  );
 
-  LineOptions.uninitialized();
+  LineOptions.uninitialized() : super.uninitialized();
 
+  @override
   void extend(LineOptions o) {
     if(o.spotColor != null) spotColor = o.spotColor;
     if(o.highlightSpotColor != null) highlightSpotColor = o.highlightSpotColor;
@@ -180,12 +196,13 @@ class LineOptions {
     if(o.chartRangeMinX != null) chartRangeMinX = o.chartRangeMinX;
     if(o.chartRangeMinX != null) chartRangeMinX = o.chartRangeMinX;
     if(o.chartRangeMaxX != null) chartRangeMaxX = o.chartRangeMaxX;
-    if(o.tooltipFormat != null) tooltipFormat = o.tooltipFormat;
+    if(o.tooltipOptions != null) tooltipOptions = o.tooltipOptions;
+    super.extend(o);
   }
 }
 
 // Defaults for bar charts
-class BarOptions {
+class BarOptions extends Options {
   String barColor;
   String negBarColor;
   List<String> stackedBarColor;
@@ -198,9 +215,29 @@ class BarOptions {
   int chartRangeMin;
   bool chartRangeClip;
   int colorMap;
-  SPFormat tooltipFormat;
+  BarChartTooltipOptions tooltipOptions;
 
   BarOptions({
+    String type,
+    String lineColor,
+    String fillColor,
+    int defaultPixelsPerValue,
+    String width,
+    String height,
+    bool composite,
+    String tagValuesAttribute,
+    String tagOptionsPrefix,
+    bool enableTagOptions,
+    bool enableHighlight,
+    double highlightLighten,
+    bool disableHiddenCheck,
+    NumberFormatterFn numberFormatter,
+    int numberDigitGroupCount,
+    String numberDigitGroupSep,
+    String numberDecimalMark,
+    bool disableTooltips,
+    bool disableInteraction,
+
     this.barColor : '#3366cc',
     this.negBarColor : '#f44',
     this.stackedBarColor : const ['#3366cc', '#dc3912', '#ff9900', '#109618', '#66aa00',
@@ -214,15 +251,32 @@ class BarOptions {
     this.chartRangeMin,
     this.chartRangeClip : false,
     this.colorMap,
-    this.tooltipFormat
-  }) {
-    if(tooltipFormat == null) {
-      tooltipFormat = new SPFormat('<span style="color: {{color}}">&#9679;</span> {{prefix}}{{value}}{{suffix}}');
-    }
-  }
+    this.tooltipOptions
+  }): super(
+      type,
+      lineColor,
+      fillColor,
+      defaultPixelsPerValue,
+      width,
+      height,
+      composite,
+      tagValuesAttribute,
+      tagOptionsPrefix,
+      enableTagOptions,
+      enableHighlight,
+      highlightLighten,
+      disableHiddenCheck,
+      numberFormatter,
+      numberDigitGroupCount,
+      numberDigitGroupSep,
+      numberDecimalMark,
+      disableTooltips,
+      disableInteraction
+  );
 
-  BarOptions.uninitialized();
+  BarOptions.uninitialized(): super.uninitialized();
 
+  @override
   void extend(BarOptions o) {
     if(o.barColor != null) barColor = o.barColor;
     if(o.negBarColor != null) negBarColor = o.negBarColor;
@@ -236,39 +290,73 @@ class BarOptions {
     if(o.chartRangeMin != null) chartRangeMin = o.chartRangeMin;
     if(o.chartRangeClip != null) chartRangeClip = o.chartRangeClip;
     if(o.colorMap != null) colorMap = o.colorMap;
-    if(o.tooltipFormat != null) tooltipFormat = o.tooltipFormat;
+    if(o.tooltipOptions != null) tooltipOptions = o.tooltipOptions;
   }
 }
 
             // Defaults for tristate charts
-class TristateOptions {
+class TristateOptions extends Options {
   int barWidth;
   int barSpacing;
   String posBarColor;
   String negBarColor;
   String zeroBarColor;
   Map colorMap;
-  SPFormat tooltipFormat;
-  Map tooltipValueLookups;
+  TristateChartTooltipOptions tooltipOptions;
 
   TristateOptions({
+    String type,
+    String lineColor,
+    String fillColor,
+    int defaultPixelsPerValue,
+    String width,
+    String height,
+    bool composite,
+    String tagValuesAttribute,
+    String tagOptionsPrefix,
+    bool enableTagOptions,
+    bool enableHighlight,
+    double highlightLighten,
+    bool disableHiddenCheck,
+    NumberFormatterFn numberFormatter,
+    int numberDigitGroupCount,
+    String numberDigitGroupSep,
+    String numberDecimalMark,
+    bool disableTooltips,
+    bool disableInteraction,
+
     this.barWidth : 4,
     this.barSpacing : 1,
     this.posBarColor : '#6f6',
     this.negBarColor : '#f44',
     this.zeroBarColor : '#999',
     this.colorMap : const {},
-    this.tooltipFormat,
-    this.tooltipValueLookups : const { '-1': 'Loss', '0': 'Draw', '1': 'Win' }
+    this.tooltipOptions
+  }): super(
+      type,
+      lineColor,
+      fillColor,
+      defaultPixelsPerValue,
+      width,
+      height,
+      composite,
+      tagValuesAttribute,
+      tagOptionsPrefix,
+      enableTagOptions,
+      enableHighlight,
+      highlightLighten,
+      disableHiddenCheck,
+      numberFormatter,
+      numberDigitGroupCount,
+      numberDigitGroupSep,
+      numberDecimalMark,
+      disableTooltips,
+      disableInteraction
+  );
 
-  }) {
-    if(tooltipFormat == null) {
-      tooltipFormat  = new SPFormat('<span style="color: {{color}}">&#9679;</span> {{value:map}}');
-    }
-  }
+  TristateOptions.uninitialized(): super.uninitialized();
 
-  TristateOptions.uninitialized();
-
+  @override
   void extend(TristateOptions o) {
     if(o.barWidth != null) barWidth = o.barWidth;
     if(o.barSpacing != null) barSpacing = o.barSpacing;
@@ -276,38 +364,74 @@ class TristateOptions {
     if(o.negBarColor != null) negBarColor = o.negBarColor;
     if(o.zeroBarColor != null) zeroBarColor = o.zeroBarColor;
     if(o.colorMap != null) colorMap = o.colorMap;
-    if(o.tooltipFormat != null) tooltipFormat = o.tooltipFormat;
-    if(o.tooltipValueLookups != null) tooltipValueLookups = o.tooltipValueLookups;
+    if(o.tooltipOptions != null) tooltipOptions = o.tooltipOptions;
   }
 }
 
 
 // Defaults for discrete charts
-class DiscreteOptions {
+class DiscreteOptions extends Options {
   String lineHeight;
   String thresholdColor;
   int thresholdValue;
   int chartRangeMax;
   int chartRangeMin;
   bool chartRangeClip;
-  SPFormat tooltipFormat;
+  DiscreteChartTooltipOptions tooltipOptions;
 
   DiscreteOptions({
+    String type,
+    String lineColor,
+    String fillColor,
+    int defaultPixelsPerValue,
+    String width,
+    String height,
+    bool composite,
+    String tagValuesAttribute,
+    String tagOptionsPrefix,
+    bool enableTagOptions,
+    bool enableHighlight,
+    double highlightLighten,
+    bool disableHiddenCheck,
+    NumberFormatterFn numberFormatter,
+    int numberDigitGroupCount,
+    String numberDigitGroupSep,
+    String numberDecimalMark,
+    bool disableTooltips,
+    bool disableInteraction,
+
     this.lineHeight : 'auto',
     this.thresholdColor,
     this.thresholdValue : 0,
     this.chartRangeMax,
     this.chartRangeMin,
     this.chartRangeClip : false,
-    this.tooltipFormat
-  }) {
-    if(tooltipFormat == null) {
-      tooltipFormat =  new SPFormat('{{prefix}}{{value}}{{suffix}}');
-    }
-  }
+    this.tooltipOptions
+  }): super(
+      type,
+      lineColor,
+      fillColor,
+      defaultPixelsPerValue,
+      width,
+      height,
+      composite,
+      tagValuesAttribute,
+      tagOptionsPrefix,
+      enableTagOptions,
+      enableHighlight,
+      highlightLighten,
+      disableHiddenCheck,
+      numberFormatter,
+      numberDigitGroupCount,
+      numberDigitGroupSep,
+      numberDecimalMark,
+      disableTooltips,
+      disableInteraction
+  );
 
-  DiscreteOptions.uninitialized();
+  DiscreteOptions.uninitialized(): super.uninitialized();
 
+  @override
   void extend(DiscreteOptions o) {
     if(o.lineHeight != null) lineHeight = o.lineHeight;
     if(o.thresholdColor != null) thresholdColor = o.thresholdColor;
@@ -315,81 +439,152 @@ class DiscreteOptions {
     if(o.chartRangeMax != null) chartRangeMax = o.chartRangeMax;
     if(o.chartRangeMin != null) chartRangeMin = o.chartRangeMin;
     if(o.chartRangeClip != null) chartRangeClip = o.chartRangeClip;
-    if(o.tooltipFormat != null) tooltipFormat = o.tooltipFormat;
+    if(o.tooltipOptions != null) tooltipOptions = o.tooltipOptions;
   }
 }
 
 // Defaults for bullet charts
-class BulletOptions {
+class BulletOptions extends Options {
   String targetColor;
   int targetWidth; // width of the target bar in pixels
   String performanceColor;
   List<String> rangeColors;
   int base; // set this to a number to change the base start number
-  SPFormat tooltipFormat;
-  Map tooltipValueLookups;
+  BulletChartTooltipOptions tooltipOptions;
 
   BulletOptions({
+    String type,
+    String lineColor,
+    String fillColor,
+    int defaultPixelsPerValue,
+    String width,
+    String height,
+    bool composite,
+    String tagValuesAttribute,
+    String tagOptionsPrefix,
+    bool enableTagOptions,
+    bool enableHighlight,
+    double highlightLighten,
+    bool disableHiddenCheck,
+    NumberFormatterFn numberFormatter,
+    int numberDigitGroupCount,
+    String numberDigitGroupSep,
+    String numberDecimalMark,
+    bool disableTooltips,
+    bool disableInteraction,
+
     this.targetColor : '#f33',
     this.targetWidth : 3,
     this.performanceColor : '#33f',
     this.rangeColors : const ['#d3dafe', '#a8b6ff', '#7f94ff'],
     this.base,
-    this.tooltipFormat,
-    this.tooltipValueLookups : const {'r': 'Range', 'p': 'Performance', 't': 'Target'}
-  }) {
-    if(tooltipFormat == null) {
-      tooltipFormat = new SPFormat('{{fieldkey:fields}} - {{value}}');
-    }
-  }
+    this.tooltipOptions
+  }): super(
+      type,
+      lineColor,
+      fillColor,
+      defaultPixelsPerValue,
+      width,
+      height,
+      composite,
+      tagValuesAttribute,
+      tagOptionsPrefix,
+      enableTagOptions,
+      enableHighlight,
+      highlightLighten,
+      disableHiddenCheck,
+      numberFormatter,
+      numberDigitGroupCount,
+      numberDigitGroupSep,
+      numberDecimalMark,
+      disableTooltips,
+      disableInteraction
+  );
 
-  BulletOptions.unititialized();
+  BulletOptions.unititialized(): super.uninitialized();
 
+  @override
   void extend(BulletOptions o) {
     if(o.targetColor != null) targetColor = o.targetColor;
     if(o.targetWidth != null) targetWidth = o.targetWidth;
     if(o.performanceColor != null) performanceColor = o.performanceColor;
     if(o.rangeColors != null) rangeColors = o.rangeColors;
     if(o.base != null) base = o.base;
-    if(o.tooltipFormat != null) tooltipFormat = o.tooltipFormat;
-    if(o.tooltipValueLookups != null) tooltipValueLookups = o.tooltipValueLookups;
+    if(o.tooltipOptions != null) tooltipOptions = o.tooltipOptions;
   }
 }
 
 // Defaults for pie charts
-class PieOptions {
+class PieOptions extends Options {
   int offset;
   List<String> sliceColors;
   int borderWidth;
   String borderColor;
-  SPFormat tooltipFormat;
+  PieChartTooltipOptions tooltipOptions;
 
   PieOptions({
+    String type,
+    String lineColor,
+    String fillColor,
+    int defaultPixelsPerValue,
+    String width,
+    String height,
+    bool composite,
+    String tagValuesAttribute,
+    String tagOptionsPrefix,
+    bool enableTagOptions,
+    bool enableHighlight,
+    double highlightLighten,
+    bool disableHiddenCheck,
+    NumberFormatterFn numberFormatter,
+    int numberDigitGroupCount,
+    String numberDigitGroupSep,
+    String numberDecimalMark,
+    bool disableTooltips,
+    bool disableInteraction,
+
     this.offset : 0,
     this.sliceColors : const ['#3366cc', '#dc3912', '#ff9900', '#109618', '#66aa00',
         '#dd4477', '#0099c6', '#990099'],
     this.borderWidth : 0,
     this.borderColor : '#000',
-    this.tooltipFormat
-  }) {
-    if(tooltipFormat == null) {
-      tooltipFormat = new SPFormat('<span style="color: {{color}}">&#9679;</span> {{value}} ({{percent.1}}%)');
-    }
-  }
+    this.tooltipOptions
+  }): super(
+      type,
+      lineColor,
+      fillColor,
+      defaultPixelsPerValue,
+      width,
+      height,
+      composite,
+      tagValuesAttribute,
+      tagOptionsPrefix,
+      enableTagOptions,
+      enableHighlight,
+      highlightLighten,
+      disableHiddenCheck,
+      numberFormatter,
+      numberDigitGroupCount,
+      numberDigitGroupSep,
+      numberDecimalMark,
+      disableTooltips,
+      disableInteraction
+  );
 
-  PieOptions.uninitialized();
+  PieOptions.uninitialized(): super.uninitialized();
 
+  @override
   void extend(PieOptions o) {
     if(o.offset != null) offset = o.offset;
     if(o.sliceColors != null) sliceColors = o.sliceColors;
     if(o.borderWidth != null) borderWidth = o.borderWidth;
     if(o.borderColor != null) borderColor = o.borderColor;
-    if(o.tooltipFormat != null) tooltipFormat = o.tooltipFormat;
+    if(o.tooltipOptions != null) tooltipOptions = o.tooltipOptions;
   }
 }
 
 // Defaults for box plots
-class BoxOptions {
+class BoxOptions extends Options {
   bool raw;
   String boxLineColor;
   String boxFillColor;
@@ -404,10 +599,29 @@ class BoxOptions {
   String targetColor;
   int chartRangeMax;
   int chartRangeMin;
-  SPFormat tooltipFormat;
-  Map tooltipFormatFieldlistKey;
+  BoxChartTooltipOptions tooltipOptions;
 
   BoxOptions({
+    String type,
+    String lineColor,
+    String fillColor,
+    int defaultPixelsPerValue,
+    String width,
+    String height,
+    bool composite,
+    String tagValuesAttribute,
+    String tagOptionsPrefix,
+    bool enableTagOptions,
+    bool enableHighlight,
+    double highlightLighten,
+    bool disableHiddenCheck,
+    NumberFormatterFn numberFormatter,
+    int numberDigitGroupCount,
+    String numberDigitGroupSep,
+    String numberDecimalMark,
+    bool disableTooltips,
+    bool disableInteraction,
+
     this.raw : false,
     this.boxLineColor : '#000',
     this.boxFillColor : '#cdf',
@@ -422,20 +636,32 @@ class BoxOptions {
     this.targetColor : '#4a2',
     this.chartRangeMax,
     this.chartRangeMin,
-    this.tooltipFormat,
-    this.tooltipFormatFieldlistKey : const /*'field',
-    tooltipValueLookups: { fields: */ { 'lq': 'Lower Quartile', 'med': 'Median',
-      'uq': 'Upper Quartile', 'lo': 'Left Outlier', 'ro': 'Right Outlier',
-      'lw': 'Left Whisker', 'rw': 'Right Whisker'}
+    this.tooltipOptions
+  }): super(
+      type,
+      lineColor,
+      fillColor,
+      defaultPixelsPerValue,
+      width,
+      height,
+      composite,
+      tagValuesAttribute,
+      tagOptionsPrefix,
+      enableTagOptions,
+      enableHighlight,
+      highlightLighten,
+      disableHiddenCheck,
+      numberFormatter,
+      numberDigitGroupCount,
+      numberDigitGroupSep,
+      numberDecimalMark,
+      disableTooltips,
+      disableInteraction
+  );
 
-  }) {
-    if(tooltipFormat == null) {
-      tooltipFormat =  new SPFormat('{{field:fields}}: {{value}}');
-    }
-  }
+  BoxOptions.uninitialized(): super.uninitialized();
 
-  BoxOptions.uninitialized();
-
+  @override
   void extend(BoxOptions o) {
     if(o.raw != null) raw = o.raw;
     if(o.boxLineColor != null) boxLineColor = o.boxLineColor;
@@ -451,11 +677,6 @@ class BoxOptions {
     if(o.targetColor != null) targetColor = o.targetColor;
     if(o.chartRangeMax != null) chartRangeMax = o.chartRangeMax;
     if(o.chartRangeMin != null) chartRangeMin = o.chartRangeMin;
-    if(o.tooltipFormat != null) tooltipFormat = o.tooltipFormat;
-    if(o.tooltipFormatFieldlistKey != null) tooltipFormatFieldlistKey = o.tooltipFormatFieldlistKey;
+    if(o.tooltipOptions != null) tooltipOptions = o.tooltipOptions;
   }
 }
-
-// You can have tooltips use a css class other than jqstooltip by specifying tooltipClassname
-//class DefaultStyles { //= '.jqstooltip { ' +
-//}

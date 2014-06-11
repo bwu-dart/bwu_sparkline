@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<link rel='import' href='../../packages/bwu_sparklines/bwu_sparkline.html'>
+
+<polymer-element name='app-element'>
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <p>
+      <!--
+        This code runs when everything has been loaded on the page */
+        Inline sparklines take their values from the contents of the tag */
+      -->
+      Inline Sparkline:
+      <bwu-sparkline>1,4,4,7,5,9,10</bwu-sparkline>.
+    </p>
+    <p>
+      Sparkline with dynamic data:
+      <bwu-sparkline id="dynamicsparkline">Loading..</bwu-sparkline>
+    </p>
+    <p>
+      Bar chart with dynamic data:
+      <bwu-sparkline id="dynamicbar">Loading..</bwu-sparkline>
+    </p>
+    <p>
+      Bar chart with inline data:
+      <bwu-sparkline id="inlinebar">1,3,4,5,3,5</bwu-sparkline>
+    </p>
+
+  </template>
+  <script type='application/dart' src='app_element.dart'></script>
+</polymer-element>

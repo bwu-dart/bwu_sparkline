@@ -7,109 +7,114 @@ import 'package:bwu_sparklines/bwu_sparkline.dart';
 
 @CustomTag('sp-tooltip')
 class SpTooltip extends PolymerElement {
+  Options _options;
+  String _sizetip;
+
+  @observable String cssClass;
+  @observable bool showSizetip = false;
+  @observable bool showTooltip = false;
+
   SpTooltip.created() : super.created();
 
-      init(Options options) {
-          var tooltipClassname = options.get('tooltipClassname', 'jqstooltip'),
-              sizetipStyle = this.sizeStyle,
-              offset;
-          this.container = options.get('tooltipContainer') || document.body;
-          this.tooltipOffsetX = options.get('tooltipOffsetX', 10);
-          this.tooltipOffsetY = options.get('tooltipOffsetY', 12);
-          // remove any previous lingering tooltip
-          $('#jqssizetip').remove();
-          $('#jqstooltip').remove();
-          this.sizetip = $('<div/>', {
-              id: 'jqssizetip',
-              style: sizetipStyle,
-              'class': tooltipClassname
-          });
-          this.tooltip = $('<div/>', {
-              id: 'jqstooltip',
-              'class': tooltipClassname
-          }).appendTo(this.container);
-          // account for the container's location
-          offset = this.tooltip.offset();
-          this.offsetLeft = offset.left;
-          this.offsetTop = offset.top;
-          this.hidden = true;
-          $(window).unbind('resize.jqs scroll.jqs');
-          $(window).bind('resize.jqs scroll.jqs', $.proxy(this.updateWindowDims, this));
-          this.updateWindowDims();
-      },
+  int _offset;
 
-      updateWindowDims: function () {
-          this.scrollTop = $(window).scrollTop();
-          this.scrollLeft = $(window).scrollLeft();
-          this.scrollRight = this.scrollLeft + $(window).width();
-          this.updatePosition();
-      },
+  init(Options options) {
+    _options = options;
 
-      getSize: function (content) {
-          this.sizetip.html(content).appendTo(this.container);
-          this.width = this.sizetip.width() + 1;
-          this.height = this.sizetip.height();
-          this.sizetip.remove();
-      },
+    //String sizetipStyle = sizeStyle;
+    // remove any previous lingering tooltip
+//    $('#jqssizetip').remove();
+//    $('#jqstooltip').remove();
+//    sizetip = '<div/>', {
+//      id: 'jqssizetip',
+//      style: sizetipStyle,
+//      'class': tooltipClassname
+//    });
+//    this.tooltip = $('<div/>', {
+//      id: 'jqstooltip',
+//      'class': tooltipClassname
+//    }).appendTo(this.container);
+    cssClass = options.tooltipOptions.cssClass;
 
-      setContent: function (content) {
-          if (!content) {
-              this.tooltip.css('visibility', 'hidden');
-              this.hidden = true;
-              return;
-          }
-          this.getSize(content);
-          this.tooltip.html(content)
-              .css({
-                  'width': this.width,
-                  'height': this.height,
-                  'visibility': 'visible'
-              });
-          if (this.hidden) {
-              this.hidden = false;
-              this.updatePosition();
-          }
-      },
+    // account for the container's location
+    _offset = this.tooltip.offset();
+    offsetLeft = offset.left;
+    offsetTop = offset.top;
+    hidden = true;
+    $(window).unbind('resize.jqs scroll.jqs');
+    $(window).bind('resize.jqs scroll.jqs', $.proxy(this.updateWindowDims, this));
+    this.updateWindowDims();
+  }
 
-      updatePosition: function (x, y) {
-          if (x === undefined) {
-              if (this.mousex === undefined) {
-                  return;
-              }
-              x = this.mousex - this.offsetLeft;
-              y = this.mousey - this.offsetTop;
+  void updateWindowDims() {
+    scrollTop = dom.window.scrollTop;
+    scrollLeft = dom.window.scrollLeft;
+    scrollRight = scrollLeft + window.width;
+    updatePosition();
+  }
 
-          } else {
-              this.mousex = x = x - this.offsetLeft;
-              this.mousey = y = y - this.offsetTop;
-          }
-          if (!this.height || !this.width || this.hidden) {
-              return;
-          }
+  void getSize(String content) {
+    sizetip.html(content).appendTo(container);
+    width = sizetip.width() + 1;
+    height = sizetip.height();
+    sizetip.remove();
+  },
 
-          y -= this.height + this.tooltipOffsetY;
-          x += this.tooltipOffsetX;
+  void setContent(String content) {
+    if (content == null) {
+      tooltip.css('visibility', 'hidden');
+      hidden = true;
+      return;
+    }
+    getSize(content);
+    tooltip.html(content)
+      .css({
+          'width': width,
+          'height': height,
+          'visibility': 'visible'
+      });
+    if (hidden) {
+      hidden = false;
+      updatePosition();
+    }
+  }
 
-          if (y < this.scrollTop) {
-              y = this.scrollTop;
-          }
-          if (x < this.scrollLeft) {
-              x = this.scrollLeft;
-          } else if (x + this.width > this.scrollRight) {
-              x = this.scrollRight - this.width;
-          }
-
-          this.tooltip.css({
-              'left': x,
-              'top': y
-          });
-      },
-
-      remove: function () {
-          this.tooltip.remove();
-          this.sizetip.remove();
-          this.sizetip = this.tooltip = undefined;
-          $(window).unbind('resize.jqs scroll.jqs');
+  void updatePosition([int x, int y]) {
+    if (x == null) {
+      if (mousex == null) {
+        return;
       }
-  });
+      x = mousex - offsetLeft;
+      y = mousey - offsetTop;
+    } else {
+      mousex = x = x - offsetLeft;
+      mousey = y = y - offsetTop;
+    }
+    if (!height || !width || hidden) {
+      return;
+    }
+
+    y -= height + tooltipOffsetY;
+    x += tooltipOffsetX;
+
+    if (y < scrollTop) {
+      y = scrollTop;
+    }
+    if (x < scrollLeft) {
+      x = scrollLeft;
+    } else if (x + width > scrollRight) {
+      x = scrollRight - width;
+    }
+
+    style
+      ..left = '${x}px'
+      ..top = '${y}px';
+  }
+
+  void remove() {
+    tooltip.remove();
+    sizetip.remove();
+    sizetip = tooltip = null;
+    window.unbind('resize.jqs scroll.jqs');
+  }
 }
