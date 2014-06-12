@@ -34,7 +34,7 @@ class MouseHandler {
     canvas.canvas.onClick.listen(mouseclick);
   }
 
-  void reset(bool removeTooltip) {
+  void reset([bool removeTooltip = false]) {
     this.splist = [];
     if (tooltip != null && removeTooltip) {
       tooltip.remove();

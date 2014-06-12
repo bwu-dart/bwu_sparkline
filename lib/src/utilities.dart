@@ -32,29 +32,44 @@ int quartile(List<int> values, int q) {
   }
 }
 
-dynamic normalizeValue(String val) {
+num normalizeValue(dynamic val) {
   var result;
   var nf;
-  switch (val) {
-//       case 'undefined':
-//           result = undefined;
-//           break;
-    case 'null':
-      result = null;
-      break;
-    case 'true':
-      result = true;
-      break;
-    case 'false':
-      result = false;
-      break;
-    default:
-      var nf = double.parse(val);
-      if (val == nf.toString()) {
-        result = nf;
-      }
+
+  if(val is num) return val;
+  if(val == null) return null;
+
+  if(val is String) {
+    String lcVal = val.toLowerCase();
+    if(lcVal == 'null') return null;
+    if(lcVal == 'true') return 1;
+    if(lcVal == 'false') return 0;
+
+    return num.parse(val, (_) => null);
   }
-  return result;
+
+  return null;
+
+//  switch (val) {
+////       case 'undefined':
+////           result = undefined;
+////           break;
+//    case 'null':
+//      result = null;
+//      break;
+//    case 'true':
+//      result = true;
+//      break;
+//    case 'false':
+//      result = false;
+//      break;
+//    default:
+//      var nf = double.parse(val);
+//      if (val == nf.toString()) {
+//        result = nf;
+//      }
+//  }
+//  return result;
 }
 
 List normalizeValues(List vals) {
