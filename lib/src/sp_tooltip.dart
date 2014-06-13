@@ -34,7 +34,7 @@ class SpTooltip extends PolymerElement {
 //      id: 'jqstooltip',
 //      'class': tooltipClassname
 //    }).appendTo(this.container);
-    cssClass = options.tooltipOptions.cssClass;
+    cssClass = options.tooltip.cssClass;
 
     // account for the container's location
     _offset = this.tooltip.offset();
@@ -58,7 +58,7 @@ class SpTooltip extends PolymerElement {
     width = sizetip.width() + 1;
     height = sizetip.height();
     sizetip.remove();
-  },
+  }
 
   void setContent(String content) {
     if (content == null) {

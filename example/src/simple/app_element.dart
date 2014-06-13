@@ -1,6 +1,5 @@
 library app_element;
 
-import 'dart:math' as math;
 import 'package:polymer/polymer.dart';
 
 import 'package:bwu_sparklines/bwu_sparkline.dart';
@@ -24,20 +23,20 @@ class AppElement extends PolymerElement {
       ($['dynamicsparkline'] as BwuSparkline).init(myvalues);
 
       /* The second argument gives options such as chart type */
-      ($['dynamicbar'] as BwuSparkline).init(myvalues, new BarOptions(type: 'bar', barColor: 'green'));
+      ($['dynamicbar'] as BwuSparkline).init(myvalues, new BarOptions()..barColor = 'green');
 
       /* Use 'html' instead of an array of values to pass options
       to a sparkline with data in the tag */
-      ($['inlinebar'] as BwuSparkline).init(null, new BarOptions(type: 'bar', barColor: 'red'));
+      ($['inlinebar'] as BwuSparkline).init(null, new BarOptions()..barColor = 'red');
 
     } on NoSuchMethodError catch (e) {
-      print('$e\n\n${e.stackTrace}');
+      print('simple - app-element - attached: $e\n\n${e.stackTrace}');
     }  on RangeError catch (e) {
-      print('$e\n\n${e.stackTrace}');
+      print('simple - app-element - attached: $e\n\n${e.stackTrace}');
     } on TypeError catch(e) {
-      print('$e\n\n${e.stackTrace}');
+      print('simple - app-element - attached: $e\n\n${e.stackTrace}');
     } catch(e) {
-      print('$e');
+      print('simple - app-element - attached: $e');
     }
   }
 }

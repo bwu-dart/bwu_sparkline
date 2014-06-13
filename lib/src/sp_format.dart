@@ -18,7 +18,7 @@ class SPFormat {
   String fclass;
   SPFormat(this.format, [this.fclass]);
 
-  void render(Map fields, Map lookups, Options options) {
+  String render(Map fields, Map lookups, Options options) {
     Match match;
     String token;
     String lookupkey;

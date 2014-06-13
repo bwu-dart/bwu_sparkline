@@ -1,8 +1,15 @@
-part of bwu_sparkline;
+library bwu_sparkline.tooltip_options;
 
-typedef String TooltipFormatterFn(BwuSparkline, Options options, Map fields);
+import 'dart:html' as dom;
+import 'dart:collection' as coll;
 
-class TooltipOptions extends OptionsBase {
+import 'options_base.dart';
+import 'options.dart';
+import 'sp_format.dart';
+
+typedef String TooltipFormatterFn(BwuSparkline, Options options, List<Map> fields);
+
+class Tooltip extends OptionsBase {
   static const SKIP_NULL = 'skipNull';
   static const PREFIX = 'prefix';
   static const SUFFIX = 'suffix';
@@ -12,9 +19,10 @@ class TooltipOptions extends OptionsBase {
   static const OFFSET_X = 'offsetX';
   static const OFFSET_Y = 'offsetY';
   static const FORMATTER = 'formatter';
+  static const CHART_TITLE = 'chartTitle';
 
-  TooltipOptions() : super();
-  TooltipOptions.uninitialized() : super.uninitialized();
+  Tooltip() : super();
+  Tooltip.uninitialized() : super.uninitialized();
 
   @override
   void optionsInitDefaults() {
@@ -42,7 +50,8 @@ class TooltipOptions extends OptionsBase {
     FORMATS,
     OFFSET_X,
     OFFSET_Y,
-    FORMATTER
+    FORMATTER,
+    CHART_TITLE
   ];
 
   final Map _defaults = {
@@ -81,129 +90,8 @@ class TooltipOptions extends OptionsBase {
   TooltipFormatterFn get formatter => _v[FORMATTER];
   set formatter(TooltipFormatterFn val) => _v[FORMATTER];
 
-  @override
-  dynamic operator [](String key) {
-    if(!_keys.contains(key)) {
-      return super[key];
-    }
-    return _v[key];
-  }
-
-  @override
-  void operator []=(String key, val) {
-    if(!_keys.contains(key)) {
-      super[key] = val;
-    }
-    _v[key] = val;
-  }
-
-}
-
-class LineChartTooltipOptions extends TooltipOptions {
-  LineChartTooltipOptions() : super();
-  LineChartTooltipOptions.uninitialized() : super.uninitialized();
-
-  @override
-  void optionsInitDefaults() {
-    super.optionsInitDefaults();
-    _v.addAll(_defaults);
-  }
-
-  final Map _v = {};
-
-  @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
-
-  @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
-
-  @override
-  Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
-
-  final List<String> _keys = [
-  ];
-
-  final Map _defaults = {
-    TooltipOptions.FORMATS :  [new SPFormat('<span style="color: {{color}}">&#9679;</span> {{prefix}}{{y}}{{suffix}}')]
-  };
-}
-
-class BarChartTooltipOptions extends TooltipOptions {
-  BarChartTooltipOptions() : super();
-  BarChartTooltipOptions.uninitialized() : super.uninitialized();
-
-  @override
-  void optionsInitDefaults() {
-    super.optionsInitDefaults();
-    _v.addAll(_defaults);
-  }
-
-  final Map _v = {};
-
-  @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
-
-  @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
-
-  @override
-  Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
-
-  final List<String> _keys = [
-  ];
-
-  final Map _defaults = {
-    TooltipOptions.FORMATS : [new SPFormat('<span style="color: {{color}}">&#9679;</span> {{prefix}}{{value}}{{suffix}}')]
-  };
-}
-
-class BoxChartTooltipOptions extends TooltipOptions {
-  static const VALUE_LOOKUPS = 'valueLookups';
-  static const FORMAT_FIELDLIST_KEY = 'formatFieldlistKey';
-  static const FORMAT_FIELDLIST = 'formatFieldlist';
-
-  BoxChartTooltipOptions() : super();
-  BoxChartTooltipOptions.uninitialized() : super.uninitialized();
-
-  @override
-  void optionsInitDefaults() {
-    super.optionsInitDefaults();
-    _v.addAll(_defaults);
-  }
-
-  final Map _v = {};
-
-  @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
-
-  @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
-
-  @override
-  Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
-
-  final List<String> _keys = [
-    VALUE_LOOKUPS,
-    FORMAT_FIELDLIST_KEY,
-    FORMAT_FIELDLIST
-  ];
-
-  final Map _defaults = {
-    TooltipOptions.FORMATS : [new SPFormat('{{field:fields}}: {{value}}')],
-    VALUE_LOOKUPS : { 'fields': { 'lq': 'Lower Quartile', 'med': 'Median',
-        'uq': 'Upper Quartile', 'lo': 'Left Outlier', 'ro': 'Right Outlier',
-        'lw': 'Left Whisker', 'rw': 'Right Whisker'} },
-    FORMAT_FIELDLIST_KEY : 'field'
-  };
-
-  Map get valueLookups => _v[VALUE_LOOKUPS];
-  set valueLookups(Map val) => _v[VALUE_LOOKUPS] = val;
-
-  String get formatFieldlistKey => _v[FORMAT_FIELDLIST_KEY];
-  set formatFieldlistKey(String val) => _v[FORMAT_FIELDLIST_KEY] = val;
-
-  List<String> get formatFieldlist => _v[FORMAT_FIELDLIST];
-  set formatFieldlist(List<String> val) => _v[FORMAT_FIELDLIST] = val;
+  String get chartTitle => _v[CHART_TITLE];
+  set chartTitle(String val) => _v[CHART_TITLE];
 
   @override
   dynamic operator [](String key) {
@@ -220,160 +108,6 @@ class BoxChartTooltipOptions extends TooltipOptions {
     }
     _v[key] = val;
   }
+
 }
 
-class BulletChartTooltipOptions extends TooltipOptions {
-  static const VALUE_LOOKUPS = 'valueLookups';
-
-  BulletChartTooltipOptions() : super();
-  BulletChartTooltipOptions.uninitialized() : super.uninitialized();
-
-  @override
-  void optionsInitDefaults() {
-    super.optionsInitDefaults();
-    _v.addAll(_defaults);
-  }
-
-  final Map _v = {};
-
-  @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
-
-  @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
-
-  @override
-  Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
-
-  final List<String> _keys = [VALUE_LOOKUPS];
-
-  final Map _defaults = {
-    TooltipOptions.FORMATS : [new SPFormat('{{fieldkey:fields}} - {{value}}')],
-    VALUE_LOOKUPS : { 'fields': {'r': 'Range', 'p': 'Performance', 't': 'Target'} }
-  };
-
-  Map get valueLookups => _v[VALUE_LOOKUPS];
-  set valueLookups(Map val) => _v[VALUE_LOOKUPS] = val;
-
-  @override
-  dynamic operator [](String key) {
-    if(!_keys.contains(key)) {
-      return super[key];
-    }
-    return _v[key];
-  }
-
-  @override
-  void operator []=(String key, val) {
-    if(!_keys.contains(key)) {
-      super[key] = val;
-    }
-    _v[key] = val;
-  }
-}
-
-class DiscreteChartTooltipOptions extends TooltipOptions {
-  DiscreteChartTooltipOptions() : super();
-  DiscreteChartTooltipOptions.uninitialized() : super.uninitialized();
-
-  @override
-  void optionsInitDefaults() {
-    super.optionsInitDefaults();
-    _v.addAll(_defaults);
-  }
-
-  final Map _v = {};
-
-  @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
-
-  @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
-
-  @override
-  Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
-
-  final List<String> _keys = [];
-
-  final Map _defaults = {
-    TooltipOptions.FORMATS : [new SPFormat('{{prefix}}{{value}}{{suffix}}')]
-  };
-}
-
-class PieChartTooltipOptions extends TooltipOptions {
-  PieChartTooltipOptions() : super();
-  PieChartTooltipOptions.uninitialized() : super.uninitialized();
-
-  @override
-  void optionsInitDefaults() {
-    super.optionsInitDefaults();
-    _v.addAll(_defaults);
-  }
-
-  final Map _v = {};
-
-  @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
-
-  @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
-
-  @override
-  Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
-
-  final List<String> _keys = [];
-
-  final Map _defaults = {
-    TooltipOptions.FORMATS : [new SPFormat('<span style="color: {{color}}">&#9679;</span> {{value}} ({{percent.1}}%)')]
-  };
-}
-
-class TristateChartTooltipOptions extends TooltipOptions {
-  static const VALUE_LOOKUPS = 'valueLookups';
-
-  TristateChartTooltipOptions() : super();
-  TristateChartTooltipOptions.uninitialized() : super.uninitialized();
-
-  @override
-  void optionsInitDefaults() {
-    super.optionsInitDefaults();
-    _v.addAll(_defaults);
-  }
-
-  final Map _v = {};
-
-  @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
-
-  @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
-
-  @override
-  Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
-
-  final List<String> _keys = [VALUE_LOOKUPS];
-
-  final Map _defaults = {
-    TooltipOptions.FORMATS : [new SPFormat('<span style="color: {{color}}">&#9679;</span> {{value:map}}')],
-    VALUE_LOOKUPS : { 'map': { '-1': 'Loss', '0': 'Draw', '1': 'Win' } }
-  };
-
-  Map get valueLookups => _v[VALUE_LOOKUPS];
-  set valueLookups(Map val) => _v[VALUE_LOOKUPS] = val;
-
-  @override
-  dynamic operator [](String key) {
-    if(!_keys.contains(key)) {
-      return super[key];
-    }
-    return _v[key];
-  }
-
-  @override
-  void operator []=(String key, val) {
-    if(!_keys.contains(key)) {
-      super[key] = val;
-    }
-    _v[key] = val;
-  }
-}

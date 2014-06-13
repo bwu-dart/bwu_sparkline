@@ -17,6 +17,18 @@ packages:
     description: browser
     source: hosted
     version: "0.10.0+2"
+  bwu_utils:
+    description:
+      path: "../../bwu_utils"
+      relative: true
+    source: path
+    version: "0.0.1"
+  bwu_utils_browser:
+    description:
+      path: "../../bwu_utils_browser"
+      relative: true
+    source: path
+    version: "0.0.1"
   code_transformers:
     description: code_transformers
     source: hosted
@@ -44,7 +56,7 @@ packages:
   matcher:
     description: matcher
     source: hosted
-    version: "0.10.0+3"
+    version: "0.10.1+1"
   meta:
     description: meta
     source: hosted
