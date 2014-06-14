@@ -32,7 +32,7 @@ int quartile(List<int> values, int q) {
   }
 }
 
-num normalizeValue(dynamic val) {
+List<num> normalizeValue(dynamic val) {
   var result;
   var nf;
 
@@ -45,7 +45,7 @@ num normalizeValue(dynamic val) {
     if(lcVal == 'true') return 1;
     if(lcVal == 'false') return 0;
 
-    return num.parse(val, (_) => null);
+    return [num.parse(val, (_) => null)];
   }
 
   return null;

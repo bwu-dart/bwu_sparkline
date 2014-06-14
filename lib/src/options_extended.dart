@@ -24,7 +24,10 @@ class LineOptions extends Options {
   static const CHART_RANGE_MAX = 'chartRangeMax';
   static const CHART_RANGE_MIN_X = 'chartRangeMinX';
   static const CHART_RANGE_MAX_X = 'chartRangeMaxX';
+  static const CHART_RANGE_CLIP = 'chartRangeClip';
+  static const CHART_RANGE_CLIP_X = 'chartRangeClipX';
   static const X_VALUES = 'xValues';
+  static const VALUE_SPOTS = 'valueSpots';
 
   LineOptions() : super();
   LineOptions.uninitialized() : super.uninitialized();
@@ -62,7 +65,10 @@ class LineOptions extends Options {
     CHART_RANGE_MAX,
     CHART_RANGE_MIN_X,
     CHART_RANGE_MAX_X,
-    X_VALUES
+    CHART_RANGE_CLIP,
+    CHART_RANGE_CLIP_X,
+    X_VALUES,
+    VALUE_SPOTS
   ];
 
   final Map _defaults = {
@@ -124,8 +130,18 @@ class LineOptions extends Options {
   int get chartRangeMaxX => _v[CHART_RANGE_MAX_X];
   set chartRangeMaxX(int val) => _v[CHART_RANGE_MAX_X] = val;
 
+  int get chartRangeClip => _v[CHART_RANGE_CLIP];
+  set chartRangeClip(int val) => _v[CHART_RANGE_CLIP] = val;
+
+  int get chartRangeClipX => _v[CHART_RANGE_CLIP_X];
+  set chartRangeClipX(int val) => _v[CHART_RANGE_CLIP_X] = val;
+
   List<num> get xValues => _v[X_VALUES];
   set xValues(List<num> val) => _v[X_VALUES] = val;
+
+  // a List with two values and a color [val, val, color]
+  List<List> get valueSpots => _v[VALUE_SPOTS];
+  set valueSpots(List<List> val) => _v[VALUE_SPOTS] = val;
 
   LineChartTooltipOptions get tooltip => _v[Options.TOOLTIP];
 
@@ -161,6 +177,7 @@ class BarOptions extends Options {
   static const CHART_RANGE_MIN = 'chartRangeMin';
   static const CHART_RANGE_CLIP = 'chartRangeClip';
   static const COLOR_MAP = 'colorMap';
+  static const COLOR_LIST = 'colorList';
 
   BarOptions() : super();
   BarOptions.uninitialized() : super.uninitialized();
@@ -217,8 +234,8 @@ class BarOptions extends Options {
   String get negBarColor => _v[NEG_BAR_COLOR];
   set negBarColor(String val) => _v[NEG_BAR_COLOR] = val;
 
-  List<String> get stackedBarColor => _v[STACKED_BAR_COLOR];
-  set stackedBarColor(List<String> val) => _v[STACKED_BAR_COLOR] = val;
+  String get stackedBarColor => _v[STACKED_BAR_COLOR];
+  set stackedBarColor(String val) => _v[STACKED_BAR_COLOR] = val;
 
   String get zeroColor => _v[ZERO_COLOR];
   set zeroColor(String val) => _v[ZERO_COLOR] = val;
@@ -241,11 +258,16 @@ class BarOptions extends Options {
   int get chartRangeMin => _v[CHART_RANGE_MIN];
   set chartRangeMin(int val) => _v[CHART_RANGE_MIN] = val;
 
-  bool get chartRangeClip => _v[CHART_RANGE_CLIP];
-  set chartRangeClip(bool val) => _v[CHART_RANGE_CLIP] = val;
+  int get chartRangeClip => _v[CHART_RANGE_CLIP];
+  set chartRangeClip(int val) => _v[CHART_RANGE_CLIP] = val;
 
-  int get colorMap => _v[COLOR_MAP];
-  set colorMap(int val) => _v[COLOR_MAP] = val;
+  // a list of Lists [[fromVal, toVal, color], [..], ...]
+  List<List> get colorMap => _v[COLOR_MAP];
+  set colorMap(List val) => _v[COLOR_MAP] = val;
+
+  // a list colors // either colorMap or colorList can be used but not both
+  List get colorList => _v[COLOR_MAP];
+  set colorList(List val) => _v[COLOR_MAP] = val;
 
   BarChartTooltipOptions get tooltip => _v[Options.TOOLTIP];
 }
@@ -258,6 +280,7 @@ class TristateOptions extends Options {
   static const NEG_BAR_COLOR = 'negBarColor';
   static const ZERO_BAR_COLOR = 'zeroBarColor';
   static const COLOR_MAP = 'colorMap';
+  static const COLOR_LIST = 'colorList';
 
   TristateOptions() : super();
   TristateOptions.uninitialized() : super.uninitialized();
@@ -294,7 +317,6 @@ class TristateOptions extends Options {
     POS_BAR_COLOR : '#6f6',
     NEG_BAR_COLOR : '#f44',
     ZERO_BAR_COLOR : '#999',
-    COLOR_MAP : {},
     Options.TOOLTIP : new TristateChartTooltipOptions()
   };
 
@@ -313,8 +335,13 @@ class TristateOptions extends Options {
   String get zeroBarColor => _v[ZERO_BAR_COLOR];
   set zeroBarColor(String val)  => _v[ZERO_BAR_COLOR] = val;
 
-  Map get colorMap => _v[COLOR_MAP];
-  set colorMap(Map val) => _v[COLOR_MAP] = val;
+  // a list of Lists [[fromVal, toVal, color], [..], ...]
+  List<List> get colorMap => _v[COLOR_MAP];
+  set colorMap(List val) => _v[COLOR_MAP] = val;
+
+  // a list colors // either colorMap or colorList can be used but not both
+  List get colorList => _v[COLOR_MAP];
+  set colorList(List val) => _v[COLOR_MAP] = val;
 
   TristateChartTooltipOptions get tooltip => _v[Options.TOOLTIP];
 
@@ -381,8 +408,8 @@ class DiscreteOptions extends Options {
     Options.TOOLTIP : new DiscreteChartTooltipOptions()
   };
 
-  String get lineHeight => _v[LINE_HEIGHT];
-  set lineHeight(String val) => _v[LINE_HEIGHT] = val;
+  int get lineHeight => _v[LINE_HEIGHT];
+  set lineHeight(int val) => _v[LINE_HEIGHT] = val;
 
   String get thresholdColor => _v[THRESHOLD_COLOR];
   set thresholdColor(String val) => _v[THRESHOLD_COLOR] = val;

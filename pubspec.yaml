@@ -3,29 +3,21 @@ version: 0.0.10
 author: Günter Zöchbauer <guenter@gzoechbauer.com>
 description: BWU Sparklines is A Polymer.dart port of jQuery Sparklines.
 homepage: https://github.com/bwu-dart/bwu_sparklines
-documentation: http://bwu-dart.github.io/bwu_sparklines/dartdoc/
 environment:
   sdk: '>=1.0.0 <2.0.0'
-
+documentation: http://bwu-dart.github.io/bwu_sparklines/dartdoc/
 dependencies:
-  polymer: '>=0.10.1+1 <0.11.0'
-  quiver: '>=0.18.2 <0.19.0'
-  quiver_log: '>=1.0.1 <2.0.0'
-
   bwu_utils:
     path: ../../bwu_utils
   bwu_utils_browser:
     path: ../../bwu_utils_browser
-
+  polymer: '>=0.10.1+1 <0.11.0'
+  quiver: '>=0.18.2 <0.19.0'
+  quiver_log: '>=1.0.1 <2.0.0'
 dev_dependencies:
   unittest: any
-
-dependency_overrides:
-#  barback: '>= 0.14.0+3'
-#  analyzer: '>= 0.15.5'
-
+dependency_overrides: null
 transformers:
 - polymer:
     entry_points:
     - example/simple.html
-

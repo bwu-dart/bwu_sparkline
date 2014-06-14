@@ -1,29 +1,33 @@
 part of bwu_sparkline;
 
 class RangeMap {
-  Map _map;
-  List _rangeList;
+  List<List> _map;
+  List<List> _rangeList;
 
-  RangeMap (Map map) {
+  RangeMap (List<List> map) {
     var key, range, rangelist = [];
-    for (key in map) {
-      if (map.containsKey(key) && key is String && key.indexOf(':') > -1) {
-        range = key.split(':');
-        range[0] = range[0].length == 0 ? double.NEGATIVE_INFINITY : double.parse(range[0]);
-        range[1] = range[1].length == 0 ? double.INFINITY : double.parse(range[1]);
-        range[2] = map[key];
+    //for (List<int,int> key in map) {
+    map.forEach((range) {
+      if(range.length == 2) {
+      //if (map.containsKey(key) && key is String && key.indexOf(':') > -1) {
+      //  range = key.split(':');
+        if(range[0] == null) range[0] = double.NEGATIVE_INFINITY;
+        if(range[1] == null) range[1] = double.INFINITY;
+        //range[0] = range[0].length == 0 ? double.NEGATIVE_INFINITY : double.parse(range[0]);
+        //range[1] = range[1].length == 0 ? double.INFINITY : double.parse(range[1]);
+        //range[2] = map[key]; // TODO should be color
         rangelist.add(range);
       }
-    }
+    });
     _map = map;
     _rangeList = rangelist;
   }
 
-  int get(int value) {
+  String get(num value) {
     int i;
-    List<int> range;
-    int result;
-    if ((result = this._map[value]) != null) {
+    List range;
+    String result;
+    if ((result = _map[value][2]) != null) {
       return result;
     }
     if (_rangeList != null) {
