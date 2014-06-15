@@ -54,13 +54,13 @@ class MouseHandler {
     if(mouseMoveSubscr != null) mouseMoveSubscr.cancel();
     mouseMoveSubscr = dom.document.body.on['mousemove.jqs'].listen(mousemove);
     over = true;
-    currentPageX = e.pageX;
-    currentPageY = e.pageY;
+    currentPageX = e.page.x;
+    currentPageY = e.page.y;
     currentEl = e.target;
     if (tooltip == null && displayTooltips) {
         tooltip = new dom.Element.tag('sp-tooltip');
         tooltip.options = _options;
-        tooltip.updatePosition(e.pageX, e.pageY);
+        tooltip.updatePosition(e.page.x, e.page.x);
     }
     updateDisplay();
   }

@@ -24,24 +24,33 @@ const String TRISTATE_TYPE = 'tristate';
 
 
 abstract class Options extends OptionsBase {
-  factory Options.forType([String type]) {
+
+  factory Options.forType([String type, initialized = false]) {
     switch(type) {
       case BAR_TYPE:
-        return new BarOptions();
+        if(initialized) return new BarOptions();
+        return new BarOptions.uninitialized();
       case BOX_TYPE:
-        return new BoxOptions();
+        if(initialized)return new BoxOptions();
+        return new BoxOptions.uninitialized();
       case BULLET_TYPE:
-        return new BulletOptions();
+        if(initialized) return new BulletOptions();
+        return new BulletOptions.uninitialized();
       case DISCRETE_TYPE:
-        return new DiscreteOptions();
+        if(initialized) return new DiscreteOptions();
+        return new DiscreteOptions.uninitialized();
       case LINE_TYPE:
-        return new LineOptions();
+        if(initialized) return new LineOptions();
+        return new LineOptions.uninitialized();
       case PIE_TYPE:
-        return new PieOptions();
+        if(initialized) return new PieOptions();
+        return new PieOptions.uninitialized();
       case TRISTATE_TYPE:
-        return new TristateOptions();
+        if(initialized) return new TristateOptions();
+        return new TristateOptions.uninitialized();
       default:
-        return new LineOptions();
+        if(initialized) return new LineOptions();
+        return new LineOptions.uninitialized();
     }
   }
 

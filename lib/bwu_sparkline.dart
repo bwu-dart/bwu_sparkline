@@ -270,19 +270,13 @@ class BwuSparkline extends PolymerElement {
     if (height == null) {
       height = ub.innerHeight(this);
     }
-    return new VCanvas(width, height, this /*$['canvas']*/, interact);
-//    mhandler = $(this).data('_jqs_mhandler');
-//    if (mhandler) {
-//        mhandler.registerCanvas(target);
-//    }
-//    return target;
+    var target = new VCanvas(width, height, this /*$['canvas']*/, interact);
+    //mhandler = $(this).data('_jqs_mhandler');
+    if (mHandler != null) {
+        mHandler.registerCanvas(target);
+    }
+    return target;
   }
-
-//  void clearDraw() {
-//    canvas.setFillColorRgb(255,255,255);
-//    canvas.rect(0, 0, target.width, target.height);
-//  }
-
 
   bool _isAttached = false;
 
@@ -306,17 +300,7 @@ class BwuSparkline extends PolymerElement {
     _isAttached = false;
   }
 
-  void init(/*List userValues, [Options userOptions]*/) {
-    //_userValues = userValues;
-
-
-//    if(userOptions != null) {
-//      _options = userOptions;
-//      _userOptions = userOptions;
-//    } else {
-//      _options = new Options.forType();
-//    }
-
+  void init() {
     _loadAttributeOptions();
 
     String chartType;
@@ -327,27 +311,17 @@ class BwuSparkline extends PolymerElement {
       chartType = _attributeOptions.type;
     }
 
-    _options = new Options.forType(chartType)
+    _options = new Options.forType(chartType, true)
         ..extend(options)
         ..extend(_attributeOptions);
 
-//    if(options == null) {
-//      if(_attributeOptions == null) {
-//        _options = new Options.forType();
-//      } else {
-//        _options = new Options.forType(_attributeOptions.type)..extend(_attributeOptions);
-//      }
-//    } else {
-//      _options = new .extend(_attributeOptions);
-//    }
-
-//    if(userValues == null && _options.values != null) {
-//      userValues = _options.values;
-//    }
+    if(_values == null && _options.values != null) {
+      _values = _options.values;
+    }
 
     if (innerHtml.trim() == '' && !_options.disableHiddenCheck && !isVisible || !_isAttached) {
       if (!_options.composite) {
-        _delayedRender = new async.Timer(Duration.ZERO, render);
+        render();
       }
     } else {
       render();
@@ -360,23 +334,6 @@ class BwuSparkline extends PolymerElement {
     if(optionsMap == null) {
       return;
     }
-//    if(!_options.enableTagOptions) {
-//      return;
-//    }
-//    if(_options.tagOptionsPrefix != null && _options.tagOptionsPrefix.isNotEmpty) {
-//      _tagOptionsPrefix = _options.tagOptionsPrefix;
-//    }
-//
-//    Map attributeValues = {};
-//    attributes.keys.forEach((key) {
-//      if(key.startsWith(_tagOptionsPrefix)) {
-//        var mapKey = key.replaceFirst(_tagOptionsPrefix, '');
-//        attributeValues[mapKey] = attributes[key];
-//      }
-//    });
-
-//    Map attributeValues = convert.JSON.decode(options);
-
 
     String chartType;
     if(optionsMap.containsKey('type')) {
@@ -391,13 +348,11 @@ class BwuSparkline extends PolymerElement {
     });
   }
 
+  MouseHandler mHandler;
+
   void render () {
     _delayedRender = null;
     List<List<num>> values;
-//    int width;
-//    int height;
-//    MouseHandler mhandler;
-//    String vals;
 
     if (_values == null) {
       String vals = attributes[_options.tagValuesAttribute];
@@ -409,11 +364,13 @@ class BwuSparkline extends PolymerElement {
         values.add(normalizeValue([f]));
         // TODO split them if they contain ':'
       });
+      _values = values.toList();
     } else {
       if(_values.every((e) => e is List && e.every((v) => v is num))) {
-        values = _values;
+        values = _values.toList();
+      } else {
+        values = _values.map((e) => [e]).toList();
       }
-      values = _values.map((e) => [e]).toList();
     }
 
     int width = _options.width == null ? values.length * _options.defaultPixelsPerValue : _options.width;
@@ -422,26 +379,27 @@ class BwuSparkline extends PolymerElement {
         // must be a better way to get the line height
         dom.SpanElement tmp = new dom.SpanElement();
         tmp.innerHtml = 'a';
-        shadowRoot.append(tmp); //$this.html(tmp);
+        children.clear();
+        append(tmp); //$this.html(tmp);
         height = tmp.offsetHeight;
         tmp.remove();
       }
     } else {
       height = _options.height;
     }
+    children.clear();
 
-// TODO
-//    if (!_options.disableInteraction) {
-//      //mhandler = $.data(this, '_jqs_mhandler');
-//      if (!mhandler) {
-//         mhandler = new MouseHandler(this, options);
-//        //$.data(this, '_jqs_mhandler', mhandler);
-//      } else if (!_options.composite) {
-//         mhandler.reset();
-//      }
-//    } else {
-//      mhandler = null;
-//    }
+    if (!_options.disableInteraction) {
+      //mhandler = $.data(this, '_jqs_mhandler');
+      if (mHandler == null) {
+         mHandler = new MouseHandler(this, _options);
+        //$.data(this, '_jqs_mhandler', mhandler);
+      } else if (!_options.composite) {
+         mHandler.reset();
+      }
+    } else {
+      mHandler = null;
+    }
 
 //    if (_options.composite && !$.data(this, '_jqs_vcanvas')) {
 //      if (!$.data(this, '_jqs_errnotify')) {
@@ -456,9 +414,9 @@ class BwuSparkline extends PolymerElement {
     sp.render();
 
 
-//    if (mhandler != null) {
-//      mhandler.registerSparkline(sp);
-//    }
+    if (mHandler != null) {
+      mHandler.registerSparkline(sp);
+    }
   }
 
 
@@ -880,7 +838,7 @@ class Line extends ChartBase {
   int maxx;
   int miny;
   int maxy;
-  int spotRadius = 0;
+  double spotRadius = 0.0;
   int highlightSpotId;
   int maxyorg;
   int minxorg;
@@ -1036,7 +994,7 @@ class Line extends ChartBase {
     int yvallast;
     int canvasTop;
     int canvasLeft;
-    List<int> vertex;
+    List<num> vertex;
     List<List<num>> path;
     List<List<List<num>>> paths;
     int x;
@@ -1044,8 +1002,8 @@ class Line extends ChartBase {
     int xnext;
     int xpos;
     int xposnext;
-    int last;
-    int next;
+    num last;
+    num next;
     int yvalcount;
     List<List<List<num>>> lineShapes;
     List<List<List<num>>> fillShapes;
@@ -1075,8 +1033,9 @@ class Line extends ChartBase {
     rangey = maxy - miny == 0 ? 1 : maxy - miny;
     yvallast = yvalues.length - 1;
 
+    spotRadius = options.spotRadius;
     if (spotRadius != 0 && (canvasWidth < (spotRadius * 4) || canvasHeight < (spotRadius * 4))) {
-      spotRadius = 0;
+      spotRadius = 0.0;
     }
     if (spotRadius != 0) {
       // adjust the canvas size as required so that spots will fit
@@ -1121,7 +1080,7 @@ class Line extends ChartBase {
       y = yvalues[i];
       xpos = canvasLeft + ((x - minx) * (canvasWidth / rangex)).round();
       xposnext = i < yvalcount - 1 ? canvasLeft + ((xnext - minx) * (canvasWidth / rangex)).round() : canvasWidth;
-      next = xpos + ((xposnext - xpos) / 2).round();
+      next = xpos + ((xposnext - xpos) / 2);
       regionMap.add([last != null ? last : 0, next, i]);
       last = next;
       if (y == null) {
@@ -1157,7 +1116,7 @@ class Line extends ChartBase {
       if (path.length > 0) {
         if (options.fillColor != null) {
           path.add([path[path.length - 1][0], (canvasTop + canvasHeight)]);
-          fillShapes.add([path.removeAt(0)]);
+          fillShapes.add(path.toList());
           path.removeLast();
         }
         // if there's only a single point in this path, then we want to display it
@@ -1342,11 +1301,11 @@ class Bar extends ChartBase with BarHighlightMixin {
           }
         }
       } else {
-          val = chartRangeClip != null ? [clipval(values[i][0], clipMin, clipMax)] : values[i];
-          val = values[i] = normalizeValue(val);
-          if (val != null && val.every((e) => e != null)) {
-            numValues.add(val);
-          }
+        val = chartRangeClip != null ? [clipval(values[i][0], clipMin, clipMax)] : values[i];
+        val = values[i] = normalizeValue(val);
+        if (val != null && val.every((e) => e != null)) {
+          numValues.add(val);
+        }
       }
     }
     max = numValues.reduce((a, b) => [math.max(a[0], b[0])])[0];
@@ -1453,6 +1412,7 @@ class Bar extends ChartBase with BarHighlightMixin {
     int y;
     int height;
     String color;
+    int yoffset = this.yoffset;
     int yoffsetNeg;
     int i;
     bool minPlotted;
@@ -2164,15 +2124,15 @@ abstract class VCanvasBase {
     return drawShape([[x1, y1], [x2, y2]], lineColor, lineWidth);
   }
 
-  VShape drawShape(List<List<int>> path, String lineColor, int lineWidth, {String fillColor}) {
+  VShape drawShape(List<List<num>> path, String lineColor, int lineWidth, {String fillColor}) {
     return _genShape(VShape.SHAPE, {'path': path, 'lineColor':lineColor, 'fillColor':fillColor, 'lineWidth':lineWidth});
   }
 
-  VShape drawCircle(int x, int y, int radius, String lineColor, String fillColor, int lineWidth) {
+  VShape drawCircle(int x, int y, double radius, String lineColor, String fillColor, int lineWidth) {
     return _genShape(VShape.CIRCLE, {'x':x, 'y':y, 'radius':radius, 'lineColor':lineColor, 'fillColor':fillColor, 'lineWidth':lineWidth});
   }
 
-  VShape drawPieSlice(int x, int y, int radius, int startAngle, int endAngle, String lineColor, String fillColor) {
+  VShape drawPieSlice(int x, int y, double radius, int startAngle, int endAngle, String lineColor, String fillColor) {
     return _genShape(VShape.PIE_SLICE, {'x':x, 'y':y, 'radius':radius, 'startAngle':startAngle, 'endAngle':endAngle, 'lineColor':lineColor, 'fillColor':fillColor});
   }
 
@@ -2337,7 +2297,7 @@ class VCanvas extends VCanvasBase {
     int plen= path.length;
     context.beginPath();
     context.moveTo(path[0][0] + 0.5, path[0][1] + 0.5);
-    for (i = 1; i < plen; i++) {
+    for (i = 1; i < plen ; i++) {
       context.lineTo(path[i][0] + 0.5, path[i][1] + 0.5); // the 0.5 offset gives us crisp pixel-width lines
     }
     if (lineColor != null) {
@@ -2352,7 +2312,7 @@ class VCanvas extends VCanvasBase {
     }
   }
 
-  void _drawCircle(int shapeid, int x, int y, int radius, String lineColor, String fillColor, int lineWidth) {
+  void _drawCircle(int shapeid, int x, int y, double radius, String lineColor, String fillColor, int lineWidth) {
     var context = _getContext(lineColor: lineColor, fillColor: fillColor, lineWidth: lineWidth);
     context.beginPath();
     context.arc(x, y, radius, 0, 2 * math.PI, false);
@@ -2368,7 +2328,7 @@ class VCanvas extends VCanvasBase {
     }
   }
 
-  void _drawPieSlice(int shapeid, int x, int y, int radius, int startAngle, int endAngle, String lineColor, String fillColor) {
+  void _drawPieSlice(int shapeid, int x, int y, double radius, int startAngle, int endAngle, String lineColor, String fillColor) {
     dom.CanvasRenderingContext2D context = _getContext(lineColor: lineColor, fillColor: fillColor);
     context.beginPath();
     context.moveTo(x, y);
