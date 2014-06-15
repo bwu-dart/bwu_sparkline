@@ -93,7 +93,8 @@
 *   disableInteraction - If set to true then all mouseover/click interaction behaviour will be disabled,
 *       making the plugin perform much like it did in 1.x
 *   disableTooltips - If set to true then tooltips will be disabled - Defaults to false (tooltips enabled)
-*   disableHighlight - If set to true then highlighting of selected chart elements on mouseover will be disabled
+*  // TODO there is also an enableHighlight, settle for one
+ * disableHighlight - If set to true then highlighting of selected chart elements on mouseover will be disabled
 *       defaults to false (highlights enabled)
 *   highlightLighten - Factor to lighten/darken highlighted chart values by - Defaults to 1.4 for a 40% increase
 *   tooltipContainer - Specify which DOM element the tooltip should be rendered into - defaults to document.body
@@ -227,18 +228,38 @@ part 'src/mouse_handler.dart';
 class BwuSparkline extends PolymerElement {
   BwuSparkline.created() : super.created();
 
-  // VCanvasCanvas target;
-  Options _options;
-  Options _userOptions;
-  Options _extendedOptions;
-  List _userValues;
-  List<List<num>> values;
+  @published var optionsMap; // Map literal
+  @published Options options; // Options instance
+  @published List values;     // List of values
+  //@published List valuesString; // attribute values inline values
 
-  int width;
+  // VCanvasCanvas target;
+  Options _options; // this one are used
+  Options _attributeOptions;
+  //Options _extendedOptions;
+  //List _userValues;
+  List<List<num>> _values;
+
   int height;
+  int width;
 //  MouseHandler mhandler;
   String _tagOptionsPrefix = '';
 
+
+  void optionsMapChanged(old) {
+    _loadAttributeOptions();
+    init();
+  }
+
+  void optionsChanged(old) {
+    _options = options;
+    init();
+  }
+
+  void valuesChanged(old) {
+    _values=values;
+    init();
+  }
 
   async.Timer _delayedRender;
 
@@ -285,13 +306,44 @@ class BwuSparkline extends PolymerElement {
     _isAttached = false;
   }
 
-  void init(List userValues, [Options userOptions]) {
-    _userValues = userValues;
-    if(userOptions != null) {
-      _options = userOptions;
-    }
-    _options = new Options.forType();
+  void init(/*List userValues, [Options userOptions]*/) {
+    //_userValues = userValues;
+
+
+//    if(userOptions != null) {
+//      _options = userOptions;
+//      _userOptions = userOptions;
+//    } else {
+//      _options = new Options.forType();
+//    }
+
     _loadAttributeOptions();
+
+    String chartType;
+
+    if(options != null) {
+      chartType = options.type;
+    } else if(_attributeOptions != null) {
+      chartType = _attributeOptions.type;
+    }
+
+    _options = new Options.forType(chartType)
+        ..extend(options)
+        ..extend(_attributeOptions);
+
+//    if(options == null) {
+//      if(_attributeOptions == null) {
+//        _options = new Options.forType();
+//      } else {
+//        _options = new Options.forType(_attributeOptions.type)..extend(_attributeOptions);
+//      }
+//    } else {
+//      _options = new .extend(_attributeOptions);
+//    }
+
+//    if(userValues == null && _options.values != null) {
+//      userValues = _options.values;
+//    }
 
     if (innerHtml.trim() == '' && !_options.disableHiddenCheck && !isVisible || !_isAttached) {
       if (!_options.composite) {
@@ -304,37 +356,39 @@ class BwuSparkline extends PolymerElement {
 
   void _loadAttributeOptions() {
 
-    if(!_options.enableTagOptions) {
+    // TODO remove redundant options like tagOptionsPrefix
+    if(optionsMap == null) {
       return;
     }
-    if(_options.tagOptionsPrefix != null && _options.tagOptionsPrefix.isNotEmpty) {
-      _tagOptionsPrefix = _options.tagOptionsPrefix;
-    }
+//    if(!_options.enableTagOptions) {
+//      return;
+//    }
+//    if(_options.tagOptionsPrefix != null && _options.tagOptionsPrefix.isNotEmpty) {
+//      _tagOptionsPrefix = _options.tagOptionsPrefix;
+//    }
+//
+//    Map attributeValues = {};
+//    attributes.keys.forEach((key) {
+//      if(key.startsWith(_tagOptionsPrefix)) {
+//        var mapKey = key.replaceFirst(_tagOptionsPrefix, '');
+//        attributeValues[mapKey] = attributes[key];
+//      }
+//    });
 
-    Map attributeValues = {};
-    attributes.keys.forEach((key) {
-      if(key.startsWith(_tagOptionsPrefix)) {
-        var mapKey = key.replaceFirst(_tagOptionsPrefix, '');
-        attributeValues[mapKey] = attributes[key];
-      }
-    });
+//    Map attributeValues = convert.JSON.decode(options);
 
-    Options attribOptions;
+
     String chartType;
-    if(attributeValues.containsKey('type')) {
-      chartType = attributeValues['type'];
-    } else {
-      chartType = _userOptions.type;
+    if(optionsMap.containsKey('type')) {
+      chartType = optionsMap['type'];
+    } else if(options != null) {
+      chartType = options.type;
     }
 
-    attribOptions = new Options.forType(chartType);
-    attributeValues.keys.forEach((k) {
-      attribOptions[k] = attributeValues[k];
+    _attributeOptions = new Options.forType(chartType);
+    optionsMap.keys.forEach((k) {
+      _attributeOptions[k] = optionsMap[k];
     });
-
-    _options = new Options.forType(_userOptions.type)
-      ..extend(_userOptions)
-      ..extend(attribOptions);
   }
 
   void render () {
@@ -345,7 +399,7 @@ class BwuSparkline extends PolymerElement {
 //    MouseHandler mhandler;
 //    String vals;
 
-    if (_userValues == null) {
+    if (_values == null) {
       String vals = attributes[_options.tagValuesAttribute];
       if (vals == null || vals.isEmpty) {
         vals = innerHtml;
@@ -356,10 +410,10 @@ class BwuSparkline extends PolymerElement {
         // TODO split them if they contain ':'
       });
     } else {
-      if(_userValues.every((e) => e is List && e.every((v) => v is num))) {
-        values = _userValues;
+      if(_values.every((e) => e is List && e.every((v) => v is num))) {
+        values = _values;
       }
-      values = _userValues.map((e) => [e]).toList();
+      values = _values.map((e) => [e]).toList();
     }
 
     int width = _options.width == null ? values.length * _options.defaultPixelsPerValue : _options.width;
@@ -520,12 +574,12 @@ abstract class ChartBase {
   int canvasWidth;
   int canvasHeight;
 
-  VShape regionShapes;
+  VShape regionShapes = new VShape.list();
 
   ChartBase.sub(this.type, this.el, this.values, this.options, this.width, this.height);
 
   factory ChartBase(String type, BwuSparkline el, List<List<num>> values, Options options, int width, int height) {
-    switch(type.toLowerCase()) {
+    switch(type) {
       case BAR_TYPE:
         return new Bar(el, values, options, width, height);
       case BOX_TYPE:
@@ -543,6 +597,16 @@ abstract class ChartBase {
     }
   }
 
+  // necessary for BarHighlightMixing
+  bool superRender() {
+    if (disabled) {
+      el.innerHtml = '';
+      return false;
+    }
+    return true;
+  }
+
+
   /**
    * Setup the canvas
    */
@@ -557,11 +621,7 @@ abstract class ChartBase {
    * Actually render the chart to the canvas
    */
   bool render() {
-    if (disabled) {
-      el.innerHtml = '';
-      return false;
-    }
-    return true;
+    return superRender();
   }
 
   /**
@@ -747,7 +807,7 @@ abstract class BarHighlightMixin  {
   VShape renderRegion(int region, [bool highlight = false]);
 
   void changeHighlight(bool highlight) {
-    VShape shapeids = base.regionShapes[base.currentRegion];
+    VShape shapeids = new VShape.list()..add(base.regionShapes[base.currentRegion]);
     // will be null if the region value was null
     if (shapeids != null) {
       newShapes = renderRegion(base.currentRegion, highlight);
@@ -767,26 +827,26 @@ abstract class BarHighlightMixin  {
     int i;
     int j;
 
-    if (!base.render()) {
+    if (!base.superRender()) {
       return;
     }
-    for (i = base.values.length; i--; i > 0) {
+    for (i = base.values.length - 1; i >= 0; i--) {
       shapes = renderRegion(i);
       if (shapes != null) {
-        if (shapes is List) {
+        if (shapes.type == VShape.CONTAINER) {
           ids = [];
-          for (j = shapes.length; j--; j > 0) {
+          for (j = shapes.length; j > 0; j--) {
             shapes[j].append();
             ids.add(shapes[j].id);
           }
-          base.regionShapes[i] = ids;
+          base.regionShapes[i] = ids; // TODO
         } else {
           shapes.append();
-          base.regionShapes[i] = shapes.id; // store just the shapeid
+          base.regionShapes.add(shapes.id); // store just the shapeid
         }
       } else {
         // null value
-        base.regionShapes[i] = null;
+        base.regionShapes.add(null);
       }
     }
     base.target.render();
@@ -1183,12 +1243,11 @@ class Bar extends ChartBase with BarHighlightMixin {
   List colorMapByIndex;
   RangeMap colorMapByValue;
   num yoffset;
-  int xaxisOffset;
-  int range;
-  bool stacked;
+  num xaxisOffset;
+  num range;
+  bool stacked = false;
   int canvasHeightEf;
   int barWidth;
-
 
   Bar(BwuSparkline el, List<List<num>> values, BarOptions options, int width, int height) : super.sub(BAR_TYPE, el, values, options, width, height) {
     initBarHighlightMixing(this);
@@ -1196,7 +1255,7 @@ class Bar extends ChartBase with BarHighlightMixin {
     int barSpacing = options.barSpacing;
     int chartRangeMin = options.chartRangeMin;
     int chartRangeMax = options.chartRangeMax;
-    int chartRangeClip = options.chartRangeClip;
+    bool chartRangeClip = options.chartRangeClip;
     num stackMin = double.INFINITY;
     num stackMax = double.NEGATIVE_INFINITY;
     bool isStackString = false;
@@ -1206,11 +1265,11 @@ class Bar extends ChartBase with BarHighlightMixin {
     List<List<num>> numValues;
     int i;
     int vlen;
-    int zeroAxis;
+    bool zeroAxis;
     num min;
     num max;
-    int clipMin;
-    int clipMax;
+    double clipMin;
+    double clipMax;
     List<num> vlist;
     //int j;
     int slen;
@@ -1224,7 +1283,7 @@ class Bar extends ChartBase with BarHighlightMixin {
     for (i = 0; i < vlen; i++) {
       val = values[i];
       // TODO isStackString = val is String && val.indexOf(':') > -1;
-      if (isStackString || val is List) {
+      if (isStackString || val is List && val.length > 1) {
         stacked = true;
         if (isStackString) {
           // TODO val = values[i] = normalizeValues(val.split(':'));
@@ -1252,7 +1311,7 @@ class Bar extends ChartBase with BarHighlightMixin {
     }
 
     numValues = [];
-    stackRanges = stacked ? <num>[] : numValues;
+    stackRanges = stacked ? [] : numValues;
     var stackTotals = [];
     List<List<num>> stackRangesNeg = [];
     vlen = values.length;
@@ -1260,13 +1319,15 @@ class Bar extends ChartBase with BarHighlightMixin {
       if (stacked) {
         vlist = values[i];
         values[i] = svals = [];
-        stackTotals[i] = 0;
-        stackRanges[i] = stackRangesNeg[i] = [0];
+        stackTotals.add([0]);
+        stackRanges.add([0]);
+        stackRangesNeg.add([0]);
         for (int j = 0, slen = vlist.length; j < slen; j++) {
-          val = svals[j] = chartRangeClip != null? [clipval(vlist[j], clipMin, clipMax)] : [vlist[j]];
-          if (val != null) {
+          val = chartRangeClip != null ? [clipval(vlist[j], clipMin, clipMax)] : [vlist[j]];
+          svals.add(val);
+          if (val[0] != null) {
             if (val[0] > 0) {
-              stackTotals[i] += val;
+              stackTotals[i][0] += val[0];
             }
             if (stackMin < 0 && stackMax > 0) {
               if (val[0] < 0) {
@@ -1281,16 +1342,16 @@ class Bar extends ChartBase with BarHighlightMixin {
           }
         }
       } else {
-          val = chartRangeClip != null ? clipval(values[i][0], clipMin, clipMax) : values[i];
-          val = values[i] = [normalizeValue(val)];
-          if (val != null) {
+          val = chartRangeClip != null ? [clipval(values[i][0], clipMin, clipMax)] : values[i];
+          val = values[i] = normalizeValue(val);
+          if (val != null && val.every((e) => e != null)) {
             numValues.add(val);
           }
       }
     }
     max = numValues.reduce((a, b) => [math.max(a[0], b[0])])[0];
     min = numValues.reduce((a, b) => [math.min(a[0], b[0])])[0];
-    stackMax = stackMax = stacked ? stackTotals.reduce(math.max) : max;
+    stackMax = stackMax = stacked ? stackTotals.reduce((a, b) => [math.max(a[0], b[0])])[0] : max;
     stackMin = stackMin = stacked ? numValues.reduce((a, b) => [math.min(a[0], b[0])])[0] : min;
 
     if (options.chartRangeMin != null && (options.chartRangeClip != null || options.chartRangeMin < min)) {
@@ -1363,7 +1424,7 @@ class Bar extends ChartBase with BarHighlightMixin {
     return result;
   }
 
-  String calcColor(int stacknum, int value, int valuenum) {
+  String calcColor(int stacknum, num value, int valuenum) {
     String color;
     String newColor;
     if (stacked) {
@@ -1385,8 +1446,8 @@ class Bar extends ChartBase with BarHighlightMixin {
   /**
    * Render bar(s) for a region
    */
-  List<VShape> renderRegion(int valuenum, [bool highlight]) {
-    var vals = values[valuenum];
+  List<VShape> renderRegion(int valuenum, [bool highlight = false]) {
+    List<num> vals = values[valuenum];
     List<VShape> result = [];
     int x = valuenum * totalBarWidth;
     int y;
@@ -1396,9 +1457,9 @@ class Bar extends ChartBase with BarHighlightMixin {
     int i;
     bool minPlotted;
 
-    vals = vals is List ? vals : [vals];
+    //vals = vals is List ? vals : [vals];
     int valcount = vals.length;
-    int val = vals[0];
+    num val = vals[0];
     bool isNull = vals.every((v) => v == null);
     bool allMin = vals.every((v) => v == xaxisOffset || v == null);
 
@@ -1658,7 +1719,6 @@ class Bullet extends ChartBase {
   }
 
   List<Map> getCurrentRegionFields() {
-    var currentRegion = currentRegion;
     return [{
       'fieldkey': currentRegion.substr(0, 1),
       'value': values[currentRegion.substr(1)],
@@ -1780,7 +1840,6 @@ class Pie extends ChartBase {
   }
 
   List<Map> getCurrentRegionFields() {
-    int currentRegion = currentRegion;
     return [{
       'isNull': values[currentRegion] == null,
       'value': values[currentRegion],
@@ -2046,8 +2105,9 @@ class VShape extends coll.ListBase {
   static const CIRCLE = 'Circle';
   static const PIE_SLICE = 'PieSlice';
   static const RECT = 'Rect';
+  static const CONTAINER = 'Container';
 
-  List<VShape> _list = <VShape>[];
+  List<int> _list = <int>[];
 
   VCanvas target;
   int id;
@@ -2055,6 +2115,7 @@ class VShape extends coll.ListBase {
   Map args;
 
   VShape(this.target, this.id, this.type, this.args);
+  VShape.list() : this.type = CONTAINER;
 
   VShape append() {
     target.appendShape(this);
@@ -2062,10 +2123,10 @@ class VShape extends coll.ListBase {
   }
 
   @override
-  operator [](int index) => _list[index];
+  int operator [](int index) => _list[index];
 
   @override
-  void operator []=(int index, value) => _list[index] = value;
+  operator []=(int index, value) => _list[index] = value;
 
   @override
   set length(int newLength) => _list.length = newLength;
@@ -2244,9 +2305,10 @@ class VCanvas extends VCanvasBase {
     _calculatePixelDims(width, height, canvas);
 //    canvas.width = pixelWidth;
 //    canvas.height = pixelHeight;
-    canvas.style
-        ..width = '${pixelWidth}px'
-        ..height = '${pixelHeight}px';
+    canvas
+        ..width = pixelWidth
+        ..height = pixelHeight;
+    _getContext().fillStyle = '#fff';
   }
 
   dom.CanvasRenderingContext2D _getContext({String lineColor, String fillColor, int lineWidth}) {
@@ -2353,10 +2415,10 @@ class VCanvas extends VCanvasBase {
     int i;
     int first;
 
-    for (i = shapeids.length; i--; i > 0) {
+    for (i = shapeids.length; i >= 0; i--) {
       shapemap[shapeids[i]] = true;
     }
-    for (i = shapeseq.length; i--; I > 0) {
+    for (i = shapeseq.length; i >= 0; i--) {
       sid = shapeseq[i];
       if (shapemap[sid]) {
         shapeseq.removeAt(i);
@@ -2383,7 +2445,7 @@ class VCanvas extends VCanvasBase {
 
   void removeShapeId(int shapeid) {
     int i;
-    for (i = shapeseq.length; i--; i > 0) {
+    for (i = shapeseq.length; i >= 0;  i--) {
       if (shapeseq[i] == shapeid) {
         shapeseq.removeAt(i);
         break;

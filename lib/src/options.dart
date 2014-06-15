@@ -68,6 +68,7 @@ abstract class Options extends OptionsBase {
   static const DISABLE_TOOLTIPS = 'disableTooltips';
   static const DISABLE_INTERACTIONS = 'disableInteraction';
   static const TOOLTIP = 'tooltip';
+  static const VALUES = 'values';
 
   Options() : super();
   Options.uninitialized() : super.uninitialized();
@@ -110,7 +111,8 @@ abstract class Options extends OptionsBase {
        NUMBER_DECIMAL_MARK,
        DISABLE_TOOLTIPS,
        DISABLE_INTERACTIONS,
-       TOOLTIP
+       TOOLTIP,
+       VALUES
        ];
 
   final Map _defaults = {
@@ -132,68 +134,71 @@ abstract class Options extends OptionsBase {
     DISABLE_INTERACTIONS : false,
   };
 
-  String get type => _v[TYPE];
-  //set type(String val) => _v[TYPE] = val;
+  String get type => this[TYPE];
+  //set type(String val) => this[TYPE] = val;
 
-  String get lineColor => _v[LINE_COLOR];
-  set lineColor(String val) => _v[LINE_COLOR] = val;
+  String get lineColor => this[LINE_COLOR];
+  set lineColor(String val) => this[LINE_COLOR] = val;
 
-  String get fillColor => _v[FILL_COLOR];
-  set fillColor(String val) => _v[FILL_COLOR] = val;
+  String get fillColor => this[FILL_COLOR];
+  set fillColor(String val) => this[FILL_COLOR] = val;
 
-  int get defaultPixelsPerValue => _v[DEFAULT_PIXELS_PER_VALUE];
-  set defaultPixelsPerValue(int val) => _v[DEFAULT_PIXELS_PER_VALUE] = val;
+  int get defaultPixelsPerValue => this[DEFAULT_PIXELS_PER_VALUE];
+  set defaultPixelsPerValue(int val) => this[DEFAULT_PIXELS_PER_VALUE] = val;
 
-  int get width => _v[WIDTH]; // null is 'auto'
-  set width(int val) => _v[WIDTH] = val; // null is 'auto'
+  int get width => this[WIDTH]; // null is 'auto'
+  set width(int val) => this[WIDTH] = val; // null is 'auto'
 
-  int get height => _v[HEIGHT]; // null is 'auto'
-  set height(int val) => _v[HEIGHT] = val; // null is 'auto'
+  int get height => this[HEIGHT]; // null is 'auto'
+  set height(int val) => this[HEIGHT] = val; // null is 'auto'
 
-  bool get composite => _v[COMPOSITE];
-  set composite(bool val) => _v[COMPOSITE] = val;
+  bool get composite => this[COMPOSITE];
+  set composite(bool val) => this[COMPOSITE] = val;
 
-  String get tagValuesAttribute => _v[TAG_VALUES_ATTRIBUTE];
-  set tagValuesAttribute(String val) => _v[TAG_VALUES_ATTRIBUTE] = val;
+  String get tagValuesAttribute => this[TAG_VALUES_ATTRIBUTE];
+  set tagValuesAttribute(String val) => this[TAG_VALUES_ATTRIBUTE] = val;
 
-  String get tagOptionsPrefix => _v[TAG_OPTIONS_PREFIX];
-  set tagOptionsPrefix(String val) => _v[TAG_OPTIONS_PREFIX] = val;
+  String get tagOptionsPrefix => this[TAG_OPTIONS_PREFIX];
+  set tagOptionsPrefix(String val) => this[TAG_OPTIONS_PREFIX] = val;
 
-  bool get enableTagOptions => _v[ENABLE_TAG_OPTIONS];
-  set enableTagOptions(bool val) => _v[ENABLE_TAG_OPTIONS] = val;
+  bool get enableTagOptions => this[ENABLE_TAG_OPTIONS];
+  set enableTagOptions(bool val) => this[ENABLE_TAG_OPTIONS] = val;
 
-  bool get enableHighlight => _v[ENABLE_HIGHLIGHT];
-  set enableHighlight(bool val) => _v[ENABLE_HIGHLIGHT] = val;
+  bool get enableHighlight => this[ENABLE_HIGHLIGHT];
+  set enableHighlight(bool val) => this[ENABLE_HIGHLIGHT] = val;
 
-  String get highlightColor => _v[HIGHLIGHT_COLOR];
-  set highlightColor(String val) => _v[HIGHLIGHT_COLOR] = val;
+  String get highlightColor => this[HIGHLIGHT_COLOR];
+  set highlightColor(String val) => this[HIGHLIGHT_COLOR] = val;
 
-  double get highlightLighten => _v[HIGHLIGHT_LIGHTEN];
-  set highlightLighten(double val) => _v[HIGHLIGHT_LIGHTEN] = val;
+  double get highlightLighten => this[HIGHLIGHT_LIGHTEN];
+  set highlightLighten(double val) => this[HIGHLIGHT_LIGHTEN] = val;
 
-  bool get disableHiddenCheck => _v[DISABLE_HIDDEN_CHECK];
-  set disableHiddenCheck(bool val) => _v[DISABLE_HIDDEN_CHECK] = val;
+  bool get disableHiddenCheck => this[DISABLE_HIDDEN_CHECK];
+  set disableHiddenCheck(bool val) => this[DISABLE_HIDDEN_CHECK] = val;
 
-  NumberFormatterFn get numberFormatter => _v[NUMBER_FORMATTER];
-  set numberFormatter(NumberFormatterFn val) => _v[NUMBER_FORMATTER] = val;
+  NumberFormatterFn get numberFormatter => this[NUMBER_FORMATTER];
+  set numberFormatter(NumberFormatterFn val) => this[NUMBER_FORMATTER] = val;
 
-  int get numberDigitGroupCount => _v[NUMBER_DIGIT_GROUP_COUNT];
-  set numberDigitGroupCount(int val) => _v[NUMBER_DIGIT_GROUP_COUNT] = val;
+  int get numberDigitGroupCount => this[NUMBER_DIGIT_GROUP_COUNT];
+  set numberDigitGroupCount(int val) => this[NUMBER_DIGIT_GROUP_COUNT] = val;
 
-  String get numberDigitGroupSep => _v[NUMBER_DIGIT_GROUP_SEP];
-  set numberDigitGroupSep(String val) => _v[NUMBER_DIGIT_GROUP_SEP] = val;
+  String get numberDigitGroupSep => this[NUMBER_DIGIT_GROUP_SEP];
+  set numberDigitGroupSep(String val) => this[NUMBER_DIGIT_GROUP_SEP] = val;
 
-  String get numberDecimalMark => _v[NUMBER_DECIMAL_MARK];
-  set numberDecimalMark(String val) => _v[NUMBER_DECIMAL_MARK] = val;
+  String get numberDecimalMark => this[NUMBER_DECIMAL_MARK];
+  set numberDecimalMark(String val) => this[NUMBER_DECIMAL_MARK] = val;
 
-  bool get disableTooltips => _v[DISABLE_TOOLTIPS];
-  set disableTooltips(bool val) => _v[DISABLE_TOOLTIPS] = val;
+  bool get disableTooltips => this[DISABLE_TOOLTIPS];
+  set disableTooltips(bool val) => this[DISABLE_TOOLTIPS] = val;
 
-  bool get disableInteraction => _v[DISABLE_INTERACTIONS];
-  set disableInteraction(bool val) => _v[DISABLE_INTERACTIONS] = val;
+  bool get disableInteraction => this[DISABLE_INTERACTIONS];
+  set disableInteraction(bool val) => this[DISABLE_INTERACTIONS] = val;
 
-  Tooltip get tooltip => _v[TOOLTIP];
-  set tooltip(Tooltip val) => _v[TOOLTIP] = val;
+  Tooltip get tooltip => this[TOOLTIP];
+  set tooltip(Tooltip val) => this[TOOLTIP] = val;
+
+  List get values => this[VALUES];
+  set values(List val) => this[VALUES] = val;
 
   @override
   dynamic operator [](String key) {
@@ -205,6 +210,7 @@ abstract class Options extends OptionsBase {
 
   @override
   void operator []=(String key, val) {
+    if(key == TYPE) return;
     if(!_keys.contains(key)) {
       super[key] = val;
     }

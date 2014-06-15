@@ -105,14 +105,14 @@ class BoxChartTooltipOptions extends Tooltip {
     FORMAT_FIELDLIST_KEY : 'field'
   };
 
-  Map get valueLookups => _v[VALUE_LOOKUPS];
-  set valueLookups(Map val) => _v[VALUE_LOOKUPS] = val;
+  Map get valueLookups => this[VALUE_LOOKUPS];
+  set valueLookups(Map val) => this[VALUE_LOOKUPS] = val;
 
-  String get formatFieldlistKey => _v[FORMAT_FIELDLIST_KEY];
-  set formatFieldlistKey(String val) => _v[FORMAT_FIELDLIST_KEY] = val;
+  String get formatFieldlistKey => this[FORMAT_FIELDLIST_KEY];
+  set formatFieldlistKey(String val) => this[FORMAT_FIELDLIST_KEY] = val;
 
-  List<String> get formatFieldlist => _v[FORMAT_FIELDLIST];
-  set formatFieldlist(List<String> val) => _v[FORMAT_FIELDLIST] = val;
+  List<String> get formatFieldlist => this[FORMAT_FIELDLIST];
+  set formatFieldlist(List<String> val) => this[FORMAT_FIELDLIST] = val;
 
   @override
   dynamic operator [](String key) {
@@ -161,8 +161,8 @@ class BulletChartTooltipOptions extends Tooltip {
     VALUE_LOOKUPS : { 'fields': {'r': 'Range', 'p': 'Performance', 't': 'Target'} }
   };
 
-  Map get valueLookups => _v[VALUE_LOOKUPS];
-  set valueLookups(Map val) => _v[VALUE_LOOKUPS] = val;
+  Map get valueLookups => this[VALUE_LOOKUPS];
+  set valueLookups(Map val) => this[VALUE_LOOKUPS] = val;
 
   @override
   dynamic operator [](String key) {
@@ -267,8 +267,8 @@ class TristateChartTooltipOptions extends Tooltip {
     VALUE_LOOKUPS : { 'map': { '-1': 'Loss', '0': 'Draw', '1': 'Win' } }
   };
 
-  Map get valueLookups => _v[VALUE_LOOKUPS];
-  set valueLookups(Map val) => _v[VALUE_LOOKUPS] = val;
+  Map get valueLookups => this[VALUE_LOOKUPS];
+  set valueLookups(Map val) => this[VALUE_LOOKUPS] = val;
 
   @override
   dynamic operator [](String key) {

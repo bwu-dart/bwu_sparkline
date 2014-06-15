@@ -4,10 +4,10 @@ library bwu_sparklines.utilities;
 import 'dart:html' as dom;
 
 num clipval(num val, num min, num max) {
-  if (val < min) {
+  if ((val == null && min != null) || val < min) {
     return min;
   }
-  if (val > max) {
+  if ((val != null && max == null)|| val > max) {
     return max;
   }
   return val;
@@ -36,19 +36,31 @@ List<num> normalizeValue(dynamic val) {
   var result;
   var nf;
 
-  if(val is num) return val;
-  if(val == null) return null;
+  if(val is List && val.every((v) => v is num)) return val;
+  if(val == null) return [null];
+
+  if(val is List && val.every((v) => v is String)) {
+    List<num> newVal = [];
+    (val as List).forEach((v) {
+      if(val == null) {
+        newVal.add(null);
+      } else {
+        newVal.add(num.parse(v, (e) => null));
+      }
+    });
+    return newVal;
+  }
 
   if(val is String) {
     String lcVal = val.toLowerCase();
-    if(lcVal == 'null') return null;
-    if(lcVal == 'true') return 1;
-    if(lcVal == 'false') return 0;
+    if(lcVal == 'null') return [null];
+    if(lcVal == 'true') return [1];
+    if(lcVal == 'false') return [0];
 
     return [num.parse(val, (_) => null)];
   }
 
-  return null;
+  return [null];
 
 //  switch (val) {
 ////       case 'undefined':

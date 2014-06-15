@@ -12,6 +12,9 @@ abstract class OptionsBase {
   OptionsBase.uninitialized();
 
   void extend(OptionsBase o) {
+    if(o == null) {
+      return;
+    }
     Map otherOv = o.optionValues;
     for(String key in otherOv.keys) {
       if(otherOv.containsKey(key)) {

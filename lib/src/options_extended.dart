@@ -50,6 +50,7 @@ class LineOptions extends Options {
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
 
   final List<String> _keys = [
+    Options.TYPE,
     SPOT_COLOR,
     HIGLIGHT_SPOT_COLOR,
     HIGHLIGHT_LINE_COLOR,
@@ -85,65 +86,65 @@ class LineOptions extends Options {
     Options.TOOLTIP : new LineChartTooltipOptions()
   };
 
-  String get spotColor => _v[SPOT_COLOR];
-  set spotColor(String val) => _v[SPOT_COLOR] = val;
+  String get spotColor => this[SPOT_COLOR];
+  set spotColor(String val) => this[SPOT_COLOR] = val;
 
-  String get highlightSpotColor => _v[HIGLIGHT_SPOT_COLOR];
-  set highlightSpotColor(String val) => _v[HIGLIGHT_SPOT_COLOR] = val;
+  String get highlightSpotColor => this[HIGLIGHT_SPOT_COLOR];
+  set highlightSpotColor(String val) => this[HIGLIGHT_SPOT_COLOR] = val;
 
-  String get highlightLineColor => _v[HIGHLIGHT_LINE_COLOR];
-  set highlightLineColor(String val) => _v[HIGHLIGHT_LINE_COLOR] = val;
+  String get highlightLineColor => this[HIGHLIGHT_LINE_COLOR];
+  set highlightLineColor(String val) => this[HIGHLIGHT_LINE_COLOR] = val;
 
-  double get spotRadius => _v[SPOT_RADIUS];
-  set spotRadius(double val) => _v[SPOT_RADIUS] = val;
+  double get spotRadius => this[SPOT_RADIUS];
+  set spotRadius(double val) => this[SPOT_RADIUS] = val;
 
-  String get minSpotColor => _v[MIN_SPOT_COLOR];
-  set minSpotColor(String val) => _v[MIN_SPOT_COLOR] = val;
+  String get minSpotColor => this[MIN_SPOT_COLOR];
+  set minSpotColor(String val) => this[MIN_SPOT_COLOR] = val;
 
-  String get maxSpotColor => _v[MAX_SPOT_COLOR];
-  set maxSpotColor(String val) => _v[MAX_SPOT_COLOR] = val;
+  String get maxSpotColor => this[MAX_SPOT_COLOR];
+  set maxSpotColor(String val) => this[MAX_SPOT_COLOR] = val;
 
-  int get lineWidth => _v[LINE_WIDTH];
-  set lineWidth(int val) => _v[LINE_WIDTH] = val;
+  int get lineWidth => this[LINE_WIDTH];
+  set lineWidth(int val) => this[LINE_WIDTH] = val;
 
-  int get normalRangeMin => _v[NORMAL_RANGE_MIN];
-  set normalRangeMin(int val) => _v[NORMAL_RANGE_MIN] = val;
+  int get normalRangeMin => this[NORMAL_RANGE_MIN];
+  set normalRangeMin(int val) => this[NORMAL_RANGE_MIN] = val;
 
-  int get normalRangeMax => _v[NORMAL_RANGE_MAX];
-  set normalRangeMax(int val) => _v[NORMAL_RANGE_MAX] = val;
+  int get normalRangeMax => this[NORMAL_RANGE_MAX];
+  set normalRangeMax(int val) => this[NORMAL_RANGE_MAX] = val;
 
-  String get normalRangeColor => _v[NORMAL_RANGE_COLOR];
-  set normalRangeColor(String val) => _v[NORMAL_RANGE_COLOR] = val;
+  String get normalRangeColor => this[NORMAL_RANGE_COLOR];
+  set normalRangeColor(String val) => this[NORMAL_RANGE_COLOR] = val;
 
-  bool get drawNormalOnTop => _v[DRAW_NORMAL_ON_TOP];
-  set drawNormalOnTop(bool val) => _v[DRAW_NORMAL_ON_TOP] = val;
+  bool get drawNormalOnTop => this[DRAW_NORMAL_ON_TOP];
+  set drawNormalOnTop(bool val) => this[DRAW_NORMAL_ON_TOP] = val;
 
-  int get chartRangeMin => _v[CHART_RANGE_MIN];
-  set chartRangeMin(int val) => _v[CHART_RANGE_MIN] = val;
+  int get chartRangeMin => this[CHART_RANGE_MIN];
+  set chartRangeMin(int val) => this[CHART_RANGE_MIN] = val;
 
-  int get chartRangeMax => _v[CHART_RANGE_MAX];
-  set chartRangeMax(int val) => _v[CHART_RANGE_MAX] = val;
+  int get chartRangeMax => this[CHART_RANGE_MAX];
+  set chartRangeMax(int val) => this[CHART_RANGE_MAX] = val;
 
-  int get chartRangeMinX => _v[CHART_RANGE_MIN_X];
-  set chartRangeMinX(int val) => _v[CHART_RANGE_MIN_X] = val;
+  int get chartRangeMinX => this[CHART_RANGE_MIN_X];
+  set chartRangeMinX(int val) => this[CHART_RANGE_MIN_X] = val;
 
-  int get chartRangeMaxX => _v[CHART_RANGE_MAX_X];
-  set chartRangeMaxX(int val) => _v[CHART_RANGE_MAX_X] = val;
+  int get chartRangeMaxX => this[CHART_RANGE_MAX_X];
+  set chartRangeMaxX(int val) => this[CHART_RANGE_MAX_X] = val;
 
-  int get chartRangeClip => _v[CHART_RANGE_CLIP];
-  set chartRangeClip(int val) => _v[CHART_RANGE_CLIP] = val;
+  bool get chartRangeClip => this[CHART_RANGE_CLIP];
+  set chartRangeClip(bool val) => this[CHART_RANGE_CLIP] = val;
 
-  int get chartRangeClipX => _v[CHART_RANGE_CLIP_X];
-  set chartRangeClipX(int val) => _v[CHART_RANGE_CLIP_X] = val;
+  int get chartRangeClipX => this[CHART_RANGE_CLIP_X];
+  set chartRangeClipX(int val) => this[CHART_RANGE_CLIP_X] = val;
 
-  List<num> get xValues => _v[X_VALUES];
-  set xValues(List<num> val) => _v[X_VALUES] = val;
+  List<num> get xValues => this[X_VALUES];
+  set xValues(List<num> val) => this[X_VALUES] = val;
 
   // a List with two values and a color [val, val, color]
-  List<List> get valueSpots => _v[VALUE_SPOTS];
-  set valueSpots(List<List> val) => _v[VALUE_SPOTS] = val;
+  List<List> get valueSpots => this[VALUE_SPOTS];
+  set valueSpots(List<List> val) => this[VALUE_SPOTS] = val;
 
-  LineChartTooltipOptions get tooltip => _v[Options.TOOLTIP];
+  LineChartTooltipOptions get tooltip => this[Options.TOOLTIP];
 
   @override
   dynamic operator [](String key) {
@@ -202,6 +203,7 @@ class BarOptions extends Options {
 
 
   final List<String> _keys = [
+    Options.TYPE,
     BAR_COLOR,
     NEG_BAR_COLOR,
     STACKED_BAR_COLOR,
@@ -217,6 +219,7 @@ class BarOptions extends Options {
   ];
 
   final Map _defaults = {
+    Options.TYPE: BAR_TYPE,
     BAR_COLOR : '#3366cc',
     NEG_BAR_COLOR : '#f44',
     STACKED_BAR_COLOR : ['#3366cc', '#dc3912', '#ff9900', '#109618', '#66aa00',
@@ -228,48 +231,64 @@ class BarOptions extends Options {
     Options.TOOLTIP : new BarChartTooltipOptions()
   };
 
-  String get barColor => _v[BAR_COLOR];
-  set barColor(String val) => _v[BAR_COLOR] = val;
+  String get barColor => this[BAR_COLOR];
+  set barColor(String val) => this[BAR_COLOR] = val;
 
-  String get negBarColor => _v[NEG_BAR_COLOR];
-  set negBarColor(String val) => _v[NEG_BAR_COLOR] = val;
+  String get negBarColor => this[NEG_BAR_COLOR];
+  set negBarColor(String val) => this[NEG_BAR_COLOR] = val;
 
-  String get stackedBarColor => _v[STACKED_BAR_COLOR];
-  set stackedBarColor(String val) => _v[STACKED_BAR_COLOR] = val;
+  String get stackedBarColor => this[STACKED_BAR_COLOR];
+  set stackedBarColor(String val) => this[STACKED_BAR_COLOR] = val;
 
-  String get zeroColor => _v[ZERO_COLOR];
-  set zeroColor(String val) => _v[ZERO_COLOR] = val;
+  String get zeroColor => this[ZERO_COLOR];
+  set zeroColor(String val) => this[ZERO_COLOR] = val;
 
-  String get nullColor => _v[NULL_COLOR];
-  set nullColor(String val) => _v[NULL_COLOR] = val;
+  String get nullColor => this[NULL_COLOR];
+  set nullColor(String val) => this[NULL_COLOR] = val;
 
-  bool get zeroAxis => _v[ZERO_AXIS];
-  set zeroAxis(bool val) => _v[ZERO_AXIS] = val;
+  bool get zeroAxis => this[ZERO_AXIS];
+  set zeroAxis(bool val) => this[ZERO_AXIS] = val;
 
-  int get barWidth => _v[BAR_WIDTH];
-  set barWidth(int val) => _v[BAR_WIDTH] = val;
+  int get barWidth => this[BAR_WIDTH];
+  set barWidth(int val) => this[BAR_WIDTH] = val;
 
-  int get barSpacing => _v[BAR_SPACING];
-  set barSpacing(int val) => _v[BAR_SPACING] = val;
+  int get barSpacing => this[BAR_SPACING];
+  set barSpacing(int val) => this[BAR_SPACING] = val;
 
-  int get chartRangeMax => _v[CHART_RANGE_MAX];
-  set chartRangeMax(int val) => _v[CHART_RANGE_MAX] = val;
+  int get chartRangeMax => this[CHART_RANGE_MAX];
+  set chartRangeMax(int val) => this[CHART_RANGE_MAX] = val;
 
-  int get chartRangeMin => _v[CHART_RANGE_MIN];
-  set chartRangeMin(int val) => _v[CHART_RANGE_MIN] = val;
+  int get chartRangeMin => this[CHART_RANGE_MIN];
+  set chartRangeMin(int val) => this[CHART_RANGE_MIN] = val;
 
-  int get chartRangeClip => _v[CHART_RANGE_CLIP];
-  set chartRangeClip(int val) => _v[CHART_RANGE_CLIP] = val;
+  bool get chartRangeClip => this[CHART_RANGE_CLIP];
+  set chartRangeClip(bool val) => this[CHART_RANGE_CLIP] = val;
 
   // a list of Lists [[fromVal, toVal, color], [..], ...]
-  List<List> get colorMap => _v[COLOR_MAP];
-  set colorMap(List val) => _v[COLOR_MAP] = val;
+  List<List> get colorMap => this[COLOR_MAP];
+  set colorMap(List val) => this[COLOR_MAP] = val;
 
   // a list colors // either colorMap or colorList can be used but not both
-  List get colorList => _v[COLOR_MAP];
-  set colorList(List val) => _v[COLOR_MAP] = val;
+  List get colorList => this[COLOR_MAP];
+  set colorList(List val) => this[COLOR_MAP] = val;
 
-  BarChartTooltipOptions get tooltip => _v[Options.TOOLTIP];
+  BarChartTooltipOptions get tooltip => this[Options.TOOLTIP];
+
+  @override
+  dynamic operator [](String key) {
+    if(!_keys.contains(key)) {
+      return super[key];
+    }
+    return _v[key];
+  }
+
+  @override
+  void operator []=(String key, val) {
+    if(!_keys.contains(key)) {
+      super[key] = val;
+    }
+    _v[key] = val;
+  }
 }
 
             // Defaults for tristate charts
@@ -303,6 +322,7 @@ class TristateOptions extends Options {
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
 
   final List<String> _keys = [
+    Options.TYPE,
     BAR_WIDTH,
     BAR_SPACING,
     POS_BAR_COLOR,
@@ -312,6 +332,7 @@ class TristateOptions extends Options {
   ];
 
   final Map _defaults = {
+    Options.TYPE: TRISTATE_TYPE,
     BAR_WIDTH : 4,
     BAR_SPACING : 1,
     POS_BAR_COLOR : '#6f6',
@@ -320,30 +341,30 @@ class TristateOptions extends Options {
     Options.TOOLTIP : new TristateChartTooltipOptions()
   };
 
-  int get barWidth => _v[BAR_WIDTH];
-  set barWidth(int val) => _v[BAR_WIDTH] = val;
+  int get barWidth => this[BAR_WIDTH];
+  set barWidth(int val) => this[BAR_WIDTH] = val;
 
-  int get barSpacing => _v[BAR_SPACING];
-  set barSpacing(int val) => _v[BAR_SPACING] = val;
+  int get barSpacing => this[BAR_SPACING];
+  set barSpacing(int val) => this[BAR_SPACING] = val;
 
-  String get posBarColor => _v[POS_BAR_COLOR];
-  set posBarColor(String val) => _v[POS_BAR_COLOR] = val;
+  String get posBarColor => this[POS_BAR_COLOR];
+  set posBarColor(String val) => this[POS_BAR_COLOR] = val;
 
-  String get negBarColor => _v[NEG_BAR_COLOR];
-  set negBarColor(String val)  => _v[NEG_BAR_COLOR] = val;
+  String get negBarColor => this[NEG_BAR_COLOR];
+  set negBarColor(String val)  => this[NEG_BAR_COLOR] = val;
 
-  String get zeroBarColor => _v[ZERO_BAR_COLOR];
-  set zeroBarColor(String val)  => _v[ZERO_BAR_COLOR] = val;
+  String get zeroBarColor => this[ZERO_BAR_COLOR];
+  set zeroBarColor(String val)  => this[ZERO_BAR_COLOR] = val;
 
   // a list of Lists [[fromVal, toVal, color], [..], ...]
-  List<List> get colorMap => _v[COLOR_MAP];
-  set colorMap(List val) => _v[COLOR_MAP] = val;
+  List<List> get colorMap => this[COLOR_MAP];
+  set colorMap(List val) => this[COLOR_MAP] = val;
 
   // a list colors // either colorMap or colorList can be used but not both
-  List get colorList => _v[COLOR_MAP];
-  set colorList(List val) => _v[COLOR_MAP] = val;
+  List get colorList => this[COLOR_MAP];
+  set colorList(List val) => this[COLOR_MAP] = val;
 
-  TristateChartTooltipOptions get tooltip => _v[Options.TOOLTIP];
+  TristateChartTooltipOptions get tooltip => this[Options.TOOLTIP];
 
   @override
   dynamic operator [](String key) {
@@ -393,6 +414,7 @@ class DiscreteOptions extends Options {
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
 
   final List<String> _keys = [
+    Options.TYPE,
     LINE_HEIGHT,
     THRESHOLD_COLOR,
     THRESHOLD_VALUE,
@@ -402,31 +424,32 @@ class DiscreteOptions extends Options {
   ];
 
   final Map _defaults = {
+    Options.TYPE: DISCRETE_TYPE,
     LINE_HEIGHT : 'auto',
     THRESHOLD_VALUE : 0,
     CHART_RANGE_CLIP : false,
     Options.TOOLTIP : new DiscreteChartTooltipOptions()
   };
 
-  int get lineHeight => _v[LINE_HEIGHT];
-  set lineHeight(int val) => _v[LINE_HEIGHT] = val;
+  int get lineHeight => this[LINE_HEIGHT];
+  set lineHeight(int val) => this[LINE_HEIGHT] = val;
 
-  String get thresholdColor => _v[THRESHOLD_COLOR];
-  set thresholdColor(String val) => _v[THRESHOLD_COLOR] = val;
+  String get thresholdColor => this[THRESHOLD_COLOR];
+  set thresholdColor(String val) => this[THRESHOLD_COLOR] = val;
 
-  int get thresholdValue => _v[THRESHOLD_VALUE];
-  set thresholdValue(int val) => _v[THRESHOLD_VALUE] = val;
+  int get thresholdValue => this[THRESHOLD_VALUE];
+  set thresholdValue(int val) => this[THRESHOLD_VALUE] = val;
 
-  int get chartRangeMax => _v[CHART_RANGE_MAX];
-  set chartRangeMax(int val) => _v[CHART_RANGE_MAX] = val;
+  int get chartRangeMax => this[CHART_RANGE_MAX];
+  set chartRangeMax(int val) => this[CHART_RANGE_MAX] = val;
 
-  int get chartRangeMin => _v[CHART_RANGE_MIN];
-  set chartRangeMin(int val) => _v[CHART_RANGE_MIN] = val;
+  int get chartRangeMin => this[CHART_RANGE_MIN];
+  set chartRangeMin(int val) => this[CHART_RANGE_MIN] = val;
 
-  bool get chartRangeClip => _v[CHART_RANGE_CLIP];
-  set chartRangeClip(bool val) => _v[CHART_RANGE_CLIP] = val;
+  bool get chartRangeClip => this[CHART_RANGE_CLIP];
+  set chartRangeClip(bool val) => this[CHART_RANGE_CLIP] = val;
 
-  DiscreteChartTooltipOptions get tooltip => _v[Options.TOOLTIP];
+  DiscreteChartTooltipOptions get tooltip => this[Options.TOOLTIP];
 
   @override
   dynamic operator [](String key) {
@@ -474,6 +497,7 @@ class BulletOptions extends Options {
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
 
   final List<String> _keys = [
+    Options.TYPE,
     TARGET_COLOR,
     TARGET_WIDTH,
     PERFORMANCE_COLOR,
@@ -482,6 +506,7 @@ class BulletOptions extends Options {
   ];
 
   final Map _defaults = {
+    Options.TYPE: BULLET_TYPE,
     TARGET_COLOR : '#f33',
     TARGET_WIDTH : 3,
     PERFORMANCE_COLOR : '#33f',
@@ -489,22 +514,22 @@ class BulletOptions extends Options {
     Options.TOOLTIP : new BulletChartTooltipOptions()
   };
 
-  String get targetColor => _v[TARGET_COLOR];
-  set targetColor(String val) => _v[TARGET_COLOR] = val;
+  String get targetColor => this[TARGET_COLOR];
+  set targetColor(String val) => this[TARGET_COLOR] = val;
 
-  int get targetWidth => _v[TARGET_WIDTH];
-  set targetWidth(int val) => _v[TARGET_WIDTH] = val;
+  int get targetWidth => this[TARGET_WIDTH];
+  set targetWidth(int val) => this[TARGET_WIDTH] = val;
 
-  String get performanceColor => _v[PERFORMANCE_COLOR];
-  set performanceColor(String val) => _v[PERFORMANCE_COLOR] = val;
+  String get performanceColor => this[PERFORMANCE_COLOR];
+  set performanceColor(String val) => this[PERFORMANCE_COLOR] = val;
 
-  List<String> get rangeColors => _v[RANGE_COLORS];
-  set rangeColors(List<String> val) => _v[RANGE_COLORS] = val;
+  List<String> get rangeColors => this[RANGE_COLORS];
+  set rangeColors(List<String> val) => this[RANGE_COLORS] = val;
 
-  int get base => _v[BASE];
-  set base(int val) => _v[BASE] = val;
+  int get base => this[BASE];
+  set base(int val) => this[BASE] = val;
 
-  BulletChartTooltipOptions get tooltip => _v[Options.TOOLTIP];
+  BulletChartTooltipOptions get tooltip => this[Options.TOOLTIP];
 
   @override
   dynamic operator [](String key) {
@@ -551,6 +576,7 @@ class PieOptions extends Options {
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
 
   final List<String> _keys = [
+    Options.TYPE,
     OFFSET,
     SLICE_COLORS,
     BORDER_WIDTH,
@@ -558,6 +584,7 @@ class PieOptions extends Options {
   ];
 
   final Map _defaults = {
+    Options.TYPE: PIE_TYPE,
     OFFSET : 0,
     SLICE_COLORS : const ['#3366cc', '#dc3912', '#ff9900', '#109618', '#66aa00',
         '#dd4477', '#0099c6', '#990099'],
@@ -566,19 +593,19 @@ class PieOptions extends Options {
     Options.TOOLTIP : new PieChartTooltipOptions()
   };
 
-  int get offset => _v[OFFSET];
-  set offset(int val) => _v[OFFSET] = val;
+  int get offset => this[OFFSET];
+  set offset(int val) => this[OFFSET] = val;
 
-  List<String> get sliceColors => _v[SLICE_COLORS];
-  set sliceColors(List<String> val) => _v[SLICE_COLORS] = val;
+  List<String> get sliceColors => this[SLICE_COLORS];
+  set sliceColors(List<String> val) => this[SLICE_COLORS] = val;
 
-  int get borderWidth => _v[BORDER_WIDTH];
-  set borderWidth(int val) => _v[BORDER_WIDTH] = val;
+  int get borderWidth => this[BORDER_WIDTH];
+  set borderWidth(int val) => this[BORDER_WIDTH] = val;
 
-  String get borderColor => _v[BORDER_COLOR];
-  set borderColor(String val) => _v[BORDER_COLOR] = val;
+  String get borderColor => this[BORDER_COLOR];
+  set borderColor(String val) => this[BORDER_COLOR] = val;
 
-  PieChartTooltipOptions get tooltip => _v[Options.TOOLTIP];
+  PieChartTooltipOptions get tooltip => this[Options.TOOLTIP];
 
   @override
   dynamic operator [](String key) {
@@ -635,6 +662,7 @@ class BoxOptions extends Options {
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
 
   final List<String> _keys = [
+    Options.TYPE,
     RAW,
     BOX_LINE_COLOR,
     BOX_FILL_COLOR,
@@ -652,6 +680,7 @@ class BoxOptions extends Options {
   ];
 
   final Map _defaults = {
+    Options.TYPE: BOX_TYPE,
     RAW : false,
     BOX_LINE_COLOR : '#000',
     BOX_FILL_COLOR : '#cdf',
@@ -665,49 +694,49 @@ class BoxOptions extends Options {
     TARGET_COLOR : '#4a2'
   };
 
-  bool get raw => _v[RAW];
-  set raw(bool val) => _v[RAW];
+  bool get raw => this[RAW];
+  set raw(bool val) => this[RAW];
 
-  String get boxLineColor => _v[BOX_LINE_COLOR];
-  set boxLineColor(String val) => _v[BOX_LINE_COLOR];
+  String get boxLineColor => this[BOX_LINE_COLOR];
+  set boxLineColor(String val) => this[BOX_LINE_COLOR];
 
-  String get boxFillColor => _v[BOX_FILL_COLOR];
-  set boxFillColor(String val) => _v[BOX_FILL_COLOR];
+  String get boxFillColor => this[BOX_FILL_COLOR];
+  set boxFillColor(String val) => this[BOX_FILL_COLOR];
 
-  String get whiskerColor => _v[WHISKER_COLOR];
-  set whiskerColor(String val) => _v[WHISKER_COLOR];
+  String get whiskerColor => this[WHISKER_COLOR];
+  set whiskerColor(String val) => this[WHISKER_COLOR];
 
-  String get outlierLineColor => _v[OUTLIER_LINE_COLOR];
-  set outlierLineColor(String val) => _v[OUTLIER_LINE_COLOR];
+  String get outlierLineColor => this[OUTLIER_LINE_COLOR];
+  set outlierLineColor(String val) => this[OUTLIER_LINE_COLOR];
 
-  String get outlierFillColor => _v[OUTLIER_FILL_COLOR];
-  set outlierFillColor(String val) => _v[OUTLIER_FILL_COLOR];
+  String get outlierFillColor => this[OUTLIER_FILL_COLOR];
+  set outlierFillColor(String val) => this[OUTLIER_FILL_COLOR];
 
-  String get medianColor => _v[MEDIAN_COLOR];
-  set medianColor(String val) => _v[MEDIAN_COLOR];
+  String get medianColor => this[MEDIAN_COLOR];
+  set medianColor(String val) => this[MEDIAN_COLOR];
 
-  bool get showOutliers => _v[SHOW_OUTLIERS];
-  set showOutliers(bool val) => _v[SHOW_OUTLIERS];
+  bool get showOutliers => this[SHOW_OUTLIERS];
+  set showOutliers(bool val) => this[SHOW_OUTLIERS];
 
-  double get outlierIQR => _v[OUTLIER_IQR];
-  set outlierIQR(double val) => _v[OUTLIER_IQR];
+  double get outlierIQR => this[OUTLIER_IQR];
+  set outlierIQR(double val) => this[OUTLIER_IQR];
 
-  double get spotRadius => _v[SPOT_RADIUS];
-  set spotRadius(double val) => _v[SPOT_RADIUS];
+  double get spotRadius => this[SPOT_RADIUS];
+  set spotRadius(double val) => this[SPOT_RADIUS];
 
-  int get target => _v[TARGET];
-  set target(int val) => _v[TARGET];
+  int get target => this[TARGET];
+  set target(int val) => this[TARGET];
 
-  String get targetColor => _v[TARGET_COLOR];
-  set targetColor(String val) => _v[TARGET_COLOR];
+  String get targetColor => this[TARGET_COLOR];
+  set targetColor(String val) => this[TARGET_COLOR];
 
-  int get chartRangeMax => _v[CHART_RANGE_MAX];
-  set chartRangeMax(int val) => _v[CHART_RANGE_MAX];
+  int get chartRangeMax => this[CHART_RANGE_MAX];
+  set chartRangeMax(int val) => this[CHART_RANGE_MAX];
 
-  int get chartRangeMin => _v[CHART_RANGE_MIN];
-  set chartRangeMin(int val) => _v[CHART_RANGE_MIN];
+  int get chartRangeMin => this[CHART_RANGE_MIN];
+  set chartRangeMin(int val) => this[CHART_RANGE_MIN];
 
-  BoxChartTooltipOptions get tooltip => _v[Options.TOOLTIP];
+  BoxChartTooltipOptions get tooltip => this[Options.TOOLTIP];
 
   @override
   dynamic operator [](String key) {

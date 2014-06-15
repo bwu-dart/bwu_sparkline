@@ -7,7 +7,7 @@ import 'package:bwu_sparklines/bwu_sparkline.dart';
 
 @CustomTag('sp-tooltip')
 class SpTooltip extends PolymerElement {
-  Options _options;
+  Options options;
   String _sizetip;
 
   @observable String cssClass;
@@ -18,8 +18,9 @@ class SpTooltip extends PolymerElement {
 
   int _offset;
 
+  // TODO make constructor
   init(Options options) {
-    _options = options;
+    this.options = options;
 
     //String sizetipStyle = sizeStyle;
     // remove any previous lingering tooltip

@@ -5,29 +5,29 @@ class MouseHandler {
 
   int currentPageX = 0;
   int currentPageY = 0;
-  List<BwuSparkline> splist = [];
+  List<ChartBase> splist = [];
   SpTooltip tooltip = null;
   bool over = false;
   bool displayTooltips;
   bool highlightEnabled;
-  dom.CanvasRenderingContext2D canvas;
+  VCanvas canvas;
   dom.HtmlElement currentEl;
 
   dom.HtmlElement _el;
 
   MouseHandler (this._el, this._options) {
     displayTooltips = !_options.disableTooltips;
-    highlightEnabled = !_options.disableHighlight;
+    highlightEnabled = _options.enableHighlight;
   }
 
-  void registerSparkline(BwuSparkline sp) {
+  void registerSparkline(ChartBase sp) {
     splist.add(sp);
     if (over) {
       updateDisplay();
     }
   }
 
-  void registerCanvas(dom.CanvasRenderingContext2D canvas) {
+  void registerCanvas(VCanvas canvas) {
     this.canvas = canvas;
     canvas.canvas.onMouseEnter.listen(mouseenter);
     canvas.canvas.onMouseLeave.listen(mouseleave);
@@ -35,7 +35,7 @@ class MouseHandler {
   }
 
   void reset([bool removeTooltip = false]) {
-    this.splist = [];
+    splist = [];
     if (tooltip != null && removeTooltip) {
       tooltip.remove();
       tooltip = null;
@@ -43,15 +43,16 @@ class MouseHandler {
   }
 
   void mouseclick(e) {
-    var clickEvent = $.Event('sparklineClick');
-    clickEvent.originalEvent = e;
-    clickEvent.sparklines = splist;
-    el.trigger(clickEvent);
+    var clickEvent = new dom.CustomEvent('sparklineClick');
+    clickEvent.detail = {['originalEvent'] : e, 'sparklines': splist};
+    _el.dispatchEvent(clickEvent);
   }
 
+  async.StreamSubscription mouseMoveSubscr;
   void mouseenter(e) {
-    dom.document.body.unbind('mousemove.jqs');
-    dom.document.body.bind('mousemove.jqs', mousemove);
+    //dom.document.body.unbind('mousemove.jqs');
+    if(mouseMoveSubscr != null) mouseMoveSubscr.cancel();
+    mouseMoveSubscr = dom.document.body.on['mousemove.jqs'].listen(mousemove);
     over = true;
     currentPageX = e.pageX;
     currentPageY = e.pageY;
@@ -61,21 +62,22 @@ class MouseHandler {
         tooltip.options = _options;
         tooltip.updatePosition(e.pageX, e.pageY);
     }
-    this.updateDisplay();
+    updateDisplay();
   }
 
   void mouseleave(e) {
-    dom.document.body.unbind('mousemove.jqs');
-    var splist = this.splist,
-         spcount = splist.length,
-         needsRefresh = false,
-         sp, i;
-    this.over = false;
-    this.currentEl = null;
+    if(mouseMoveSubscr != null) mouseMoveSubscr.cancel();
+    //dom.document.body.unbind('mousemove.jqs');
+    int spcount = splist.length;
+    bool needsRefresh = false;
+    ChartBase sp;
+    int i;
+    over = false;
+    currentEl = null;
 
-    if (this.tooltip) {
-        this.tooltip.remove();
-        this.tooltip = null;
+    if (tooltip != null) {
+        tooltip.remove();
+        tooltip = null;
     }
 
     for (i = 0; i < spcount; i++) {
@@ -86,42 +88,45 @@ class MouseHandler {
     }
 
     if (needsRefresh) {
-        this.canvas.render();
+        canvas.render();
     }
   }
 
   void mousemove(e) {
-    this.currentPageX = e.pageX;
-    this.currentPageY = e.pageY;
-    this.currentEl = e.target;
-    if (this.tooltip != null) {
-      this.tooltip.updatePosition(e.pageX, e.pageY);
+    currentPageX = e.pageX;
+    currentPageY = e.pageY;
+    currentEl = e.target;
+    if (tooltip != null) {
+      tooltip.updatePosition(e.pageX, e.pageY);
     }
-    this.updateDisplay();
+    updateDisplay();
   }
 
   void updateDisplay() {
-    var splist = splist,
-         spcount = splist.length,
-         needsRefresh = false,
-         offset = canvas.canvas.offset(),
-         localX = currentPageX - offset.left,
-         localY = currentPageY - offset.top,
-         tooltiphtml, sp, i, result, changeEvent;
-    if (!this.over) {
+    int spcount = splist.length;
+    bool needsRefresh;
+    math.Rectangle<double> offset = canvas.canvas.offset;
+    int localX = currentPageX - offset.left.round();
+    int localY = currentPageY - offset.top.round();
+    String tooltiphtml;
+    ChartBase sp;
+    int i;
+    bool result;
+    dom.CustomEvent changeEvent;
+    if (!over) {
       return;
     }
     for (i = 0; i < spcount; i++) {
       sp = splist[i];
-      result = sp.setRegionHighlight(this.currentEl, localX, localY);
-      if (result) {
+      result = sp.setRegionHighlight(/*this.currentEl,*/ localX, localY);
+      if (result != null) {
           needsRefresh = true;
       }
     }
     if (needsRefresh) {
-      changeEvent = $.Event('sparklineRegionChange');
-      changeEvent.sparklines = splist;
-      el.trigger(changeEvent);
+      changeEvent = new dom.CustomEvent('sparklineRegionChange');
+      changeEvent.detail['sparklines'] = splist;
+      _el.dispatchEvent(changeEvent);
       if (tooltip != null) {
           tooltiphtml = '';
           for (i = 0; i < spcount; i++) {
@@ -130,7 +135,7 @@ class MouseHandler {
           }
           this.tooltip.setContent(tooltiphtml);
       }
-      if (!disableHighlight) {
+      if (highlightEnabled) {
           canvas.render();
       }
     }

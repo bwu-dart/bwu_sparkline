@@ -63,35 +63,35 @@ class Tooltip extends OptionsBase {
     OFFSET_Y : 12
   };
 
-  bool get skipNull => _v[SKIP_NULL];
-  set skipNull(bool val) => _v[SKIP_NULL];
+  bool get skipNull => this[SKIP_NULL];
+  set skipNull(bool val) => this[SKIP_NULL];
 
-  String get prefix => _v[PREFIX];
-  set prefix(String val) => _v[PREFIX];
+  String get prefix => this[PREFIX];
+  set prefix(String val) => this[PREFIX];
 
-  String get suffix => _v[SUFFIX];
-  set suffix(String val) => _v[SUFFIX];
+  String get suffix => this[SUFFIX];
+  set suffix(String val) => this[SUFFIX];
 
-  String get cssClass => _v[CSS_CLASS];
-  set cssClass(String val) => _v[CSS_CLASS];
+  String get cssClass => this[CSS_CLASS];
+  set cssClass(String val) => this[CSS_CLASS];
 
-  dom.HtmlElement get container => _v[CONTAINER];
-  set container(dom.HtmlElement val) => _v[CONTAINER];
+  dom.HtmlElement get container => this[CONTAINER];
+  set container(dom.HtmlElement val) => this[CONTAINER];
 
-  List<SPFormat> get formats => _v[FORMATS];
-  set formats(List<SPFormat> val) => _v[FORMATS];
+  List<SPFormat> get formats => this[FORMATS];
+  set formats(List<SPFormat> val) => this[FORMATS];
 
-  int get offsetX => _v[OFFSET_X];
-  set offsetX(int val) => _v[OFFSET_X];
+  int get offsetX => this[OFFSET_X];
+  set offsetX(int val) => this[OFFSET_X];
 
-  int get offsetY => _v[OFFSET_Y];
-  set offsetY(int val) => _v[OFFSET_Y];
+  int get offsetY => this[OFFSET_Y];
+  set offsetY(int val) => this[OFFSET_Y];
 
-  TooltipFormatterFn get formatter => _v[FORMATTER];
-  set formatter(TooltipFormatterFn val) => _v[FORMATTER];
+  TooltipFormatterFn get formatter => this[FORMATTER];
+  set formatter(TooltipFormatterFn val) => this[FORMATTER];
 
-  String get chartTitle => _v[CHART_TITLE];
-  set chartTitle(String val) => _v[CHART_TITLE];
+  String get chartTitle => this[CHART_TITLE];
+  set chartTitle(String val) => this[CHART_TITLE];
 
   @override
   dynamic operator [](String key) {
