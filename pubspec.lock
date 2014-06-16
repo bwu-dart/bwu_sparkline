@@ -18,16 +18,12 @@ packages:
     source: hosted
     version: "0.10.0+2"
   bwu_utils:
-    description:
-      path: "../../bwu_utils"
-      relative: true
-    source: path
+    description: bwu_utils
+    source: hosted
     version: "0.0.1"
   bwu_utils_browser:
-    description:
-      path: "../../bwu_utils_browser"
-      relative: true
-    source: path
+    description: bwu_utils_browser
+    source: hosted
     version: "0.0.1"
   code_transformers:
     description: code_transformers
