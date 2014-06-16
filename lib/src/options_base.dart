@@ -26,7 +26,7 @@ abstract class OptionsBase {
   void optionsInitDefaults() {}
 
   dynamic operator [](String key) {
-    throw 'Invalid option "${key}"';
+    return null;
   }
 
   void operator []=(String key, val) {

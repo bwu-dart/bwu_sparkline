@@ -36,6 +36,22 @@ class LineChartTooltipOptions extends Tooltip {
   final Map _defaults = {
     Tooltip.FORMATS :  [new SPFormat('<span style="color: {{color}}">&#9679;</span> {{prefix}}{{y}}{{suffix}}')]
   };
+
+  @override
+  dynamic operator [](String key) {
+    if(!_keys.contains(key)) {
+      return super[key];
+    }
+    return _v[key];
+  }
+
+  @override
+  void operator []=(String key, val) {
+    if(!_keys.contains(key)) {
+      super[key] = val;
+    }
+    _v[key] = val;
+  }
 }
 
 class BarChartTooltipOptions extends Tooltip {
@@ -66,6 +82,22 @@ class BarChartTooltipOptions extends Tooltip {
   final Map _defaults = {
     Tooltip.FORMATS : [new SPFormat('<span style="color: {{color}}">&#9679;</span> {{prefix}}{{value}}{{suffix}}')]
   };
+
+  @override
+  dynamic operator [](String key) {
+    if(!_keys.contains(key)) {
+      return super[key];
+    }
+    return _v[key];
+  }
+
+  @override
+  void operator []=(String key, val) {
+    if(!_keys.contains(key)) {
+      super[key] = val;
+    }
+    _v[key] = val;
+  }
 }
 
 class BoxChartTooltipOptions extends Tooltip {
@@ -213,6 +245,22 @@ class DiscreteChartTooltipOptions extends Tooltip {
   final Map _defaults = {
     Tooltip.FORMATS : [new SPFormat('{{prefix}}{{value}}{{suffix}}')]
   };
+
+  @override
+  dynamic operator [](String key) {
+    if(!_keys.contains(key)) {
+      return super[key];
+    }
+    return _v[key];
+  }
+
+  @override
+  void operator []=(String key, val) {
+    if(!_keys.contains(key)) {
+      super[key] = val;
+    }
+    _v[key] = val;
+  }
 }
 
 class PieChartTooltipOptions extends Tooltip {
@@ -241,6 +289,22 @@ class PieChartTooltipOptions extends Tooltip {
   final Map _defaults = {
     Tooltip.FORMATS : [new SPFormat('<span style="color: {{color}}">&#9679;</span> {{value}} ({{percent.1}}%)')]
   };
+
+  @override
+  dynamic operator [](String key) {
+    if(!_keys.contains(key)) {
+      return super[key];
+    }
+    return _v[key];
+  }
+
+  @override
+  void operator []=(String key, val) {
+    if(!_keys.contains(key)) {
+      super[key] = val;
+    }
+    _v[key] = val;
+  }
 }
 
 class TristateChartTooltipOptions extends Tooltip {

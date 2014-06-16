@@ -18,12 +18,11 @@ class SpTooltip extends PolymerElement {
     return _toolTip;
   }
 
-  static dom.HtmlElement _sizeTip;
+  static SpTooltip _sizeTip;
   static SpTooltip _toolTip;
 
   Options options;
 
-  @observable String cssClass;
   @observable bool showTooltip = false;
 
   int mousex;
@@ -38,11 +37,14 @@ class SpTooltip extends PolymerElement {
   bool hidden;
   dom.HtmlElement container;
 
-
-  int _offset;
+  dom.NodeValidator nodeValidator = new dom.NodeValidatorBuilder()
+      ..allowElement('DIV', attributes: ['class'])
+      ..allowElement('SPAN', attributes: ['style']);
 
   async.StreamSubscription resizeSubscription;
   async.StreamSubscription scrollSubscription;
+
+  bool isSizeTip = false;
 
   bool _isAttached = false;
 
@@ -50,24 +52,24 @@ class SpTooltip extends PolymerElement {
   void attached() {
     super.attached();
 
-    // account for the container's location
-    //_offset = this.tooltip.offset();
+    if(isSizeTip) return;
+
     offsetLeft = offset.left;
+    if(offsetLeft == null) offsetLeft = 0;
+
     offsetTop = offset.top;
+    if(offsetTop == null) offsetTop = 0 ;
+
     hidden = true;
 
     if(resizeSubscription != null) resizeSubscription.cancel();
     if(scrollSubscription != null) scrollSubscription.cancel();
-    //$(window).unbind('resize.jqs scroll.jqs');
     resizeSubscription = dom.window.onResize.listen((e) => updateWindowDims());
     scrollSubscription = dom.window.onScroll.listen((e) => updateWindowDims());
-    //$(window).bind('resize.jqs scroll.jqs', $.proxy(this.updateWindowDims, this));
+
     updateWindowDims();
 
     _isAttached = true;
-    if(_attachCompleter != null) {
-      _attachCompleter.complete();
-    }
   }
 
   @override
@@ -76,34 +78,29 @@ class SpTooltip extends PolymerElement {
     _isAttached = false;
   }
 
-  async.Completer _attachCompleter;
-
-  // TODO make constructor
-  async.Future init(Options options) {
+  void init(Options options) {
     this.options = options;
-    cssClass = options.tooltip.cssClass;
+    this.classes.add(options.tooltip.cssClass);
+
     container = options.tooltip.container != null ? options.tooltip.container : dom.document.body;
 
-    //String sizetipStyle = sizeStyle;
-    // remove any previous lingering tooltip
+    tooltipOffsetX = options.tooltip.offsetX;
+    if(tooltipOffsetX == null) tooltipOffsetX = 10;
 
+    tooltipOffsetY = options.tooltip.offsetY;
+    if(tooltipOffsetY == null) tooltipOffsetY = 12;
+
+    // remove any previous lingering tooltip
     if(_sizeTip != null) _sizeTip.remove();
     if(_isAttached) remove();
-    _sizeTip = new dom.Element.html('<div id="jqsizetip" class="${cssClass}"></div>')
+    _sizeTip = (new dom.Element.tag('sp-tooltip') as SpTooltip)
+      ..isSizeTip = true
+      ..classes.add(options.tooltip.cssClass)
       ..style.position ='static'
-      ..style.display = 'block'
       ..style.visibility = 'hidden'
       ..style.float = 'left';
 
-    //    this.tooltip = $('<div/>', {
-//      id: 'jqstooltip',
-//      'class': tooltipClassname
-//    }).appendTo(this.container);
-
     container.append(this);
-
-    _attachCompleter = new async.Completer();
-    return _attachCompleter.future;
   }
 
   void updateWindowDims() {
@@ -118,23 +115,28 @@ class SpTooltip extends PolymerElement {
       ..children.clear()
       ..append(content);
 
-
-    container.append(_sizeTip); //.html(content).appendTo(container);
-    width = _sizeTip.offsetWidth + 1; // TODO width
-    height = _sizeTip.offsetHeight; // TODO height
+    container.append(_sizeTip);
+    var sizeElement = (_sizeTip.$['content'] as dom.ContentElement)
+        .getDistributedNodes().firstWhere((e) => e is dom.HtmlElement, orElse: () => new dom.DivElement());
+    if(sizeElement == null) {
+      width = 0;
+      height = 0;
+    } else {
+      width = sizeElement.offsetWidth + 1;
+      height = sizeElement.offsetHeight;
+    }
     _sizeTip.remove();
   }
 
   void setContent(String content) {
-    if (content == null) {
+    if (content == null || content.isEmpty) {
       this.style.visibility = 'hidden';
       hidden = true;
       return;
     }
-    var c = new dom.DocumentFragment.html(content);
-    getSize(c);
-    ($['jqstooltip'] as dom.HtmlElement)
-        ..children.clear()
+    var c = new dom.DocumentFragment.html(content, validator: nodeValidator);
+    getSize(c.clone(true));
+        this..children.clear()
         ..append(c)
         ..style.width = '${width}px'
         ..style.height = '${height}px'
@@ -156,7 +158,7 @@ class SpTooltip extends PolymerElement {
       mousex = x = x - offsetLeft;
       mousey = y = y - offsetTop;
     }
-    if (height == 0|| width == 0|| hidden) {
+    if (height == null || width == null || hidden) {
       return;
     }
 
@@ -177,11 +179,15 @@ class SpTooltip extends PolymerElement {
       ..top = '${y}px';
   }
 
+
+  @override
   void remove() {
-    remove();
+    super.remove();
+
+    if(isSizeTip) return;
+
     _sizeTip.remove();
-    //sizetip = tooltip = null;
-    //window.unbind('resize.jqs scroll.jqs');
+    _sizeTip = _toolTip = null;
     if(resizeSubscription != null) resizeSubscription.cancel();
     if(scrollSubscription != null) scrollSubscription.cancel();
   }

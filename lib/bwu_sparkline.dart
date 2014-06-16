@@ -217,6 +217,7 @@ import 'src/utilities.dart';
 import 'src/sp_format.dart';
 import 'src/sp_tooltip.dart';
 import 'src/options_extended.dart';
+import 'src/tooltip_options_extended.dart';
 
 export 'src/options_extended.dart';
 
@@ -548,6 +549,8 @@ abstract class ChartBase {
   VCanvas target;
   int canvasWidth;
   int canvasHeight;
+  int canvasTop;
+  int canvasLeft;
 
   VShape regionShapes = new VShape.list();
 
@@ -610,7 +613,7 @@ abstract class ChartBase {
   bool setRegionHighlight(int x, int y) {
     bool highlightEnabled = options.enableHighlight;
     int newRegion;
-    if (x > canvasWidth || y > canvasHeight || x < 0 || y < 0) {
+    if (x >= canvasWidth || y >= canvasHeight || x < 0 || y < 0) {
       return false;
     }
     newRegion = getRegion(x, y);
@@ -640,7 +643,7 @@ abstract class ChartBase {
   }
 
   void renderHighlight() {
-      changeHighlight(true);
+    changeHighlight(true);
   }
 
   void removeHighlight() {
@@ -679,9 +682,7 @@ abstract class ChartBase {
       header += '<div class="jqs jqstitle">${options.tooltip.chartTitle}</div>\n';
     }
 
-    var tt = options.tooltip;
-
-    List<SPFormat> formats = tt.formats; //options.tooltip.formats;
+    List<SPFormat> formats = options.tooltip.formats;
     if (formats == null) {
       return '';
     }
@@ -719,13 +720,8 @@ abstract class ChartBase {
 //            prefix: options.tooltipOptions.prefix,
 //            suffix: options.tooltipOptions.tooltipSuffix
 //          });
-          String text;
-          if(options is BoxOptions) { // TODO make more OO
-            text = format.render(fields[j], (options.tooltip as BoxChartTooltipOptions).valueLookups, options);
-          } else {
-            text = format.render(fields[j], null /* TODO is null ok here?*/, options);
-          }
-          entries.add('<div class="' + fclass + '">' + text + '</div>');
+          String text = format.render(fields[j], (options.tooltip[BoxChartTooltipOptions.VALUE_LOOKUPS]), options);
+          entries.add('<div class="${fclass}">${text}</div>');
         }
       }
     }
@@ -863,7 +859,7 @@ class Line extends ChartBase {
   int maxyorg;
   int minxorg;
   int minyorg;
-  int canvasTop;
+
 
   LineOptions get options => super.options;
 
@@ -872,7 +868,7 @@ class Line extends ChartBase {
   }
 
   int getRegion(int x, int y) {
-    for (int i = regionMap.length; i--; i > 0) {
+    for (int i = regionMap.length - 1; i >= 0; i--) {
       if (regionMap[i] != null && x >= regionMap[i][0] && x <= regionMap[i][1]) {
         return regionMap[i][2];
       }
@@ -891,6 +887,7 @@ class Line extends ChartBase {
     }];
   }
 
+  @override
   void renderHighlight() {
 
     List<int> vertex = vertices[currentRegion];
@@ -908,6 +905,7 @@ class Line extends ChartBase {
       highlightSpotId = highlightSpot.id;
       target.insertAfterShape(lastShapeId, highlightSpot);
     }
+
     if (highlightLineColor != null) {
         highlightLine = target.drawLine(vertex[0], canvasTop, vertex[0],
             canvasTop + canvasHeight, highlightLineColor, null);
@@ -1012,8 +1010,8 @@ class Line extends ChartBase {
     int rangex;
     int rangey;
     int yvallast;
-    int canvasTop;
-    int canvasLeft;
+//    int canvasTop;
+//
     List<num> vertex;
     List<List<num>> path;
     List<List<List<num>>> paths;
@@ -1034,6 +1032,8 @@ class Line extends ChartBase {
 //    List<int> xvalues;
 //    List<int> yvalues;
     int i;
+    int canvasWidth = this.canvasWidth;
+    int canvasHeight = this.canvasHeight;
 
     if (!super.render()) {
       return false;
@@ -1057,7 +1057,7 @@ class Line extends ChartBase {
     if (spotRadius != 0 && (canvasWidth < (spotRadius * 4) || canvasHeight < (spotRadius * 4))) {
       spotRadius = 0.0;
     }
-    if (spotRadius != 0) {
+    if (spotRadius != 0.0) {
       // adjust the canvas size as required so that spots will fit
       hlSpotsEnabled = options.highlightSpotColor != null &&  !options.disableInteraction;
       if (hlSpotsEnabled || options.minSpotColor != null || (options.spotColor != null && yvalues[yvallast] == miny)) {
@@ -1206,7 +1206,6 @@ class Line extends ChartBase {
     }
 
     lastShapeId = target.getLastShapeId();
-    canvasTop = canvasTop;
     target.render();
     return true;
   }

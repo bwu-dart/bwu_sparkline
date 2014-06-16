@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<polymer-element name='sp-tooltip' class='{{cssClass}}'>
+<polymer-element name='sp-tooltip'>
   <template>
     <style>
       :host(.jqstooltip) {
@@ -9,8 +9,10 @@
         left: 0px;
         top: 0px;
         visibility: hidden;
-        background: rgb(0, 0, 0) transparent;
+
+        z-index: 10000;
         background-color: rgba(0,0,0,0.6);
+        background: rgb(0, 0, 0) transparent;
         filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
         -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
         color: white;
@@ -19,19 +21,10 @@
         white-space: nowrap;
         padding: 5px;
         border: 1px solid white;
-        z-index: 10000;
-      }
-
-      .jqsfield {
-        color: white;
-        font: 10px arial, san serif;
-        text-align: left;
       }
     </style>
 
-<!--    <template if='{{showTooltip}}'> -->
-      <div id='jqstooltip' class='{{ options.tooltipOptions.cssClass }}'></div>
-<!--    </template> -->
+    <content id='content'></content>
   </template>
   <script type='application/dart' src='sp_tooltip.dart'></script>
 </polymer-element>

@@ -108,6 +108,5 @@ class Tooltip extends OptionsBase {
     }
     _v[key] = val;
   }
-
 }
 
