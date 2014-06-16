@@ -140,7 +140,7 @@ abstract class Options extends OptionsBase {
     NUMBER_DIGIT_GROUP_SEP : ',',
     NUMBER_DECIMAL_MARK : '.',
     DISABLE_TOOLTIPS : false,
-    DISABLE_INTERACTIONS : false,
+    DISABLE_INTERACTIONS : false
   };
 
   String get type => this[TYPE];

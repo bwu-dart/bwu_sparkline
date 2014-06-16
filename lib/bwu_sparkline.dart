@@ -245,20 +245,37 @@ class BwuSparkline extends PolymerElement {
 //  MouseHandler mhandler;
   String _tagOptionsPrefix = '';
 
+  async.Timer _initJob;
 
   void optionsMapChanged(old) {
     _loadAttributeOptions();
-    init();
+    _doInit();
   }
 
   void optionsChanged(old) {
     _options = options;
-    init();
+    _doInit();
   }
 
   void valuesChanged(old) {
-    _values=values;
-    init();
+    _values=values.toList();
+    _doInit();
+  }
+
+  /**
+   * Prevent repeated execution of init for each changed attribute.
+   * _doInit() waits 10ms and when it is called again within this time frame
+   * it starts waiting again. When more than 10ms no new call was received
+   * inti() is finally called.
+   */
+  void _doInit() {
+    if(_initJob != null) {
+      _initJob.cancel();
+    }
+    _initJob = new async.Timer(new Duration(milliseconds: 10), () {
+      init();
+      _initJob = null;
+    });
   }
 
   async.Timer _delayedRender;
@@ -316,7 +333,7 @@ class BwuSparkline extends PolymerElement {
         ..extend(_attributeOptions);
 
     if(_values == null && _options.values != null) {
-      _values = _options.values;
+      _values = _options.values.toList();
     }
 
     if (innerHtml.trim() == '' && !_options.disableHiddenCheck && !isVisible || !_isAttached) {
@@ -661,7 +678,10 @@ abstract class ChartBase {
     if (options.tooltip.chartTitle != null) {
       header += '<div class="jqs jqstitle">${options.tooltip.chartTitle}</div>\n';
     }
-    List<SPFormat> formats = options.tooltip.formats;
+
+    var tt = options.tooltip;
+
+    List<SPFormat> formats = tt.formats; //options.tooltip.formats;
     if (formats == null) {
       return '';
     }
@@ -730,10 +750,10 @@ abstract class ChartBase {
     if (lighten != null) {
       // extract RGB values
       parse = new RegExp(r'^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$').firstMatch(color);
-      if(parse.groupCount == null) {
+      if(parse == null) {
         parse = new RegExp(r'^#([0-9a-f])([0-9a-f])([0-9a-f])$').firstMatch(color);
       }
-      if (parse.groupCount > 0) {
+      if (parse != null) {
         rgbnew = [];
         mult = color.length == 4 ? 16 : 1;
         for (i = 0; i < 3; i++) {
@@ -769,7 +789,7 @@ abstract class BarHighlightMixin  {
     // will be null if the region value was null
     if (shapeids != null) {
       newShapes = renderRegion(base.currentRegion, highlight);
-      if (newShapes is List || shapeids is List) {
+      if (newShapes.length > 1 || shapeids.length > 1) {
         base.target.replaceWithShapes(shapeids, newShapes);
         base.regionShapes[base.currentRegion] = newShapes.map((newShape) => newShape.id);
       } else {
@@ -1240,7 +1260,7 @@ class Bar extends ChartBase with BarHighlightMixin {
     // scan values to determine whether to stack bars
     vlen = values.length;
     for (i = 0; i < vlen; i++) {
-      val = values[i];
+      val = values[i].toList();
       // TODO isStackString = val is String && val.indexOf(':') > -1;
       if (isStackString || val is List && val.length > 1) {
         stacked = true;
@@ -1276,7 +1296,7 @@ class Bar extends ChartBase with BarHighlightMixin {
     vlen = values.length;
     for (i = 0; i < vlen; i++) {
       if (stacked) {
-        vlist = values[i];
+        vlist = values[i].toList();
         values[i] = svals = [];
         stackTotals.add([0]);
         stackRanges.add([0]);
@@ -1301,7 +1321,7 @@ class Bar extends ChartBase with BarHighlightMixin {
           }
         }
       } else {
-        val = chartRangeClip != null ? [clipval(values[i][0], clipMin, clipMax)] : values[i];
+        val = chartRangeClip != null ? [clipval(values[i][0], clipMin, clipMax)] : values[i].toList();
         val = values[i] = normalizeValue(val);
         if (val != null && val.every((e) => e != null)) {
           numValues.add(val);
@@ -1367,12 +1387,12 @@ class Bar extends ChartBase with BarHighlightMixin {
   }
 
   List<Map> getCurrentRegionFields() {
-    values = ensureArray(values[currentRegion]);
+    var vals = ensureArray(values[currentRegion]);
     List<Map> result = [];
     int value;
     int i;
-    for (i = values.length; i--; i > 0) {
-      value = values[i][0];
+    for (i = vals.length - 1; i >= 0; i--) {
+      value = vals[i];
       result.add({
         'isNull': value == null,
         'value': value,
@@ -1406,7 +1426,7 @@ class Bar extends ChartBase with BarHighlightMixin {
    * Render bar(s) for a region
    */
   List<VShape> renderRegion(int valuenum, [bool highlight = false]) {
-    List<num> vals = values[valuenum];
+    List<num> vals = values[valuenum].toList();
     List<VShape> result = [];
     int x = valuenum * totalBarWidth;
     int y;
@@ -2361,7 +2381,7 @@ class VCanvas extends VCanvasBase {
   void replaceWithShape(VShape shapeid, VShape shape) {
     int  i;
     shapes[shape.id] = shape;
-    for (i = shapeseq.length; i--;) {
+    for (i = shapeseq.length - 1; i >= 0; i--) {
       if (shapeseq[i] == shapeid) {
         shapeseq[i] = shape.id;
       }
@@ -2375,18 +2395,18 @@ class VCanvas extends VCanvasBase {
     int i;
     int first;
 
-    for (i = shapeids.length; i >= 0; i--) {
+    for (i = shapeids.length - 1; i >= 0; i--) {
       shapemap[shapeids[i]] = true;
     }
-    for (i = shapeseq.length; i >= 0; i--) {
+    for (i = shapeseq.length - 1; i >= 0; i--) {
       sid = shapeseq[i];
-      if (shapemap[sid]) {
+      if (shapemap[sid] != null) {
         shapeseq.removeAt(i);
         shapes.remove(sid);
         first = i;
       }
     }
-    for (i = shapes.length; i--;) {
+    for (i = shapes.length -1; i >= 0; i--) {
       shapeseq.insert(0, shapes[i].id);
       shapes[shapes[i].id] = shapes[i];
     }
@@ -2394,7 +2414,7 @@ class VCanvas extends VCanvasBase {
 
   void insertAfterShape(int shapeid, VShape shape) {
     int i;
-    for (i = shapeseq.length; i--; i > 0) {
+    for (i = shapeseq.length - 1; i > 0; i--) {
       if (shapeseq[i] == shapeid) {
         shapeseq.insert(i + 1, shape.id);
         shapes[shape.id] = shape;
@@ -2405,7 +2425,7 @@ class VCanvas extends VCanvasBase {
 
   void removeShapeId(int shapeid) {
     int i;
-    for (i = shapeseq.length; i >= 0;  i--) {
+    for (i = shapeseq.length - 1; i >= 0;  i--) {
       if (shapeseq[i] == shapeid) {
         shapeseq.removeAt(i);
         break;

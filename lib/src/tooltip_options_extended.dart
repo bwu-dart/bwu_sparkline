@@ -30,6 +30,7 @@ class LineChartTooltipOptions extends Tooltip {
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
 
   final List<String> _keys = [
+    Tooltip.FORMATS
   ];
 
   final Map _defaults = {
@@ -59,6 +60,7 @@ class BarChartTooltipOptions extends Tooltip {
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
 
   final List<String> _keys = [
+    Tooltip.FORMATS
   ];
 
   final Map _defaults = {
@@ -92,6 +94,7 @@ class BoxChartTooltipOptions extends Tooltip {
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
 
   final List<String> _keys = [
+    Tooltip.FORMATS,
     VALUE_LOOKUPS,
     FORMAT_FIELDLIST_KEY,
     FORMAT_FIELDLIST
@@ -154,7 +157,10 @@ class BulletChartTooltipOptions extends Tooltip {
   @override
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
 
-  final List<String> _keys = [VALUE_LOOKUPS];
+  final List<String> _keys = [
+    Tooltip.FORMATS,
+    VALUE_LOOKUPS
+  ];
 
   final Map _defaults = {
     Tooltip.FORMATS : [new SPFormat('{{fieldkey:fields}} - {{value}}')],
@@ -202,7 +208,7 @@ class DiscreteChartTooltipOptions extends Tooltip {
   @override
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
 
-  final List<String> _keys = [];
+  final List<String> _keys = [Tooltip.FORMATS];
 
   final Map _defaults = {
     Tooltip.FORMATS : [new SPFormat('{{prefix}}{{value}}{{suffix}}')]
@@ -230,7 +236,7 @@ class PieChartTooltipOptions extends Tooltip {
   @override
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
 
-  final List<String> _keys = [];
+  final List<String> _keys = [Tooltip.FORMATS];
 
   final Map _defaults = {
     Tooltip.FORMATS : [new SPFormat('<span style="color: {{color}}">&#9679;</span> {{value}} ({{percent.1}}%)')]
@@ -260,7 +266,10 @@ class TristateChartTooltipOptions extends Tooltip {
   @override
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
 
-  final List<String> _keys = [VALUE_LOOKUPS];
+  final List<String> _keys = [
+    Tooltip.FORMATS,
+    VALUE_LOOKUPS
+  ];
 
   final Map _defaults = {
     Tooltip.FORMATS : [new SPFormat('<span style="color: {{color}}">&#9679;</span> {{value:map}}')],

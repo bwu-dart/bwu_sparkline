@@ -51,6 +51,7 @@ class LineOptions extends Options {
 
   final List<String> _keys = [
     Options.TYPE,
+    Options.TOOLTIP,
     SPOT_COLOR,
     HIGLIGHT_SPOT_COLOR,
     HIGHLIGHT_LINE_COLOR,
@@ -204,6 +205,7 @@ class BarOptions extends Options {
 
   final List<String> _keys = [
     Options.TYPE,
+    Options.TOOLTIP,
     BAR_COLOR,
     NEG_BAR_COLOR,
     STACKED_BAR_COLOR,
@@ -323,6 +325,7 @@ class TristateOptions extends Options {
 
   final List<String> _keys = [
     Options.TYPE,
+    Options.TOOLTIP,
     BAR_WIDTH,
     BAR_SPACING,
     POS_BAR_COLOR,
@@ -415,6 +418,7 @@ class DiscreteOptions extends Options {
 
   final List<String> _keys = [
     Options.TYPE,
+    Options.TOOLTIP,
     LINE_HEIGHT,
     THRESHOLD_COLOR,
     THRESHOLD_VALUE,
@@ -498,6 +502,7 @@ class BulletOptions extends Options {
 
   final List<String> _keys = [
     Options.TYPE,
+    Options.TOOLTIP,
     TARGET_COLOR,
     TARGET_WIDTH,
     PERFORMANCE_COLOR,
@@ -577,6 +582,7 @@ class PieOptions extends Options {
 
   final List<String> _keys = [
     Options.TYPE,
+    Options.TOOLTIP,
     OFFSET,
     SLICE_COLORS,
     BORDER_WIDTH,
@@ -663,6 +669,7 @@ class BoxOptions extends Options {
 
   final List<String> _keys = [
     Options.TYPE,
+    Options.TOOLTIP,
     RAW,
     BOX_LINE_COLOR,
     BOX_FILL_COLOR,
@@ -691,7 +698,8 @@ class BoxOptions extends Options {
     SHOW_OUTLIERS : true,
     OUTLIER_IQR : 1.5,
     SPOT_RADIUS : 1.5,
-    TARGET_COLOR : '#4a2'
+    TARGET_COLOR : '#4a2',
+    Options.TOOLTIP : new BoxChartTooltipOptions()
   };
 
   bool get raw => this[RAW];

@@ -58,9 +58,13 @@ class MouseHandler {
     currentPageY = e.page.y;
     currentEl = e.target;
     if (tooltip == null && displayTooltips) {
-        tooltip = new dom.Element.tag('sp-tooltip');
-        tooltip.options = _options;
+      tooltip = new SpTooltip.singleton();
+      tooltip.init(_options).then((_) {
+      //tooltip.options = _options;
+
         tooltip.updatePosition(e.page.x, e.page.x);
+        updateDisplay();
+      });
     }
     updateDisplay();
   }
@@ -124,8 +128,7 @@ class MouseHandler {
       }
     }
     if (needsRefresh) {
-      changeEvent = new dom.CustomEvent('sparklineRegionChange');
-      changeEvent.detail['sparklines'] = splist;
+      changeEvent = new dom.CustomEvent('sparklineRegionChange', detail: {'sparklines': splist});
       _el.dispatchEvent(changeEvent);
       if (tooltip != null) {
           tooltiphtml = '';

@@ -3,14 +3,6 @@
 <polymer-element name='sp-tooltip' class='{{cssClass}}'>
   <template>
     <style>
-
-      .jqssizetip {
-        position: static !important;
-        display: block !important;
-        visibility: hidden !important;
-        float: left !important;
-      }
-
       :host(.jqstooltip) {
         display: block;
         position: absolute;
@@ -37,15 +29,9 @@
       }
     </style>
 
-    <template if='{{showSizetip}}'>
-      <div id='jqssizetip' class='{{ options.tooltipOptions.cssClass }}'></div>
-        <!--style: sizetipStyle,-->
-        <!--'class': tooltipClassname -->
-    </template>
-
-    <template if='{{showTooltip}}'>
+<!--    <template if='{{showTooltip}}'> -->
       <div id='jqstooltip' class='{{ options.tooltipOptions.cssClass }}'></div>
-    </template>
+<!--    </template> -->
   </template>
   <script type='application/dart' src='sp_tooltip.dart'></script>
 </polymer-element>
