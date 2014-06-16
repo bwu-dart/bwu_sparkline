@@ -5,7 +5,7 @@ import 'dart:async' as async;
 
 import 'package:polymer/polymer.dart';
 
-import 'package:bwu_sparklines/bwu_sparkline.dart';
+import 'package:bwu_sparkline/bwu_sparkline.dart';
 
 @CustomTag('sp-tooltip')
 class SpTooltip extends PolymerElement {

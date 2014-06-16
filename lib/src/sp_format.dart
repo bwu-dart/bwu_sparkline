@@ -1,9 +1,7 @@
 library bwu_sparklines.sp_format;
 
-import 'dart:html' as dom;
-
-import 'package:bwu_sparklines/bwu_sparkline.dart';
-import 'package:bwu_sparklines/src/utilities.dart';
+import 'package:bwu_sparkline/bwu_sparkline.dart';
+import 'package:bwu_sparkline/src/utilities.dart';
 
 /**
  * Wraps a format string for tooltips
@@ -20,10 +18,6 @@ class SPFormat {
   SPFormat(this.format, [this.fclass]);
 
   String render(Map fields, Map lookups, Options options) {
-//    String token;
-//    String lookupkey;
-//    String fieldvalue;
-//    int prec;
 
     List<Match> matches = new RegExp(fre).allMatches(format).toList();
 
@@ -33,7 +27,6 @@ class SPFormat {
       result = result.replaceFirst(m.group(0), fieldValue(format, fields, lookups, options, m));
     });
     return result;
-    //return fieldValue(format, fields, lookups, options,  matches);
   }
 
   String fieldValue(String format, Map fields, Map lookups, Options options, Match matches) {

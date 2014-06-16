@@ -2,7 +2,7 @@ library app_element;
 
 import 'package:polymer/polymer.dart';
 
-import 'package:bwu_sparklines/bwu_sparkline.dart';
+import 'package:bwu_sparkline/bwu_sparkline.dart';
 
 @CustomTag('app-element')
 class AppElement extends PolymerElement {
