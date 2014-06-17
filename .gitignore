@@ -1,7 +1,7 @@
-packages
-build
-out
-deploy
+packages/
+build/
+out/
+deploy/
 _from_packages
 #pubspec.lock
 .project

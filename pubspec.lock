@@ -64,11 +64,11 @@ packages:
   polymer:
     description: polymer
     source: hosted
-    version: "0.10.1+1"
+    version: "0.11.0-dev.4"
   polymer_expressions:
     description: polymer_expressions
     source: hosted
-    version: "0.10.0"
+    version: "0.11.2"
   quiver:
     description: quiver
     source: hosted
@@ -96,7 +96,7 @@ packages:
   template_binding:
     description: template_binding
     source: hosted
-    version: "0.10.0"
+    version: "0.11.0-dev"
   unittest:
     description: unittest
     source: hosted
@@ -108,7 +108,7 @@ packages:
   web_components:
     description: web_components
     source: hosted
-    version: "0.3.4"
+    version: "0.3.5-dev.2"
   yaml:
     description: yaml
     source: hosted
