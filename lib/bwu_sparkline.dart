@@ -241,8 +241,10 @@ class BwuSparkline extends PolymerElement {
   //List _userValues;
   List<List<num>> _values;
 
-  int height;
-  int width;
+  String height;
+  String width;
+  int pixelWidth;
+  int pixelHeight;
 //  MouseHandler mhandler;
   String _tagOptionsPrefix = '';
 
@@ -281,12 +283,12 @@ class BwuSparkline extends PolymerElement {
 
   async.Timer _delayedRender;
 
-  VCanvas canvas(int width, int height, bool interact) {
+  VCanvas canvas(String width, String height, bool interact) {
     if (width == null) {
-      width = ub.innerWidth(this);
+      width = ub.innerWidth(this).toString();
     }
     if (height == null) {
-      height = ub.innerHeight(this);
+      height = ub.innerHeight(this).toString();
     }
     var target = new VCanvas(width, height, this /*$['canvas']*/, interact);
     //mhandler = $(this).data('_jqs_mhandler');
@@ -391,7 +393,7 @@ class BwuSparkline extends PolymerElement {
       }
     }
 
-    int width = _options.width == null ? values.length * _options.defaultPixelsPerValue : _options.width;
+    width = _options.width == null ? (values.length * _options.defaultPixelsPerValue).toString() : _options.width;
     if (_options.height == null) {
       if (!_options.composite) {
         // must be a better way to get the line height
@@ -399,7 +401,7 @@ class BwuSparkline extends PolymerElement {
         tmp.innerHtml = 'a';
         children.clear();
         append(tmp); //$this.html(tmp);
-        height = tmp.offsetHeight;
+        height = tmp.offsetHeight.toString();
         tmp.remove();
       }
     } else {
@@ -543,8 +545,8 @@ abstract class ChartBase {
   BwuSparkline el;
   List<List<num>> values;
   Options options;
-  int width;
-  int height;
+  String width;
+  String height;
   int currentRegion;
   VCanvas target;
   int canvasWidth;
@@ -556,7 +558,7 @@ abstract class ChartBase {
 
   ChartBase.sub(this.type, this.el, this.values, this.options, this.width, this.height);
 
-  factory ChartBase(String type, BwuSparkline el, List<List<num>> values, Options options, int width, int height) {
+  factory ChartBase(String type, BwuSparkline el, List<List<num>> values, Options options, String width, String height) {
     switch(type) {
       case BAR_TYPE:
         return new Bar(el, values, options, width, height);
@@ -863,7 +865,7 @@ class Line extends ChartBase {
 
   LineOptions get options => super.options;
 
-  Line (String type, BwuSparkline el, List<List<num>> values, Options options, int width, int height) : super.sub(type, el, values, options, width, height) {
+  Line (String type, BwuSparkline el, List<List<num>> values, Options options, String width, String height) : super.sub(type, el, values, options, width, height) {
     initTarget();
   }
 
@@ -1227,7 +1229,7 @@ class Bar extends ChartBase with BarHighlightMixin {
   int canvasHeightEf;
   int barWidth;
 
-  Bar(BwuSparkline el, List<List<num>> values, BarOptions options, int width, int height) : super.sub(BAR_TYPE, el, values, options, width, height) {
+  Bar(BwuSparkline el, List<List<num>> values, BarOptions options, String width, String height) : super.sub(BAR_TYPE, el, values, options, width, height) {
     initBarHighlightMixing(this);
     barWidth = options.barWidth;
     int barSpacing = options.barSpacing;
@@ -1279,7 +1281,7 @@ class Bar extends ChartBase with BarHighlightMixin {
     }
 
     totalBarWidth = barWidth + barSpacing;
-    width = width = (values.length * barWidth) + ((values.length - 1) * barSpacing);
+    this.width = ((values.length * barWidth) + ((values.length - 1) * barSpacing)).toString();
 
     initTarget();
 
@@ -1499,7 +1501,7 @@ class Tristate extends ChartBase with BarHighlightMixin {
   List colorMapByIndex;
   RangeMap colorMapByValue;
 
-  Tristate(dom.HtmlElement el, List<List<num>> values, TristateOptions options, int width, int height)
+  Tristate(dom.HtmlElement el, List<List<num>> values, TristateOptions options, String width, String height)
       : super.sub(TRISTATE_TYPE, el, values, options, width, height){
     barWidth = options.barWidth;
     int barSpacing = options.barSpacing;
@@ -1507,7 +1509,7 @@ class Tristate extends ChartBase with BarHighlightMixin {
     regionShapes; // TODO = {};
     totalBarWidth = barWidth + barSpacing;
     //values = $.map(values, Number);
-    width = (values.length * barWidth) + ((values.length - 1) * barSpacing);
+    this.width = ((values.length * barWidth) + ((values.length - 1) * barSpacing)).toString();
 
     if (options.colorList != null) {
       colorMapByIndex = options.colorList;
@@ -1595,14 +1597,13 @@ class Discrete extends ChartBase with BarHighlightMixin {
   DiscreteOptions get options => super.options;
 
   int range;
-  int width;
   int interval;
   int itemWidth;
   int lineHeight;
   int min;
   int max;
 
-  Discrete (dom.HtmlElement el, List<List<num>> values, DiscreteOptions options, int width, int height)
+  Discrete (dom.HtmlElement el, List<List<num>> values, DiscreteOptions options, String width, String height)
       : super.sub(DISCRETE_TYPE, el, values, options, width, height){
     //regionShapes = {};
     //values = $.map(values, Number);
@@ -1610,8 +1611,6 @@ class Discrete extends ChartBase with BarHighlightMixin {
     max = values.reduce((a, b) => [math.max(a[0], b[0])])[0];
     range = max - min;
     width = options.width == null ? values.length * 2 : width;
-    interval = (width / values.length).floor();
-    itemWidth = (width / values.length).round();
     if (options.chartRangeMin != null && (options.chartRangeClip || options.chartRangeMin < min)) {
         min = options.chartRangeMin;
     }
@@ -1622,6 +1621,9 @@ class Discrete extends ChartBase with BarHighlightMixin {
     if (target != null) {
       lineHeight = options.lineHeight == null ? (canvasHeight * 0.3).round() : options.lineHeight;
     }
+    interval = (canvasWidth / values.length).floor();
+    itemWidth = (canvasWidth / values.length).round();
+
   }
 
   int getRegion(/*dom.HtmlElement el, */int x, int y) {
@@ -1661,7 +1663,7 @@ class Bullet extends ChartBase {
 
   BulletOptions get options => super.options;
 
-  Bullet(dom.HtmlElement el, List<List<num>> values, BulletOptions options, int width, int height)
+  Bullet(dom.HtmlElement el, List<List<num>> values, BulletOptions options, String width, String height)
     : super.sub(BULLET_TYPE, el, values, options, width, height) {
     int min;
     int max;
@@ -1791,7 +1793,7 @@ class Pie extends ChartBase {
 
   PieOptions get options => super.options;
 
-  Pie(dom.HtmlElement el, List<List<num>> values, PieOptions options, int width, int height)
+  Pie(dom.HtmlElement el, List<List<num>> values, PieOptions options, String width, String height)
       : super.sub(PIE_TYPE, el, values, options, width, height){
     int total = 0;
     int i;
@@ -1896,12 +1898,12 @@ class Box extends ChartBase {
 
   BoxOptions get options => super.options;
 
-  Box(dom.HtmlElement el, List<List<num>> values, BoxOptions options, int width, int height)
+  Box(dom.HtmlElement el, List<List<num>> values, BoxOptions options, String width, String height)
       : super.sub(BOX_TYPE, el, values, options, width, height) {
     values = $.map(values, Number);
     width = options.width == null ? '4.0em' : width;
     initTarget();
-    if (!values.length) {
+    if (values.length == 0) {
         disabled = true;
     }
   }
@@ -2115,9 +2117,9 @@ class VShape extends coll.ListBase {
 }
 
 abstract class VCanvasBase {
-  //String _pxregex = r'(\d+)(px)?\s*$' /*/i*/;
-  int width;
-  int height;
+  String _pxregex = r'(\d+)(px)?\s*$' /*/i*/;
+  String width;
+  String height;
 
   int pixelWidth;
   int pixelHeight;
@@ -2188,23 +2190,23 @@ abstract class VCanvasBase {
   /**
    * Calculate the pixel dimensions of the canvas
    */
-  void _calculatePixelDims(int width, int height, dom.CanvasElement canvas) {
-    // TODO This should probably be a configurable option
-//    var match;
-//    match = _pxregex.exec(height);
-//    if (match) {
-//      pixelHeight = match[1];
-//    } else {
-//      pixelHeight = $(canvas).height();
-//    }
-//    match = _pxregex.exec(width);
-//    if (match) {
-//      pixelWidth = match[1];
-//    } else {
-//      pixelWidth = $(canvas).width();
-//    }
-    pixelHeight = height;
-    pixelWidth = width;
+  void _calculatePixelDims(String width, String height, dom.CanvasElement canvas) {
+    var match;
+    var regex = new RegExp(_pxregex);
+    match = regex.firstMatch(height);
+    if (match != null) {
+      pixelHeight = int.parse(match.group(1), onError: (e) => 0); //[1];
+    } else {
+      pixelHeight = canvas.clientHeight;
+    }
+    match = regex.firstMatch(width);
+    if (match != null) {
+      pixelWidth = int.parse(match.group(1), onError: (e) => 0); //[1];
+    } else {
+      pixelWidth = canvas.clientWidth;
+    }
+//    pixelHeight = height;
+//    pixelWidth = width;
   }
 
   /**
@@ -2269,7 +2271,7 @@ class VCanvas extends VCanvasBase {
   int targetY;
   bool interact;
 
-  VCanvas(int width, int height, BwuSparkline target, this.interact)
+  VCanvas(String width, String height, BwuSparkline target, this.interact)
       : super(width, height, target) {
     canvas = target.$['canvas'] as dom.CanvasElement; //dom.document.createElement('canvas');
 //    if (target[0]) {
@@ -2277,13 +2279,13 @@ class VCanvas extends VCanvasBase {
 //    }
 //    $.data(target, '_jqs_vcanvas', this);
     canvas.style
-      ..width = '${width}px'
-      ..height = '${height}px';
+      ..width = width
+      ..height = height;
 
     //_insert(canvas, target);
     _calculatePixelDims(width, height, canvas);
-//    canvas.width = pixelWidth;
-//    canvas.height = pixelHeight;
+    canvas.width = pixelWidth;
+    canvas.height = pixelHeight;
     canvas
         ..width = pixelWidth
         ..height = pixelHeight;

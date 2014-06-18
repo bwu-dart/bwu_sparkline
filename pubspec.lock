@@ -20,11 +20,11 @@ packages:
   bwu_utils:
     description: bwu_utils
     source: hosted
-    version: "0.0.1"
+    version: "0.0.2"
   bwu_utils_browser:
     description: bwu_utils_browser
     source: hosted
-    version: "0.0.1"
+    version: "0.0.2"
   code_transformers:
     description: code_transformers
     source: hosted
@@ -64,7 +64,7 @@ packages:
   polymer:
     description: polymer
     source: hosted
-    version: "0.11.0-dev.4"
+    version: "0.11.0-dev.6"
   polymer_expressions:
     description: polymer_expressions
     source: hosted

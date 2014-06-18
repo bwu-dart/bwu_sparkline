@@ -155,11 +155,11 @@ abstract class Options extends OptionsBase {
   int get defaultPixelsPerValue => this[DEFAULT_PIXELS_PER_VALUE];
   set defaultPixelsPerValue(int val) => this[DEFAULT_PIXELS_PER_VALUE] = val;
 
-  int get width => this[WIDTH]; // null is 'auto'
-  set width(int val) => this[WIDTH] = val; // null is 'auto'
+  String get width => this[WIDTH]; // null is 'auto'
+  set width(String val) => this[WIDTH] = val; // null is 'auto'
 
-  int get height => this[HEIGHT]; // null is 'auto'
-  set height(int val) => this[HEIGHT] = val; // null is 'auto'
+  String get height => this[HEIGHT]; // null is 'auto'
+  set height(String val) => this[HEIGHT] = val; // null is 'auto'
 
   bool get composite => this[COMPOSITE];
   set composite(bool val) => this[COMPOSITE] = val;

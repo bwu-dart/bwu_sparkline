@@ -33,19 +33,19 @@
         Inline sparklines take their values from the contents of the tag */
       -->
       Inline Sparkline:
-      <bwu-sparkline optionsMap="{{ {width: 21, height: 16} }}"  id='inlinesparkline'>1,4,4,7,5,9,10</bwu-sparkline>
+      <bwu-sparkline optionsMap="{{ {width: '21', height: '16'} }}"  id='inlinesparkline'>1,4,4,7,5,9,10</bwu-sparkline>
     </p>
     <p>
       Sparkline with dynamic data:
-      <bwu-sparkline optionsMap="{{ {width: 21, height: 16} }}" values='{{values}}' id="dynamicsparkline">Loading..</bwu-sparkline>
+      <bwu-sparkline optionsMap="{{ {width: '21', height: '16'} }}" values='{{values}}' id="dynamicsparkline">Loading..</bwu-sparkline>
     </p>
     <p>
       Bar chart with dynamic data:
-      <bwu-sparkline optionsMap="{{ {type: 'bar', width: 34, height: 16} }}" values='{{values}}' options='{{dynamicbarOptions}}' id="dynamicbar">Loading..</bwu-sparkline>
+      <bwu-sparkline optionsMap="{{ {type: 'bar', width: '34', height: '16'} }}" values='{{values}}' options='{{dynamicbarOptions}}' id="dynamicbar">Loading..</bwu-sparkline>
     </p>
     <p>
       Bar chart with inline data:
-      <bwu-sparkline optionsMap="{{ {type: 'bar', width: 29, height: 16, values: [1,3,4,5,3,5] } }}" options='{{inlinebarOptions}}' id="inlinebar">1,3,4,5,3,5</bwu-sparkline>
+      <bwu-sparkline optionsMap="{{ {type: 'bar', width: '29', height: '16', values: [1,3,4,5,3,5] } }}" options='{{inlinebarOptions}}' id="inlinebar">1,3,4,5,3,5</bwu-sparkline>
     </p>
 
   </template>
