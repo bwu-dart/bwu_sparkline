@@ -6,10 +6,12 @@
 ## BWU Sparkline is a Polymer.dart inline chart component
 BWU Sparkline is a Dart port from [jQuery Sparklines](http://www.omnipotent.net/jquery.sparkline) 
 
-**UPDATE:  June 16th, 2014
+**UPDATE:  June 18th, 2014
 
 ### Screenshots
 ![Simple example](https://raw.githubusercontent.com/bwu-dart/bwu_sparkline/master/doc/screenshots/screenshot1.png)
+
+See it live [example/simple.html](http://bwu-dart.github.io/bwu_sparkline/example/simple.html) 
 
 ### Status
 
