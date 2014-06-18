@@ -850,15 +850,15 @@ class Line extends ChartBase {
   int hightlightSpotId;
   int highlightLineId;
   int lastShapeId;
-  int minx;
-  int maxx;
-  int miny;
-  int maxy;
+  num minx;
+  num maxx;
+  num miny;
+  num maxy;
   double spotRadius = 0.0;
   int highlightSpotId;
-  int maxyorg;
+  num maxyorg;
   int minxorg;
-  int minyorg;
+  num minyorg;
 
 
   LineOptions get options => super.options;
@@ -1007,16 +1007,16 @@ class Line extends ChartBase {
 
   @override
   bool render() {
-    int rangex;
-    int rangey;
-    int yvallast;
+    num rangex;
+    num rangey;
+    num yvallast;
 //    int canvasTop;
 //
     List<num> vertex;
     List<List<num>> path;
     List<List<List<num>>> paths;
     int x;
-    int y;
+    num y;
     int xnext;
     int xpos;
     int xposnext;
@@ -1388,7 +1388,7 @@ class Bar extends ChartBase with BarHighlightMixin {
   List<Map> getCurrentRegionFields() {
     var vals = ensureArray(values[currentRegion]);
     List<Map> result = [];
-    int value;
+    num value;
     int i;
     for (i = vals.length - 1; i >= 0; i--) {
       value = vals[i];

@@ -54,7 +54,6 @@ class MouseHandler {
     mouseMoveSubscr = dom.document.body.onMouseMove.listen(mousemove);
     over = true;
     currentPageX = e.page.x;
-    print('e.page.x: currentPageX: $currentPageX');
     currentPageY = e.page.y;
     currentEl = e.target;
     if (tooltip == null && displayTooltips) {
