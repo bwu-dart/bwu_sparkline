@@ -8,6 +8,9 @@ BWU Sparkline is a Dart port from [jQuery Sparklines](http://www.omnipotent.net/
 
 **UPDATE:  June 16th, 2014
 
+### Screenshots
+![Simple example](https://raw.githubusercontent.com/bwu-dart/bwu_sparkline/master/doc/screenshots/screenshot1.png)
+
 ### Status
 
 #### some things are already working:
