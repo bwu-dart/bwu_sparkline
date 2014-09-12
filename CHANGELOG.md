@@ -1,3 +1,9 @@
+## 0.0.5
+- update to Polymer 0.14.0
+
+## 0.0.4
+- update to Polymer 0.13.0
+
 ## 0.0.3
 - update to Polymer 0.12.1
 
