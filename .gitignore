@@ -1,4 +1,4 @@
-.idea
+.idea/
 .pub/
 packages/
 build/
@@ -8,4 +8,4 @@ build/
 .settings
 *.exe
 *.*~
-
+atlassian-ide-plugin.xml
