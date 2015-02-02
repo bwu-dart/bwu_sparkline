@@ -1,3 +1,15 @@
+## 0.0.7+1
+- update dependency constraints
+- fix issue #3
+- minor CSS fixes
+- remove script tags added by transformers automatically
+
+## 0.0.7
+- update dependency constraints
+
+## 0.0.6
+- update dependency constraints
+
 ## 0.0.5
 - update to Polymer 0.14.0
 
