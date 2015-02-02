@@ -1,8 +1,8 @@
 name: bwu_sparkline
 version: 0.0.7+1
 authors:
-  Günter Zöchbauer <guenter@gzoechbauer.com>
-  James Hurford <terrasea@gmail.com>
+- Günter Zöchbauer <guenter@gzoechbauer.com>
+- James Hurford <terrasea@gmail.com>
 description: BWU Sparkline is A Polymer.dart port of jQuery Sparklines.
 homepage: https://github.com/bwu-dart/bwu_sparkline
 environment:
