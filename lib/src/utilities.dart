@@ -138,7 +138,7 @@ String formatNumber(String val, int prec, int groupsize, String groupsep,
   }
 
   result = (prec == 0 || prec == null ? numVal.round().toString() :
-      numVal.toStringAsFixed(prec)).split('');
+      numVal.toStringAsFixed(prec)).split('').toList();
   p = ((p = result.indexOf('.')) < 0) ? result.length : p;
   if (p < result.length) {
     result[p] = decsep;
