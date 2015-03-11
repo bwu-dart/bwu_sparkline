@@ -41,10 +41,12 @@ class LineOptions extends Options {
   final Map _v = {};
 
   @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
+  List<String> get optionKeys => new coll.UnmodifiableListView(
+      new List<String>.from(_keys)..addAll(super.optionKeys));
 
   @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
+  Map get optionValues => new coll.UnmodifiableMapView(
+      new Map.from(_v)..addAll(super.optionValues));
 
   @override
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
@@ -74,17 +76,17 @@ class LineOptions extends Options {
   ];
 
   final Map _defaults = {
-    Options.TYPE : LINE_TYPE,
-    SPOT_COLOR : '#f80',
-    HIGLIGHT_SPOT_COLOR : '#5f5',
-    HIGHLIGHT_LINE_COLOR : '#f22',
-    SPOT_RADIUS : 1.5,
-    MIN_SPOT_COLOR : '#f80',
-    MAX_SPOT_COLOR : '#f80',
-    LINE_WIDTH : 1,
-    NORMAL_RANGE_COLOR : '#ccc',
-    DRAW_NORMAL_ON_TOP : false,
-    Options.TOOLTIP : new LineChartTooltipOptions()
+    Options.TYPE: LINE_TYPE,
+    SPOT_COLOR: '#f80',
+    HIGLIGHT_SPOT_COLOR: '#5f5',
+    HIGHLIGHT_LINE_COLOR: '#f22',
+    SPOT_RADIUS: 1.5,
+    MIN_SPOT_COLOR: '#f80',
+    MAX_SPOT_COLOR: '#f80',
+    LINE_WIDTH: 1,
+    NORMAL_RANGE_COLOR: '#ccc',
+    DRAW_NORMAL_ON_TOP: false,
+    Options.TOOLTIP: new LineChartTooltipOptions()
   };
 
   String get spotColor => this[SPOT_COLOR];
@@ -149,7 +151,7 @@ class LineOptions extends Options {
 
   @override
   dynamic operator [](String key) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       return super[key];
     }
     return _v[key];
@@ -157,13 +159,12 @@ class LineOptions extends Options {
 
   @override
   void operator []=(String key, val) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       super[key] = val;
     }
     _v[key] = val;
   }
 }
-
 
 // Defaults for bar charts
 class BarOptions extends Options {
@@ -185,23 +186,23 @@ class BarOptions extends Options {
   BarOptions.uninitialized() : super.uninitialized();
 
   @override
-   void optionsInitDefaults() {
-     super.optionsInitDefaults();
-     _v.addAll(_defaults);
-   }
+  void optionsInitDefaults() {
+    super.optionsInitDefaults();
+    _v.addAll(_defaults);
+  }
 
-   final Map _v = {};
+  final Map _v = {};
 
-   @override
-   List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
+  @override
+  List<String> get optionKeys => new coll.UnmodifiableListView(
+      new List<String>.from(_keys)..addAll(super.optionKeys));
 
-   @override
-   Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
+  @override
+  Map get optionValues => new coll.UnmodifiableMapView(
+      new Map.from(_v)..addAll(super.optionValues));
 
-   @override
-   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
-
-
+  @override
+  Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
 
   final List<String> _keys = [
     Options.TYPE,
@@ -222,15 +223,23 @@ class BarOptions extends Options {
 
   final Map _defaults = {
     Options.TYPE: BAR_TYPE,
-    BAR_COLOR : '#3366cc',
-    NEG_BAR_COLOR : '#f44',
-    STACKED_BAR_COLOR : ['#3366cc', '#dc3912', '#ff9900', '#109618', '#66aa00',
-        '#dd4477', '#0099c6', '#990099'],
-    ZERO_AXIS : true,
-    BAR_WIDTH : 4,
-    BAR_SPACING : 1,
-    CHART_RANGE_CLIP : false,
-    Options.TOOLTIP : new BarChartTooltipOptions()
+    BAR_COLOR: '#3366cc',
+    NEG_BAR_COLOR: '#f44',
+    STACKED_BAR_COLOR: [
+      '#3366cc',
+      '#dc3912',
+      '#ff9900',
+      '#109618',
+      '#66aa00',
+      '#dd4477',
+      '#0099c6',
+      '#990099'
+    ],
+    ZERO_AXIS: true,
+    BAR_WIDTH: 4,
+    BAR_SPACING: 1,
+    CHART_RANGE_CLIP: false,
+    Options.TOOLTIP: new BarChartTooltipOptions()
   };
 
   String get barColor => this[BAR_COLOR];
@@ -278,7 +287,7 @@ class BarOptions extends Options {
 
   @override
   dynamic operator [](String key) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       return super[key];
     }
     return _v[key];
@@ -286,14 +295,14 @@ class BarOptions extends Options {
 
   @override
   void operator []=(String key, val) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       super[key] = val;
     }
     _v[key] = val;
   }
 }
 
-            // Defaults for tristate charts
+// Defaults for tristate charts
 class TristateOptions extends Options {
   static const BAR_WIDTH = 'barWidth';
   static const BAR_SPACING = 'barSpacing';
@@ -315,10 +324,12 @@ class TristateOptions extends Options {
   final Map _v = {};
 
   @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
+  List<String> get optionKeys => new coll.UnmodifiableListView(
+      new List<String>.from(_keys)..addAll(super.optionKeys));
 
   @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
+  Map get optionValues => new coll.UnmodifiableMapView(
+      new Map.from(_v)..addAll(super.optionValues));
 
   @override
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
@@ -336,12 +347,12 @@ class TristateOptions extends Options {
 
   final Map _defaults = {
     Options.TYPE: TRISTATE_TYPE,
-    BAR_WIDTH : 4,
-    BAR_SPACING : 1,
-    POS_BAR_COLOR : '#6f6',
-    NEG_BAR_COLOR : '#f44',
-    ZERO_BAR_COLOR : '#999',
-    Options.TOOLTIP : new TristateChartTooltipOptions()
+    BAR_WIDTH: 4,
+    BAR_SPACING: 1,
+    POS_BAR_COLOR: '#6f6',
+    NEG_BAR_COLOR: '#f44',
+    ZERO_BAR_COLOR: '#999',
+    Options.TOOLTIP: new TristateChartTooltipOptions()
   };
 
   int get barWidth => this[BAR_WIDTH];
@@ -354,10 +365,10 @@ class TristateOptions extends Options {
   set posBarColor(String val) => this[POS_BAR_COLOR] = val;
 
   String get negBarColor => this[NEG_BAR_COLOR];
-  set negBarColor(String val)  => this[NEG_BAR_COLOR] = val;
+  set negBarColor(String val) => this[NEG_BAR_COLOR] = val;
 
   String get zeroBarColor => this[ZERO_BAR_COLOR];
-  set zeroBarColor(String val)  => this[ZERO_BAR_COLOR] = val;
+  set zeroBarColor(String val) => this[ZERO_BAR_COLOR] = val;
 
   // a list of Lists [[fromVal, toVal, color], [..], ...]
   List<List> get colorMap => this[COLOR_MAP];
@@ -371,7 +382,7 @@ class TristateOptions extends Options {
 
   @override
   dynamic operator [](String key) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       return super[key];
     }
     return _v[key];
@@ -379,13 +390,12 @@ class TristateOptions extends Options {
 
   @override
   void operator []=(String key, val) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       super[key] = val;
     }
     _v[key] = val;
   }
 }
-
 
 // Defaults for discrete charts
 class DiscreteOptions extends Options {
@@ -408,10 +418,12 @@ class DiscreteOptions extends Options {
   final Map _v = {};
 
   @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
+  List<String> get optionKeys => new coll.UnmodifiableListView(
+      new List<String>.from(_keys)..addAll(super.optionKeys));
 
   @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
+  Map get optionValues => new coll.UnmodifiableMapView(
+      new Map.from(_v)..addAll(super.optionValues));
 
   @override
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
@@ -429,10 +441,10 @@ class DiscreteOptions extends Options {
 
   final Map _defaults = {
     Options.TYPE: DISCRETE_TYPE,
-    LINE_HEIGHT : 'auto',
-    THRESHOLD_VALUE : 0,
-    CHART_RANGE_CLIP : false,
-    Options.TOOLTIP : new DiscreteChartTooltipOptions()
+    LINE_HEIGHT: 'auto',
+    THRESHOLD_VALUE: 0,
+    CHART_RANGE_CLIP: false,
+    Options.TOOLTIP: new DiscreteChartTooltipOptions()
   };
 
   int get lineHeight => this[LINE_HEIGHT];
@@ -457,7 +469,7 @@ class DiscreteOptions extends Options {
 
   @override
   dynamic operator [](String key) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       return super[key];
     }
     return _v[key];
@@ -465,7 +477,7 @@ class DiscreteOptions extends Options {
 
   @override
   void operator []=(String key, val) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       super[key] = val;
     }
     _v[key] = val;
@@ -475,10 +487,12 @@ class DiscreteOptions extends Options {
 // Defaults for bullet charts
 class BulletOptions extends Options {
   static const TARGET_COLOR = 'targetColor';
-  static const TARGET_WIDTH = 'targetWidth'; // width of the target bar in pixels
+  static const TARGET_WIDTH =
+      'targetWidth'; // width of the target bar in pixels
   static const PERFORMANCE_COLOR = 'performanceColor';
   static const RANGE_COLORS = 'rangeColors';
-  static const BASE = 'base'; // set this to a number to change the base start number
+  static const BASE =
+      'base'; // set this to a number to change the base start number
 
   BulletOptions() : super();
   BulletOptions.uninitialized() : super.uninitialized();
@@ -492,10 +506,12 @@ class BulletOptions extends Options {
   final Map _v = {};
 
   @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
+  List<String> get optionKeys => new coll.UnmodifiableListView(
+      new List<String>.from(_keys)..addAll(super.optionKeys));
 
   @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
+  Map get optionValues => new coll.UnmodifiableMapView(
+      new Map.from(_v)..addAll(super.optionValues));
 
   @override
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
@@ -512,11 +528,11 @@ class BulletOptions extends Options {
 
   final Map _defaults = {
     Options.TYPE: BULLET_TYPE,
-    TARGET_COLOR : '#f33',
-    TARGET_WIDTH : 3,
-    PERFORMANCE_COLOR : '#33f',
-    RANGE_COLORS : ['#d3dafe', '#a8b6ff', '#7f94ff'],
-    Options.TOOLTIP : new BulletChartTooltipOptions()
+    TARGET_COLOR: '#f33',
+    TARGET_WIDTH: 3,
+    PERFORMANCE_COLOR: '#33f',
+    RANGE_COLORS: ['#d3dafe', '#a8b6ff', '#7f94ff'],
+    Options.TOOLTIP: new BulletChartTooltipOptions()
   };
 
   String get targetColor => this[TARGET_COLOR];
@@ -538,7 +554,7 @@ class BulletOptions extends Options {
 
   @override
   dynamic operator [](String key) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       return super[key];
     }
     return _v[key];
@@ -546,7 +562,7 @@ class BulletOptions extends Options {
 
   @override
   void operator []=(String key, val) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       super[key] = val;
     }
     _v[key] = val;
@@ -572,10 +588,12 @@ class PieOptions extends Options {
   final Map _v = {};
 
   @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
+  List<String> get optionKeys => new coll.UnmodifiableListView(
+      new List<String>.from(_keys)..addAll(super.optionKeys));
 
   @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
+  Map get optionValues => new coll.UnmodifiableMapView(
+      new Map.from(_v)..addAll(super.optionValues));
 
   @override
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
@@ -591,12 +609,20 @@ class PieOptions extends Options {
 
   final Map _defaults = {
     Options.TYPE: PIE_TYPE,
-    OFFSET : 0,
-    SLICE_COLORS : const ['#3366cc', '#dc3912', '#ff9900', '#109618', '#66aa00',
-        '#dd4477', '#0099c6', '#990099'],
-    BORDER_WIDTH : 0,
-    BORDER_COLOR : '#000',
-    Options.TOOLTIP : new PieChartTooltipOptions()
+    OFFSET: 0,
+    SLICE_COLORS: const [
+      '#3366cc',
+      '#dc3912',
+      '#ff9900',
+      '#109618',
+      '#66aa00',
+      '#dd4477',
+      '#0099c6',
+      '#990099'
+    ],
+    BORDER_WIDTH: 0,
+    BORDER_COLOR: '#000',
+    Options.TOOLTIP: new PieChartTooltipOptions()
   };
 
   int get offset => this[OFFSET];
@@ -615,7 +641,7 @@ class PieOptions extends Options {
 
   @override
   dynamic operator [](String key) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       return super[key];
     }
     return _v[key];
@@ -623,7 +649,7 @@ class PieOptions extends Options {
 
   @override
   void operator []=(String key, val) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       super[key] = val;
     }
     _v[key] = val;
@@ -659,10 +685,12 @@ class BoxOptions extends Options {
   final Map _v = {};
 
   @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
+  List<String> get optionKeys => new coll.UnmodifiableListView(
+      new List<String>.from(_keys)..addAll(super.optionKeys));
 
   @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
+  Map get optionValues => new coll.UnmodifiableMapView(
+      new Map.from(_v)..addAll(super.optionValues));
 
   @override
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
@@ -688,18 +716,18 @@ class BoxOptions extends Options {
 
   final Map _defaults = {
     Options.TYPE: BOX_TYPE,
-    RAW : false,
-    BOX_LINE_COLOR : '#000',
-    BOX_FILL_COLOR : '#cdf',
-    WHISKER_COLOR : '#000',
-    OUTLIER_LINE_COLOR : '#333',
-    OUTLIER_FILL_COLOR : '#fff',
-    MEDIAN_COLOR : '#f00',
-    SHOW_OUTLIERS : true,
-    OUTLIER_IQR : 1.5,
-    SPOT_RADIUS : 1.5,
-    TARGET_COLOR : '#4a2',
-    Options.TOOLTIP : new BoxChartTooltipOptions()
+    RAW: false,
+    BOX_LINE_COLOR: '#000',
+    BOX_FILL_COLOR: '#cdf',
+    WHISKER_COLOR: '#000',
+    OUTLIER_LINE_COLOR: '#333',
+    OUTLIER_FILL_COLOR: '#fff',
+    MEDIAN_COLOR: '#f00',
+    SHOW_OUTLIERS: true,
+    OUTLIER_IQR: 1.5,
+    SPOT_RADIUS: 1.5,
+    TARGET_COLOR: '#4a2',
+    Options.TOOLTIP: new BoxChartTooltipOptions()
   };
 
   bool get raw => this[RAW];
@@ -748,7 +776,7 @@ class BoxOptions extends Options {
 
   @override
   dynamic operator [](String key) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       return super[key];
     }
     return _v[key];
@@ -756,7 +784,7 @@ class BoxOptions extends Options {
 
   @override
   void operator []=(String key, val) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       super[key] = val;
     }
     _v[key] = val;

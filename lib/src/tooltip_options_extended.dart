@@ -21,25 +21,28 @@ class LineChartTooltipOptions extends Tooltip {
   final Map _v = {};
 
   @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
+  List<String> get optionKeys => new coll.UnmodifiableListView(
+      new List<String>.from(_keys)..addAll(super.optionKeys));
 
   @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
+  Map get optionValues => new coll.UnmodifiableMapView(
+      new Map.from(_v)..addAll(super.optionValues));
 
   @override
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
 
-  final List<String> _keys = [
-    Tooltip.FORMATS
-  ];
+  final List<String> _keys = [Tooltip.FORMATS];
 
   final Map _defaults = {
-    Tooltip.FORMATS :  [new SPFormat('<span style="color: {{color}}">&#9679;</span> {{prefix}}{{y}}{{suffix}}')]
+    Tooltip.FORMATS: [
+      new SPFormat(
+          '<span style="color: {{color}}">&#9679;</span> {{prefix}}{{y}}{{suffix}}')
+    ]
   };
 
   @override
   dynamic operator [](String key) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       return super[key];
     }
     return _v[key];
@@ -47,7 +50,7 @@ class LineChartTooltipOptions extends Tooltip {
 
   @override
   void operator []=(String key, val) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       super[key] = val;
     }
     _v[key] = val;
@@ -67,25 +70,28 @@ class BarChartTooltipOptions extends Tooltip {
   final Map _v = {};
 
   @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
+  List<String> get optionKeys => new coll.UnmodifiableListView(
+      new List<String>.from(_keys)..addAll(super.optionKeys));
 
   @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
+  Map get optionValues => new coll.UnmodifiableMapView(
+      new Map.from(_v)..addAll(super.optionValues));
 
   @override
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
 
-  final List<String> _keys = [
-    Tooltip.FORMATS
-  ];
+  final List<String> _keys = [Tooltip.FORMATS];
 
   final Map _defaults = {
-    Tooltip.FORMATS : [new SPFormat('<span style="color: {{color}}">&#9679;</span> {{prefix}}{{value}}{{suffix}}')]
+    Tooltip.FORMATS: [
+      new SPFormat(
+          '<span style="color: {{color}}">&#9679;</span> {{prefix}}{{value}}{{suffix}}')
+    ]
   };
 
   @override
   dynamic operator [](String key) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       return super[key];
     }
     return _v[key];
@@ -93,7 +99,7 @@ class BarChartTooltipOptions extends Tooltip {
 
   @override
   void operator []=(String key, val) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       super[key] = val;
     }
     _v[key] = val;
@@ -117,10 +123,12 @@ class BoxChartTooltipOptions extends Tooltip {
   final Map _v = {};
 
   @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
+  List<String> get optionKeys => new coll.UnmodifiableListView(
+      new List<String>.from(_keys)..addAll(super.optionKeys));
 
   @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
+  Map get optionValues => new coll.UnmodifiableMapView(
+      new Map.from(_v)..addAll(super.optionValues));
 
   @override
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
@@ -133,11 +141,19 @@ class BoxChartTooltipOptions extends Tooltip {
   ];
 
   final Map _defaults = {
-    Tooltip.FORMATS : [new SPFormat('{{field:fields}}: {{value}}')],
-    VALUE_LOOKUPS : { 'fields': { 'lq': 'Lower Quartile', 'med': 'Median',
-        'uq': 'Upper Quartile', 'lo': 'Left Outlier', 'ro': 'Right Outlier',
-        'lw': 'Left Whisker', 'rw': 'Right Whisker'} },
-    FORMAT_FIELDLIST_KEY : 'field'
+    Tooltip.FORMATS: [new SPFormat('{{field:fields}}: {{value}}')],
+    VALUE_LOOKUPS: {
+      'fields': {
+        'lq': 'Lower Quartile',
+        'med': 'Median',
+        'uq': 'Upper Quartile',
+        'lo': 'Left Outlier',
+        'ro': 'Right Outlier',
+        'lw': 'Left Whisker',
+        'rw': 'Right Whisker'
+      }
+    },
+    FORMAT_FIELDLIST_KEY: 'field'
   };
 
   Map get valueLookups => this[VALUE_LOOKUPS];
@@ -151,7 +167,7 @@ class BoxChartTooltipOptions extends Tooltip {
 
   @override
   dynamic operator [](String key) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       return super[key];
     }
     return _v[key];
@@ -159,7 +175,7 @@ class BoxChartTooltipOptions extends Tooltip {
 
   @override
   void operator []=(String key, val) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       super[key] = val;
     }
     _v[key] = val;
@@ -181,22 +197,21 @@ class BulletChartTooltipOptions extends Tooltip {
   final Map _v = {};
 
   @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
+  List<String> get optionKeys => new coll.UnmodifiableListView(
+      new List<String>.from(_keys)..addAll(super.optionKeys));
 
   @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
+  Map get optionValues => new coll.UnmodifiableMapView(
+      new Map.from(_v)..addAll(super.optionValues));
 
   @override
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
 
-  final List<String> _keys = [
-    Tooltip.FORMATS,
-    VALUE_LOOKUPS
-  ];
+  final List<String> _keys = [Tooltip.FORMATS, VALUE_LOOKUPS];
 
   final Map _defaults = {
-    Tooltip.FORMATS : [new SPFormat('{{fieldkey:fields}} - {{value}}')],
-    VALUE_LOOKUPS : { 'fields': {'r': 'Range', 'p': 'Performance', 't': 'Target'} }
+    Tooltip.FORMATS: [new SPFormat('{{fieldkey:fields}} - {{value}}')],
+    VALUE_LOOKUPS: {'fields': {'r': 'Range', 'p': 'Performance', 't': 'Target'}}
   };
 
   Map get valueLookups => this[VALUE_LOOKUPS];
@@ -204,7 +219,7 @@ class BulletChartTooltipOptions extends Tooltip {
 
   @override
   dynamic operator [](String key) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       return super[key];
     }
     return _v[key];
@@ -212,7 +227,7 @@ class BulletChartTooltipOptions extends Tooltip {
 
   @override
   void operator []=(String key, val) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       super[key] = val;
     }
     _v[key] = val;
@@ -232,10 +247,12 @@ class DiscreteChartTooltipOptions extends Tooltip {
   final Map _v = {};
 
   @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
+  List<String> get optionKeys => new coll.UnmodifiableListView(
+      new List<String>.from(_keys)..addAll(super.optionKeys));
 
   @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
+  Map get optionValues => new coll.UnmodifiableMapView(
+      new Map.from(_v)..addAll(super.optionValues));
 
   @override
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
@@ -243,12 +260,12 @@ class DiscreteChartTooltipOptions extends Tooltip {
   final List<String> _keys = [Tooltip.FORMATS];
 
   final Map _defaults = {
-    Tooltip.FORMATS : [new SPFormat('{{prefix}}{{value}}{{suffix}}')]
+    Tooltip.FORMATS: [new SPFormat('{{prefix}}{{value}}{{suffix}}')]
   };
 
   @override
   dynamic operator [](String key) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       return super[key];
     }
     return _v[key];
@@ -256,7 +273,7 @@ class DiscreteChartTooltipOptions extends Tooltip {
 
   @override
   void operator []=(String key, val) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       super[key] = val;
     }
     _v[key] = val;
@@ -276,10 +293,12 @@ class PieChartTooltipOptions extends Tooltip {
   final Map _v = {};
 
   @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
+  List<String> get optionKeys => new coll.UnmodifiableListView(
+      new List<String>.from(_keys)..addAll(super.optionKeys));
 
   @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
+  Map get optionValues => new coll.UnmodifiableMapView(
+      new Map.from(_v)..addAll(super.optionValues));
 
   @override
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
@@ -287,12 +306,15 @@ class PieChartTooltipOptions extends Tooltip {
   final List<String> _keys = [Tooltip.FORMATS];
 
   final Map _defaults = {
-    Tooltip.FORMATS : [new SPFormat('<span style="color: {{color}}">&#9679;</span> {{value}} ({{percent.1}}%)')]
+    Tooltip.FORMATS: [
+      new SPFormat(
+          '<span style="color: {{color}}">&#9679;</span> {{value}} ({{percent.1}}%)')
+    ]
   };
 
   @override
   dynamic operator [](String key) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       return super[key];
     }
     return _v[key];
@@ -300,7 +322,7 @@ class PieChartTooltipOptions extends Tooltip {
 
   @override
   void operator []=(String key, val) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       super[key] = val;
     }
     _v[key] = val;
@@ -322,22 +344,24 @@ class TristateChartTooltipOptions extends Tooltip {
   final Map _v = {};
 
   @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
+  List<String> get optionKeys => new coll.UnmodifiableListView(
+      new List<String>.from(_keys)..addAll(super.optionKeys));
 
   @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
+  Map get optionValues => new coll.UnmodifiableMapView(
+      new Map.from(_v)..addAll(super.optionValues));
 
   @override
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
 
-  final List<String> _keys = [
-    Tooltip.FORMATS,
-    VALUE_LOOKUPS
-  ];
+  final List<String> _keys = [Tooltip.FORMATS, VALUE_LOOKUPS];
 
   final Map _defaults = {
-    Tooltip.FORMATS : [new SPFormat('<span style="color: {{color}}">&#9679;</span> {{value:map}}')],
-    VALUE_LOOKUPS : { 'map': { '-1': 'Loss', '0': 'Draw', '1': 'Win' } }
+    Tooltip.FORMATS: [
+      new SPFormat(
+          '<span style="color: {{color}}">&#9679;</span> {{value:map}}')
+    ],
+    VALUE_LOOKUPS: {'map': {'-1': 'Loss', '0': 'Draw', '1': 'Win'}}
   };
 
   Map get valueLookups => this[VALUE_LOOKUPS];
@@ -345,7 +369,7 @@ class TristateChartTooltipOptions extends Tooltip {
 
   @override
   dynamic operator [](String key) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       return super[key];
     }
     return _v[key];
@@ -353,7 +377,7 @@ class TristateChartTooltipOptions extends Tooltip {
 
   @override
   void operator []=(String key, val) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       super[key] = val;
     }
     _v[key] = val;

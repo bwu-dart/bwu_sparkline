@@ -7,7 +7,7 @@ num clipval(num val, num min, num max) {
   if ((val == null && min != null) || val < min) {
     return min;
   }
-  if ((val != null && max == null)|| val > max) {
+  if ((val != null && max == null) || val > max) {
     return max;
   }
   return val;
@@ -17,17 +17,22 @@ int quartile(List<int> values, int q) {
   var vl;
   if (q == 2) {
     vl = (values.length / 2).floor();
-    return values.length % 2 != 0 ? values[vl] : (values[vl - 1] + values[vl]) /
-        2;
+    return values.length % 2 != 0
+        ? values[vl]
+        : (values[vl - 1] + values[vl]) / 2;
   } else {
-    if (values.length % 2 != null) { // odd
+    if (values.length % 2 != null) {
+      // odd
       vl = (values.length * q + q) / 4;
-      return vl % 1 ? (values[vl.floor()] + values[vl.floor() - 1]) / 2 :
-          values[vl - 1];
-    } else { //even
+      return vl % 1
+          ? (values[vl.floor()] + values[vl.floor() - 1]) / 2
+          : values[vl - 1];
+    } else {
+      //even
       vl = (values.length * q + 2) / 4;
-      return vl % 1 ? (values[vl.floor()] + values[vl.floor() - 1]) / 2 :
-          values[vl - 1];
+      return vl % 1
+          ? (values[vl.floor()] + values[vl.floor() - 1]) / 2
+          : values[vl - 1];
     }
   }
 }
@@ -36,13 +41,13 @@ List<num> normalizeValue(dynamic val) {
   var result;
   var nf;
 
-  if(val is List && val.every((v) => v is num)) return val;
-  if(val == null) return [null];
+  if (val is List && val.every((v) => v is num)) return val;
+  if (val == null) return [null];
 
-  if(val is List && val.every((v) => v is String)) {
+  if (val is List && val.every((v) => v is String)) {
     List<num> newVal = [];
     (val as List).forEach((v) {
-      if(val == null) {
+      if (val == null) {
         newVal.add(null);
       } else {
         newVal.add(num.parse(v, (e) => null));
@@ -51,11 +56,11 @@ List<num> normalizeValue(dynamic val) {
     return newVal;
   }
 
-  if(val is String) {
+  if (val is String) {
     String lcVal = val.toLowerCase();
-    if(lcVal == 'null') return [null];
-    if(lcVal == 'true') return [1];
-    if(lcVal == 'false') return [0];
+    if (lcVal == 'null') return [null];
+    if (lcVal == 'true') return [1];
+    if (lcVal == 'false') return [0];
 
     return [num.parse(val, (_) => null)];
   }
@@ -115,16 +120,18 @@ bool isNumber(dynamic val) {
       return true;
     } else {
       var parsed = double.parse(val, (e) => null);
-      return parsed != null && parsed != double.NAN && parsed != double.INFINITY
-          && parsed != double.NEGATIVE_INFINITY;
+      return parsed != null &&
+          parsed != double.NAN &&
+          parsed != double.INFINITY &&
+          parsed != double.NEGATIVE_INFINITY;
     }
   } else {
     return false;
   }
 }
 
-String formatNumber(String val, int prec, int groupsize, String groupsep,
-    String decsep) {
+String formatNumber(
+    String val, int prec, int groupsize, String groupsep, String decsep) {
   int p, i;
   List result;
   double numVal;
@@ -137,8 +144,9 @@ String formatNumber(String val, int prec, int groupsize, String groupsep,
     numVal = 0.0;
   }
 
-  result = (prec == 0 || prec == null ? numVal.round().toString() :
-      numVal.toStringAsFixed(prec)).split('').toList();
+  result = (prec == 0 || prec == null
+      ? numVal.round().toString()
+      : numVal.toStringAsFixed(prec)).split('').toList();
   p = ((p = result.indexOf('.')) < 0) ? result.length : p;
   if (p < result.length) {
     result[p] = decsep;
@@ -171,15 +179,14 @@ String formatNumber(String val, int prec, int groupsize, String groupsep,
 //    return total;
 //};
 
-List ensureArray (dynamic val) {
+List ensureArray(dynamic val) {
   return val is List ? val : [val];
 }
 
 // http://paulirish.com/2008/bookmarklet-inject-new-css-rules/
-void addCSS (dom.ShadowRoot element, String css) {
+void addCSS(dom.ShadowRoot element, String css) {
   dom.StyleElement tag = new dom.StyleElement();
   tag.type = 'text/css';
   element.innerHtml = css;
   element.append(tag);
 }
-

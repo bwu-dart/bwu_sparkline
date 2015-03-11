@@ -12,7 +12,7 @@ class SpTooltip extends PolymerElement {
   SpTooltip.created() : super.created();
 
   factory SpTooltip.singleton() {
-    if(_toolTip == null) {
+    if (_toolTip == null) {
       _toolTip = new dom.Element.tag('sp-tooltip');
     }
     return _toolTip;
@@ -38,8 +38,8 @@ class SpTooltip extends PolymerElement {
   dom.HtmlElement container;
 
   dom.NodeValidator nodeValidator = new dom.NodeValidatorBuilder()
-      ..allowElement('DIV', attributes: ['class'])
-      ..allowElement('SPAN', attributes: ['style']);
+    ..allowElement('DIV', attributes: ['class'])
+    ..allowElement('SPAN', attributes: ['style']);
 
   async.StreamSubscription resizeSubscription;
   async.StreamSubscription scrollSubscription;
@@ -52,18 +52,18 @@ class SpTooltip extends PolymerElement {
   void attached() {
     super.attached();
 
-    if(isSizeTip) return;
+    if (isSizeTip) return;
 
     offsetLeft = offset.left;
-    if(offsetLeft == null) offsetLeft = 0;
+    if (offsetLeft == null) offsetLeft = 0;
 
     offsetTop = offset.top;
-    if(offsetTop == null) offsetTop = 0 ;
+    if (offsetTop == null) offsetTop = 0;
 
     hidden = true;
 
-    if(resizeSubscription != null) resizeSubscription.cancel();
-    if(scrollSubscription != null) scrollSubscription.cancel();
+    if (resizeSubscription != null) resizeSubscription.cancel();
+    if (scrollSubscription != null) scrollSubscription.cancel();
     resizeSubscription = dom.window.onResize.listen((e) => updateWindowDims());
     scrollSubscription = dom.window.onScroll.listen((e) => updateWindowDims());
 
@@ -82,21 +82,23 @@ class SpTooltip extends PolymerElement {
     this.options = options;
     this.classes.add(options.tooltip.cssClass);
 
-    container = options.tooltip.container != null ? options.tooltip.container : dom.document.body;
+    container = options.tooltip.container != null
+        ? options.tooltip.container
+        : dom.document.body;
 
     tooltipOffsetX = options.tooltip.offsetX;
-    if(tooltipOffsetX == null) tooltipOffsetX = 10;
+    if (tooltipOffsetX == null) tooltipOffsetX = 10;
 
     tooltipOffsetY = options.tooltip.offsetY;
-    if(tooltipOffsetY == null) tooltipOffsetY = 12;
+    if (tooltipOffsetY == null) tooltipOffsetY = 12;
 
     // remove any previous lingering tooltip
-    if(_sizeTip != null) _sizeTip.remove();
-    if(_isAttached) remove();
+    if (_sizeTip != null) _sizeTip.remove();
+    if (_isAttached) remove();
     _sizeTip = (new dom.Element.tag('sp-tooltip') as SpTooltip)
       ..isSizeTip = true
       ..classes.add(options.tooltip.cssClass)
-      ..style.position ='static'
+      ..style.position = 'static'
       ..style.visibility = 'hidden'
       ..style.float = 'left';
 
@@ -117,8 +119,10 @@ class SpTooltip extends PolymerElement {
 
     container.append(_sizeTip);
     var sizeElement = (_sizeTip.$['content'] as dom.ContentElement)
-        .getDistributedNodes().firstWhere((e) => e is dom.HtmlElement, orElse: () => new dom.DivElement());
-    if(sizeElement == null) {
+        .getDistributedNodes()
+        .firstWhere((e) => e is dom.HtmlElement,
+            orElse: () => new dom.DivElement());
+    if (sizeElement == null) {
       width = 0;
       height = 0;
     } else {
@@ -136,11 +140,12 @@ class SpTooltip extends PolymerElement {
     }
     var c = new dom.DocumentFragment.html(content, validator: nodeValidator);
     getSize(c.clone(true));
-        this..children.clear()
-        ..append(c)
-        ..style.width = '${width}px'
-        ..style.height = '${height}px'
-        ..style.visibility = 'visible';
+    this
+      ..children.clear()
+      ..append(c)
+      ..style.width = '${width}px'
+      ..style.height = '${height}px'
+      ..style.visibility = 'visible';
     if (hidden) {
       hidden = false;
       updatePosition();
@@ -179,16 +184,15 @@ class SpTooltip extends PolymerElement {
       ..top = '${y}px';
   }
 
-
   @override
   void remove() {
     super.remove();
 
-    if(isSizeTip) return;
+    if (isSizeTip) return;
 
     _sizeTip.remove();
     _sizeTip = _toolTip = null;
-    if(resizeSubscription != null) resizeSubscription.cancel();
-    if(scrollSubscription != null) scrollSubscription.cancel();
+    if (resizeSubscription != null) resizeSubscription.cancel();
+    if (scrollSubscription != null) scrollSubscription.cancel();
   }
 }

@@ -15,7 +15,7 @@ class MouseHandler {
 
   dom.HtmlElement _el;
 
-  MouseHandler (this._el, this._options) {
+  MouseHandler(this._el, this._options) {
     displayTooltips = !_options.disableTooltips;
     highlightEnabled = _options.enableHighlight;
   }
@@ -43,14 +43,15 @@ class MouseHandler {
   }
 
   void mouseclick(e) {
-    var clickEvent = new dom.CustomEvent('sparklineClick', detail: {['originalEvent'] : e, 'sparklines': splist});
+    var clickEvent = new dom.CustomEvent('sparklineClick',
+        detail: {['originalEvent']: e, 'sparklines': splist});
     _el.dispatchEvent(clickEvent);
   }
 
   async.StreamSubscription mouseMoveSubscr;
 
   void mouseenter(e) {
-    if(mouseMoveSubscr != null) mouseMoveSubscr.cancel();
+    if (mouseMoveSubscr != null) mouseMoveSubscr.cancel();
     mouseMoveSubscr = dom.document.body.onMouseMove.listen(mousemove);
     over = true;
     currentPageX = e.page.x;
@@ -65,7 +66,7 @@ class MouseHandler {
   }
 
   void mouseleave(e) {
-    if(mouseMoveSubscr != null) mouseMoveSubscr.cancel();
+    if (mouseMoveSubscr != null) mouseMoveSubscr.cancel();
     int spcount = splist.length;
     bool needsRefresh = false;
     ChartBase sp;
@@ -121,7 +122,8 @@ class MouseHandler {
       }
     }
     if (needsRefresh) {
-      _el.dispatchEvent(new dom.CustomEvent('sparklineRegionChange', detail: {'sparklines': splist}));
+      _el.dispatchEvent(new dom.CustomEvent('sparklineRegionChange',
+          detail: {'sparklines': splist}));
       if (tooltip != null) {
         tooltiphtml = '';
         for (i = 0; i < spcount; i++) {

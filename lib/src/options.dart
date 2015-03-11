@@ -22,34 +22,32 @@ const String LINE_TYPE = 'line';
 const String PIE_TYPE = 'pie';
 const String TRISTATE_TYPE = 'tristate';
 
-
 abstract class Options extends OptionsBase {
-
   factory Options.forType([String type, initialized = false]) {
-    switch(type) {
+    switch (type) {
       case BAR_TYPE:
-        if(initialized) return new BarOptions();
+        if (initialized) return new BarOptions();
         return new BarOptions.uninitialized();
       case BOX_TYPE:
-        if(initialized)return new BoxOptions();
+        if (initialized) return new BoxOptions();
         return new BoxOptions.uninitialized();
       case BULLET_TYPE:
-        if(initialized) return new BulletOptions();
+        if (initialized) return new BulletOptions();
         return new BulletOptions.uninitialized();
       case DISCRETE_TYPE:
-        if(initialized) return new DiscreteOptions();
+        if (initialized) return new DiscreteOptions();
         return new DiscreteOptions.uninitialized();
       case LINE_TYPE:
-        if(initialized) return new LineOptions();
+        if (initialized) return new LineOptions();
         return new LineOptions.uninitialized();
       case PIE_TYPE:
-        if(initialized) return new PieOptions();
+        if (initialized) return new PieOptions();
         return new PieOptions.uninitialized();
       case TRISTATE_TYPE:
-        if(initialized) return new TristateOptions();
+        if (initialized) return new TristateOptions();
         return new TristateOptions.uninitialized();
       default:
-        if(initialized) return new LineOptions();
+        if (initialized) return new LineOptions();
         return new LineOptions.uninitialized();
     }
   }
@@ -58,9 +56,9 @@ abstract class Options extends OptionsBase {
 
   static const TYPE = 'type';
   static const LINE_COLOR = 'lineColor';
-  static const FILL_COLOR ='fillColor';
+  static const FILL_COLOR = 'fillColor';
   static const DEFAULT_PIXELS_PER_VALUE = 'defaultPixelsPerValue';
-  static const WIDTH ='width'; // null is 'auto'
+  static const WIDTH = 'width'; // null is 'auto'
   static const HEIGHT = 'height'; // null is 'auto'
   static const COMPOSITE = 'composite';
   static const TAG_VALUES_ATTRIBUTE = 'tagValuesAttribute';
@@ -91,56 +89,58 @@ abstract class Options extends OptionsBase {
   final Map _v = {};
 
   @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
+  List<String> get optionKeys => new coll.UnmodifiableListView(
+      new List<String>.from(_keys)..addAll(super.optionKeys));
 
   @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
+  Map get optionValues => new coll.UnmodifiableMapView(
+      new Map.from(_v)..addAll(super.optionValues));
 
   @override
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
 
   final List<String> _keys = [
-       TYPE,
-       LINE_COLOR,
-       FILL_COLOR,
-       DEFAULT_PIXELS_PER_VALUE,
-       WIDTH,
-       HEIGHT,
-       COMPOSITE,
-       TAG_VALUES_ATTRIBUTE,
-       TAG_OPTIONS_PREFIX,
-       ENABLE_TAG_OPTIONS,
-       ENABLE_HIGHLIGHT,
-       HIGHLIGHT_COLOR,
-       HIGHLIGHT_LIGHTEN,
-       DISABLE_HIDDEN_CHECK,
-       NUMBER_FORMATTER,
-       NUMBER_DIGIT_GROUP_COUNT,
-       NUMBER_DIGIT_GROUP_SEP,
-       NUMBER_DECIMAL_MARK,
-       DISABLE_TOOLTIPS,
-       DISABLE_INTERACTIONS,
-       TOOLTIP,
-       VALUES
-       ];
+    TYPE,
+    LINE_COLOR,
+    FILL_COLOR,
+    DEFAULT_PIXELS_PER_VALUE,
+    WIDTH,
+    HEIGHT,
+    COMPOSITE,
+    TAG_VALUES_ATTRIBUTE,
+    TAG_OPTIONS_PREFIX,
+    ENABLE_TAG_OPTIONS,
+    ENABLE_HIGHLIGHT,
+    HIGHLIGHT_COLOR,
+    HIGHLIGHT_LIGHTEN,
+    DISABLE_HIDDEN_CHECK,
+    NUMBER_FORMATTER,
+    NUMBER_DIGIT_GROUP_COUNT,
+    NUMBER_DIGIT_GROUP_SEP,
+    NUMBER_DECIMAL_MARK,
+    DISABLE_TOOLTIPS,
+    DISABLE_INTERACTIONS,
+    TOOLTIP,
+    VALUES
+  ];
 
   final Map _defaults = {
     TYPE: LINE_TYPE,
-    LINE_COLOR : '#00f',
-    FILL_COLOR : '#cdf',
-    DEFAULT_PIXELS_PER_VALUE : 3,
-    COMPOSITE : false,
-    TAG_VALUES_ATTRIBUTE : 'values',
-    TAG_OPTIONS_PREFIX : 'spark',
-    ENABLE_TAG_OPTIONS : false,
-    ENABLE_HIGHLIGHT : true,
-    HIGHLIGHT_LIGHTEN : 1.4,
-    DISABLE_HIDDEN_CHECK : false,
-    NUMBER_DIGIT_GROUP_COUNT : 3,
-    NUMBER_DIGIT_GROUP_SEP : ',',
-    NUMBER_DECIMAL_MARK : '.',
-    DISABLE_TOOLTIPS : false,
-    DISABLE_INTERACTIONS : false
+    LINE_COLOR: '#00f',
+    FILL_COLOR: '#cdf',
+    DEFAULT_PIXELS_PER_VALUE: 3,
+    COMPOSITE: false,
+    TAG_VALUES_ATTRIBUTE: 'values',
+    TAG_OPTIONS_PREFIX: 'spark',
+    ENABLE_TAG_OPTIONS: false,
+    ENABLE_HIGHLIGHT: true,
+    HIGHLIGHT_LIGHTEN: 1.4,
+    DISABLE_HIDDEN_CHECK: false,
+    NUMBER_DIGIT_GROUP_COUNT: 3,
+    NUMBER_DIGIT_GROUP_SEP: ',',
+    NUMBER_DECIMAL_MARK: '.',
+    DISABLE_TOOLTIPS: false,
+    DISABLE_INTERACTIONS: false
   };
 
   String get type => this[TYPE];
@@ -211,7 +211,7 @@ abstract class Options extends OptionsBase {
 
   @override
   dynamic operator [](String key) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       return super[key];
     }
     return _v[key];
@@ -219,12 +219,10 @@ abstract class Options extends OptionsBase {
 
   @override
   void operator []=(String key, val) {
-    if(key == TYPE) return;
-    if(!_keys.contains(key)) {
+    if (key == TYPE) return;
+    if (!_keys.contains(key)) {
       super[key] = val;
     }
     _v[key] = val;
   }
 }
-
-

@@ -18,18 +18,19 @@ class SPFormat {
   SPFormat(this.format, [this.fclass]);
 
   String render(Map fields, Map lookups, Options options) {
-
     List<Match> matches = new RegExp(fre).allMatches(format).toList();
 
     String result = format;
 
     matches.forEach((m) {
-      result = result.replaceFirst(m.group(0), fieldValue(format, fields, lookups, options, m));
+      result = result.replaceFirst(
+          m.group(0), fieldValue(format, fields, lookups, options, m));
     });
     return result;
   }
 
-  String fieldValue(String format, Map fields, Map lookups, Options options, Match matches) {
+  String fieldValue(
+      String format, Map fields, Map lookups, Options options, Match matches) {
     var lookup;
     String token = matches.group(1);
     String lookupkey = matches.group(3);
@@ -38,7 +39,7 @@ class SPFormat {
     Match match = new RegExp(precre).firstMatch(token);
     if (match != null) {
       var p = match.group(2);
-      if(p == null) {
+      if (p == null) {
         prec = null;
       } else {
         prec = int.parse(match.group(2), onError: (_) => null);
@@ -53,16 +54,17 @@ class SPFormat {
     }
     if (lookupkey != null && lookups != null && lookups[lookupkey] != null) {
       lookup = lookups[lookupkey];
-      if (lookup.get) { // RangeMap
-          if(lookups[lookupkey].get(fieldvalue) != null) {
-            return lookups[lookupkey].get(fieldvalue);
-          }
-          return fieldvalue;
+      if (lookup.get) {
+        // RangeMap
+        if (lookups[lookupkey].get(fieldvalue) != null) {
+          return lookups[lookupkey].get(fieldvalue);
+        }
+        return fieldvalue;
       } else {
-          if(lookups[lookupkey][fieldvalue] != null) {
-            return lookups[lookupkey][fieldvalue];
-          }
-          return fieldvalue;
+        if (lookups[lookupkey][fieldvalue] != null) {
+          return lookups[lookupkey][fieldvalue];
+        }
+        return fieldvalue;
       }
     }
     if (isNumber(fieldvalue)) {
@@ -70,8 +72,7 @@ class SPFormat {
         fieldvalue = options.numberFormatter(fieldvalue);
       } else {
         fieldvalue = formatNumber(fieldvalue, prec,
-            options.numberDigitGroupCount,
-            options.numberDigitGroupSep,
+            options.numberDigitGroupCount, options.numberDigitGroupSep,
             options.numberDecimalMark);
       }
     }

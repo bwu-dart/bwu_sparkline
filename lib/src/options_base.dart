@@ -12,12 +12,12 @@ abstract class OptionsBase {
   OptionsBase.uninitialized();
 
   void extend(OptionsBase o) {
-    if(o == null) {
+    if (o == null) {
       return;
     }
     Map otherOv = o.optionValues;
-    for(String key in otherOv.keys) {
-      if(otherOv.containsKey(key)) {
+    for (String key in otherOv.keys) {
+      if (otherOv.containsKey(key)) {
         this[key] = o[key];
       }
     }
@@ -34,7 +34,7 @@ abstract class OptionsBase {
   }
 
   dynamic getValue(String key, dynamic defaultValue) {
-    if(optionKeys.contains(key)) {
+    if (optionKeys.contains(key)) {
       return this[key];
     } else {
       return defaultValue;

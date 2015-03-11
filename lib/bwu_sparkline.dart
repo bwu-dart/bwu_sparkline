@@ -201,7 +201,6 @@
 *   $('#pie').sparkline([1,1,2], { type:'pie' });
 */
 
-
 library bwu_sparkline;
 
 import 'dart:html' as dom;
@@ -231,7 +230,7 @@ class BwuSparkline extends PolymerElement {
 
   @published var optionsMap; // Map literal
   @published Options options; // Options instance
-  @published List values;     // List of values
+  @published List values; // List of values
   //@published List valuesString; // attribute values inline values
 
   // VCanvasCanvas target;
@@ -261,7 +260,7 @@ class BwuSparkline extends PolymerElement {
   }
 
   void valuesChanged(old) {
-    _values=values.toList();
+    _values = values.toList();
     _doInit();
   }
 
@@ -272,7 +271,7 @@ class BwuSparkline extends PolymerElement {
    * inti() is finally called.
    */
   void _doInit() {
-    if(_initJob != null) {
+    if (_initJob != null) {
       _initJob.cancel();
     }
     _initJob = new async.Timer(new Duration(milliseconds: 10), () {
@@ -293,7 +292,7 @@ class BwuSparkline extends PolymerElement {
     var target = new VCanvas(width, height, this /*$['canvas']*/, interact);
     //mhandler = $(this).data('_jqs_mhandler');
     if (mHandler != null) {
-        mHandler.registerCanvas(target);
+      mHandler.registerCanvas(target);
     }
     return target;
   }
@@ -302,14 +301,16 @@ class BwuSparkline extends PolymerElement {
 
 // TODO check if this the correct string value to check opacity
   // TODO allso check all parents
-  bool get isVisible => style.display != 'none' && style.visibility != 'hidden' && style.opacity == '0.0';
+  bool get isVisible => style.display != 'none' &&
+      style.visibility != 'hidden' &&
+      style.opacity == '0.0';
 
   @override
   void attached() {
     try {
       super.attached();
       _isAttached = true;
-    } catch(e, s) {
+    } catch (e, s) {
       print('bwu-sparkline - attached - error: ${e}\n\n${s}');
     }
   }
@@ -325,21 +326,22 @@ class BwuSparkline extends PolymerElement {
 
     String chartType;
 
-    if(options != null) {
+    if (options != null) {
       chartType = options.type;
-    } else if(_attributeOptions != null) {
+    } else if (_attributeOptions != null) {
       chartType = _attributeOptions.type;
     }
 
     _options = new Options.forType(chartType, true)
-        ..extend(options)
-        ..extend(_attributeOptions);
+      ..extend(options)
+      ..extend(_attributeOptions);
 
-    if(_values == null && _options.values != null) {
+    if (_values == null && _options.values != null) {
       _values = _options.values.toList();
     }
 
-    if (innerHtml.trim() == '' && !_options.disableHiddenCheck && !isVisible || !_isAttached) {
+    if (innerHtml.trim() == '' && !_options.disableHiddenCheck && !isVisible ||
+        !_isAttached) {
       if (!_options.composite) {
         render();
       }
@@ -351,14 +353,14 @@ class BwuSparkline extends PolymerElement {
   void _loadAttributeOptions() {
 
     // TODO remove redundant options like tagOptionsPrefix
-    if(optionsMap == null) {
+    if (optionsMap == null) {
       return;
     }
 
     String chartType;
-    if(optionsMap.containsKey('type')) {
+    if (optionsMap.containsKey('type')) {
       chartType = optionsMap['type'];
-    } else if(options != null) {
+    } else if (options != null) {
       chartType = options.type;
     }
 
@@ -370,7 +372,7 @@ class BwuSparkline extends PolymerElement {
 
   MouseHandler mHandler;
 
-  void render () {
+  void render() {
     _delayedRender = null;
     List<List<num>> values;
 
@@ -380,20 +382,25 @@ class BwuSparkline extends PolymerElement {
         vals = innerHtml;
       }
       values = [];
-      vals.replaceAll(new RegExp(r'(^\s*<!--)|(-->\s*$)|\s+')/*/g*/, '').split(',').forEach((f) {
+      vals
+          .replaceAll(new RegExp(r'(^\s*<!--)|(-->\s*$)|\s+') /*/g*/, '')
+          .split(',')
+          .forEach((f) {
         values.add(normalizeValue([f]));
         // TODO split them if they contain ':'
       });
       _values = values.toList();
     } else {
-      if(_values.every((e) => e is List && e.every((v) => v is num))) {
+      if (_values.every((e) => e is List && e.every((v) => v is num))) {
         values = _values.toList();
       } else {
         values = _values.map((e) => [e]).toList();
       }
     }
 
-    width = _options.width == null ? (values.length * _options.defaultPixelsPerValue).toString() : _options.width;
+    width = _options.width == null
+        ? (values.length * _options.defaultPixelsPerValue).toString()
+        : _options.width;
     if (_options.height == null) {
       if (!_options.composite) {
         // must be a better way to get the line height
@@ -412,10 +419,10 @@ class BwuSparkline extends PolymerElement {
     if (!_options.disableInteraction) {
       //mhandler = $.data(this, '_jqs_mhandler');
       if (mHandler == null) {
-         mHandler = new MouseHandler(this, _options);
+        mHandler = new MouseHandler(this, _options);
         //$.data(this, '_jqs_mhandler', mhandler);
       } else if (!_options.composite) {
-         mHandler.reset();
+        mHandler.reset();
       }
     } else {
       mHandler = null;
@@ -429,19 +436,17 @@ class BwuSparkline extends PolymerElement {
 //      return;
 //    }
 
-    ChartBase sp = new ChartBase(_options.type, this, values, _options, width, height);
+    ChartBase sp =
+        new ChartBase(_options.type, this, values, _options, width, height);
 
     sp.render();
-
 
     if (mHandler != null) {
       mHandler.registerSparkline(sp);
     }
   }
 
-
 //  $.fn.sparkline.defaults = getDefaults();
-
 
 //  void displayVisible() {
 //    dom.HtmlElement el;
@@ -538,7 +543,6 @@ class BwuSparkline extends PolymerElement {
 //  }
 }
 
-
 abstract class ChartBase {
   bool disabled = false;
   String type;
@@ -556,10 +560,12 @@ abstract class ChartBase {
 
   VShape regionShapes = new VShape.list();
 
-  ChartBase.sub(this.type, this.el, this.values, this.options, this.width, this.height);
+  ChartBase.sub(
+      this.type, this.el, this.values, this.options, this.width, this.height);
 
-  factory ChartBase(String type, BwuSparkline el, List<List<num>> values, Options options, String width, String height) {
-    switch(type) {
+  factory ChartBase(String type, BwuSparkline el, List<List<num>> values,
+      Options options, String width, String height) {
+    switch (type) {
       case BAR_TYPE:
         return new Bar(el, values, options, width, height);
       case BOX_TYPE:
@@ -585,7 +591,6 @@ abstract class ChartBase {
     }
     return true;
   }
-
 
   /**
    * Setup the canvas
@@ -681,7 +686,8 @@ abstract class ChartBase {
       return formatter(this, options, fields);
     }
     if (options.tooltip.chartTitle != null) {
-      header += '<div class="jqs jqstitle">${options.tooltip.chartTitle}</div>\n';
+      header +=
+          '<div class="jqs jqstitle">${options.tooltip.chartTitle}</div>\n';
     }
 
     List<SPFormat> formats = options.tooltip.formats;
@@ -689,9 +695,11 @@ abstract class ChartBase {
       return '';
     }
 
-    if(options is BoxOptions) {
-      List<String> showFields = (options.tooltip as BoxChartTooltipOptions).formatFieldlist;
-      String showFieldsKey = (options.tooltip as BoxChartTooltipOptions).formatFieldlistKey;
+    if (options is BoxOptions) {
+      List<String> showFields =
+          (options.tooltip as BoxChartTooltipOptions).formatFieldlist;
+      String showFieldsKey =
+          (options.tooltip as BoxChartTooltipOptions).formatFieldlistKey;
       if (showFields != null && showFieldsKey != null) {
         // user-selected ordering of fields
         List<Map> newFields = [];
@@ -713,16 +721,21 @@ abstract class ChartBase {
 //      if (format is String) {
 //        format = new SPFormat(format);
 //      }
-      String fclass = format.fclass != null ? format.fclass : 'jqsfield'; // TODO shouldn't this be default in the options?
+      String fclass = format.fclass != null
+          ? format.fclass
+          : 'jqsfield'; // TODO shouldn't this be default in the options?
       for (int j = 0; j < fieldlen; j++) {
         if (!fields[j]['isNull'] == true || !options.tooltip.skipNull) {
-          if(!fields[j].containsKey('prefix')) fields[j]['prefix'] = options.tooltip.prefix;
-          if(!fields[j].containsKey('suffix')) fields[j]['suffix'] = options.tooltip.suffix;
+          if (!fields[j].containsKey('prefix')) fields[j]['prefix'] =
+              options.tooltip.prefix;
+          if (!fields[j].containsKey('suffix')) fields[j]['suffix'] =
+              options.tooltip.suffix;
 //          $.extend(fields[j], {
 //            prefix: options.tooltipOptions.prefix,
 //            suffix: options.tooltipOptions.tooltipSuffix
 //          });
-          String text = format.render(fields[j], (options.tooltip[BoxChartTooltipOptions.VALUE_LOOKUPS]), options);
+          String text = format.render(fields[j],
+              (options.tooltip[BoxChartTooltipOptions.VALUE_LOOKUPS]), options);
           entries.add('<div class="${fclass}">${text}</div>');
         }
       }
@@ -747,16 +760,20 @@ abstract class ChartBase {
     }
     if (lighten != null) {
       // extract RGB values
-      parse = new RegExp(r'^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$').firstMatch(color);
-      if(parse == null) {
-        parse = new RegExp(r'^#([0-9a-f])([0-9a-f])([0-9a-f])$').firstMatch(color);
+      parse = new RegExp(r'^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$')
+          .firstMatch(color);
+      if (parse == null) {
+        parse =
+            new RegExp(r'^#([0-9a-f])([0-9a-f])([0-9a-f])$').firstMatch(color);
       }
       if (parse != null) {
         rgbnew = [];
         mult = color.length == 4 ? 16 : 1;
         for (i = 0; i < 3; i++) {
           // TODO verify
-          rgbnew[i] = clipval((int.parse(parse.group(i + 1), radix: 16) * mult * lighten).round(), 0, 255);
+          rgbnew[i] = clipval((int.parse(parse.group(i + 1), radix: 16) *
+              mult *
+              lighten).round(), 0, 255);
         }
         return 'rgb(' + rgbnew.join(',') + ')';
       }
@@ -770,7 +787,7 @@ class Shapes {
   List<int> values;
 }
 
-abstract class BarHighlightMixin  {
+abstract class BarHighlightMixin {
 //  int currentRegion;
 //  VCanvasBase target;
   VShape newShapes;
@@ -783,17 +800,19 @@ abstract class BarHighlightMixin  {
   VShape renderRegion(int region, [bool highlight = false]);
 
   void changeHighlight(bool highlight) {
-    VShape shapeids = new VShape.list()..add(base.regionShapes[base.currentRegion]);
+    VShape shapeids = new VShape.list()
+      ..add(base.regionShapes[base.currentRegion]);
     // will be null if the region value was null
     if (shapeids != null) {
       newShapes = renderRegion(base.currentRegion, highlight);
       if (newShapes.length > 1 || shapeids.length > 1) {
         base.target.replaceWithShapes(shapeids, newShapes);
-        base.regionShapes[base.currentRegion] = newShapes.map((newShape) => newShape.id);
+        base.regionShapes[base.currentRegion] =
+            newShapes.map((newShape) => newShape.id);
       } else {
         base.target.replaceWithShape(shapeids, newShapes);
         base.regionShapes[base.currentRegion] = newShapes.id;
-     }
+      }
     }
   }
 
@@ -862,16 +881,19 @@ class Line extends ChartBase {
   int minxorg;
   num minyorg;
 
-
   LineOptions get options => super.options;
 
-  Line (String type, BwuSparkline el, List<List<num>> values, Options options, String width, String height) : super.sub(type, el, values, options, width, height) {
+  Line(String type, BwuSparkline el, List<List<num>> values, Options options,
+      String width, String height)
+      : super.sub(type, el, values, options, width, height) {
     initTarget();
   }
 
   int getRegion(int x, int y) {
     for (int i = regionMap.length - 1; i >= 0; i--) {
-      if (regionMap[i] != null && x >= regionMap[i][0] && x <= regionMap[i][1]) {
+      if (regionMap[i] != null &&
+          x >= regionMap[i][0] &&
+          x <= regionMap[i][1]) {
         return regionMap[i][2];
       }
     }
@@ -879,19 +901,20 @@ class Line extends ChartBase {
   }
 
   List<Map> getCurrentRegionFields() {
-    return [{
+    return [
+      {
         'isNull': yvalues[currentRegion] == null,
         'x': xvalues[currentRegion],
         'y': yvalues[currentRegion],
         'color': options.lineColor,
         'fillColor': options.fillColor,
         'offset': currentRegion
-    }];
+      }
+    ];
   }
 
   @override
   void renderHighlight() {
-
     List<int> vertex = vertices[currentRegion];
     String highlightSpotColor = options.highlightSpotColor;
     String highlightLineColor = options.highlightLineColor;
@@ -902,17 +925,17 @@ class Line extends ChartBase {
       return;
     }
     if (spotRadius != null && highlightSpotColor != null) {
-      highlightSpot = target.drawCircle(vertex[0], vertex[1],
-          spotRadius, null, highlightSpotColor, null);
+      highlightSpot = target.drawCircle(
+          vertex[0], vertex[1], spotRadius, null, highlightSpotColor, null);
       highlightSpotId = highlightSpot.id;
       target.insertAfterShape(lastShapeId, highlightSpot);
     }
 
     if (highlightLineColor != null) {
-        highlightLine = target.drawLine(vertex[0], canvasTop, vertex[0],
-            canvasTop + canvasHeight, highlightLineColor, null);
-        highlightLineId = highlightLine.id;
-        target.insertAfterShape(lastShapeId, highlightLine);
+      highlightLine = target.drawLine(vertex[0], canvasTop, vertex[0],
+          canvasTop + canvasHeight, highlightLineColor, null);
+      highlightLineId = highlightLine.id;
+      target.insertAfterShape(lastShapeId, highlightLine);
     }
   }
 
@@ -922,8 +945,8 @@ class Line extends ChartBase {
       highlightSpotId = null;
     }
     if (highlightLineId != null) {
-        target.removeShapeId(highlightLineId);
-        highlightLineId = null;
+      target.removeShapeId(highlightLineId);
+      highlightLineId = null;
     }
   }
 
@@ -954,8 +977,8 @@ class Line extends ChartBase {
         if (values[i] == null) {
           yvalues.add(null);
         } else {
-          yvalues.add(/*Number*/(val[0]));
-          yminmax.add(/*Number*/(val[0]));
+          yvalues.add(/*Number*/ (val[0]));
+          yminmax.add(/*Number*/ (val[0]));
         }
       }
     }
@@ -963,11 +986,12 @@ class Line extends ChartBase {
       xvalues = options.xValues;
     }
 
-    if(yminmax.length != 0) {
-      maxy = maxyorg = yminmax.reduce(um.nullSafeMax); // TODO is this nullsafe really necessary?
+    if (yminmax.length != 0) {
+      maxy = maxyorg = yminmax
+          .reduce(um.nullSafeMax); // TODO is this nullsafe really necessary?
       miny = minyorg = yminmax.reduce(um.nullSafeMin);
     }
-    if(xvalues.length != 0) {
+    if (xvalues.length != 0) {
       maxx = xvalues.reduce(um.nullSafeMax);
       minx = xvalues.reduce(um.nullSafeMin);
     }
@@ -985,26 +1009,37 @@ class Line extends ChartBase {
         maxy = normalRangeMax;
       }
     }
-    if (options.chartRangeMin != null && (options.chartRangeClip != null || options.chartRangeMin < miny)) {
+    if (options.chartRangeMin != null &&
+        (options.chartRangeClip != null || options.chartRangeMin < miny)) {
       miny = options.chartRangeMin;
     }
-    if (options.chartRangeMax != null && (options.chartRangeClip != null || options.chartRangeMax > maxy)) {
+    if (options.chartRangeMax != null &&
+        (options.chartRangeClip != null || options.chartRangeMax > maxy)) {
       maxy = options.chartRangeMax;
     }
-    if (options.chartRangeMinX != null && (options.chartRangeClipX != null || options.chartRangeMinX < minx)) {
+    if (options.chartRangeMinX != null &&
+        (options.chartRangeClipX != null || options.chartRangeMinX < minx)) {
       minx = options.chartRangeMinX;
     }
-    if (options.chartRangeMaxX != null && (options.chartRangeClipX != null || options.chartRangeMaxX > maxx)) {
+    if (options.chartRangeMaxX != null &&
+        (options.chartRangeClipX != null || options.chartRangeMaxX > maxx)) {
       maxx = options.chartRangeMaxX;
     }
   }
 
-  void drawNormalRange(int canvasLeft, int canvasTop, int canvasHeight, int canvasWidth, int rangey) {
+  void drawNormalRange(int canvasLeft, int canvasTop, int canvasHeight,
+      int canvasWidth, int rangey) {
     int normalRangeMin = options.normalRangeMin;
     int normalRangeMax = options.normalRangeMax;
-    int ytop = canvasTop + (canvasHeight - (canvasHeight * ((normalRangeMax - miny) / rangey))).round();
-    int height = ((canvasHeight * (normalRangeMax - normalRangeMin)) / rangey).round();
-    target.drawRect(canvasLeft, ytop, canvasWidth, height, null, options.normalRangeColor).append();
+    int ytop = canvasTop +
+        (canvasHeight - (canvasHeight * ((normalRangeMax - miny) / rangey)))
+            .round();
+    int height =
+        ((canvasHeight * (normalRangeMax - normalRangeMin)) / rangey).round();
+    target
+        .drawRect(canvasLeft, ytop, canvasWidth, height, null,
+            options.normalRangeColor)
+        .append();
   }
 
   @override
@@ -1056,31 +1091,39 @@ class Line extends ChartBase {
     yvallast = yvalues.length - 1;
 
     spotRadius = options.spotRadius;
-    if (spotRadius != 0 && (canvasWidth < (spotRadius * 4) || canvasHeight < (spotRadius * 4))) {
+    if (spotRadius != 0 &&
+        (canvasWidth < (spotRadius * 4) || canvasHeight < (spotRadius * 4))) {
       spotRadius = 0.0;
     }
     if (spotRadius != 0.0) {
       // adjust the canvas size as required so that spots will fit
-      hlSpotsEnabled = options.highlightSpotColor != null &&  !options.disableInteraction;
-      if (hlSpotsEnabled || options.minSpotColor != null || (options.spotColor != null && yvalues[yvallast] == miny)) {
+      hlSpotsEnabled =
+          options.highlightSpotColor != null && !options.disableInteraction;
+      if (hlSpotsEnabled ||
+          options.minSpotColor != null ||
+          (options.spotColor != null && yvalues[yvallast] == miny)) {
         canvasHeight -= spotRadius.ceil();
       }
-      if (hlSpotsEnabled || options.maxSpotColor != null|| (options.spotColor != null && yvalues[yvallast] == maxy)) {
-          canvasHeight -= spotRadius.ceil();
-          canvasTop += spotRadius.ceil();
+      if (hlSpotsEnabled ||
+          options.maxSpotColor != null ||
+          (options.spotColor != null && yvalues[yvallast] == maxy)) {
+        canvasHeight -= spotRadius.ceil();
+        canvasTop += spotRadius.ceil();
       }
       if (hlSpotsEnabled ||
-           ((options.minSpotColor != null || options.maxSpotColor != null ) && (yvalues[0] == miny || yvalues[0] == maxy))) {
-          canvasLeft += spotRadius.ceil();
-          canvasWidth -= spotRadius.ceil();
+          ((options.minSpotColor != null || options.maxSpotColor != null) &&
+              (yvalues[0] == miny || yvalues[0] == maxy))) {
+        canvasLeft += spotRadius.ceil();
+        canvasWidth -= spotRadius.ceil();
       }
-      if (hlSpotsEnabled || options.spotColor != null ||
-        (options.minSpotColor != null || options.maxSpotColor != null &&
-          (yvalues[yvallast] == miny || yvalues[yvallast] == maxy))) {
+      if (hlSpotsEnabled ||
+          options.spotColor != null ||
+          (options.minSpotColor != null ||
+              options.maxSpotColor != null &&
+                  (yvalues[yvallast] == miny || yvalues[yvallast] == maxy))) {
         canvasWidth -= spotRadius.ceil();
       }
     }
-
 
     canvasHeight--;
 
@@ -1094,14 +1137,16 @@ class Line extends ChartBase {
     yvalcount = yvalues.length;
     for (i = 0; i < yvalcount; i++) {
       x = xvalues[i];
-      if(xvalues.length > i + 1) {
+      if (xvalues.length > i + 1) {
         xnext = xvalues[i + 1];
       } else {
         xnext = null;
       }
       y = yvalues[i];
       xpos = canvasLeft + ((x - minx) * (canvasWidth / rangex)).round();
-      xposnext = i < yvalcount - 1 ? canvasLeft + ((xnext - minx) * (canvasWidth / rangex)).round() : canvasWidth;
+      xposnext = i < yvalcount - 1
+          ? canvasLeft + ((xnext - minx) * (canvasWidth / rangex)).round()
+          : canvasWidth;
       next = xpos + ((xposnext - xpos) / 2);
       regionMap.add([last != null ? last : 0, next, i]);
       last = next;
@@ -1124,7 +1169,11 @@ class Line extends ChartBase {
           // previous value was null
           path.add([xpos, canvasTop + canvasHeight]);
         }
-        vertex = [xpos, canvasTop + (canvasHeight - (canvasHeight * ((y - miny) / rangey))).round()];
+        vertex = [
+          xpos,
+          canvasTop +
+              (canvasHeight - (canvasHeight * ((y - miny) / rangey))).round()
+        ];
         path.add(vertex);
         vertices.add(vertex);
       }
@@ -1154,8 +1203,10 @@ class Line extends ChartBase {
     // draw the fill first, then optionally the normal range, then the line on top of that
     plen = fillShapes.length;
     for (i = 0; i < plen; i++) {
-      target.drawShape(fillShapes[i],
-          options.fillColor, null, fillColor: options.fillColor).append();
+      target
+          .drawShape(fillShapes[i], options.fillColor, null,
+              fillColor: options.fillColor)
+          .append();
     }
 
     if (options.normalRangeMin != null && options.drawNormalOnTop) {
@@ -1164,46 +1215,61 @@ class Line extends ChartBase {
 
     plen = lineShapes.length;
     for (i = 0; i < plen; i++) {
-      target.drawShape(lineShapes[i], options.lineColor,
-          options.lineWidth).append();
+      target
+          .drawShape(lineShapes[i], options.lineColor, options.lineWidth)
+          .append();
     }
 
     if (spotRadius != null && options.valueSpots != null) {
       var vs = options.valueSpots;
-      if(vs != null) {
-      //if (valueSpots.get == null) {
+      if (vs != null) {
+        //if (valueSpots.get == null) {
         valueSpots = new RangeMap(vs);
       }
       for (i = 0; i < yvalcount; i++) {
         color = valueSpots.get(yvalues[i]);
         if (color != null) {
-            target.drawCircle(canvasLeft + ((xvalues[i] - minx) * (canvasWidth / rangex)).round(),
-                canvasTop + (canvasHeight - (canvasHeight * ((yvalues[i] - miny) / rangey))).round(),
-                spotRadius, null,
-                color, null).append();
+          target
+              .drawCircle(canvasLeft +
+                      ((xvalues[i] - minx) * (canvasWidth / rangex)).round(),
+                  canvasTop +
+                      (canvasHeight -
+                              (canvasHeight * ((yvalues[i] - miny) / rangey)))
+                          .round(), spotRadius, null, color, null)
+              .append();
         }
       }
     }
-    if (spotRadius != null && options.spotColor != null && yvalues[yvallast] != null) {
-      target.drawCircle(canvasLeft + ((xvalues[xvalues.length - 1] - minx) * (canvasWidth / rangex)).round(),
-          canvasTop + (canvasHeight - (canvasHeight * ((yvalues[yvallast] - miny) / rangey))).round(),
-          spotRadius, null,
-          options.spotColor, null).append();
+    if (spotRadius != null &&
+        options.spotColor != null &&
+        yvalues[yvallast] != null) {
+      target
+          .drawCircle(canvasLeft +
+              ((xvalues[xvalues.length - 1] - minx) * (canvasWidth / rangex))
+                  .round(), canvasTop +
+              (canvasHeight -
+                      (canvasHeight * ((yvalues[yvallast] - miny) / rangey)))
+                  .round(), spotRadius, null, options.spotColor, null)
+          .append();
     }
     if (maxy != minyorg) {
       if (spotRadius != null && options.minSpotColor != null) {
         x = xvalues[yvalues.indexOf(minyorg)];
-        target.drawCircle(canvasLeft + ((x - minx) * (canvasWidth / rangex)).round(),
-            canvasTop + (canvasHeight - (canvasHeight * ((minyorg - miny) / rangey))).round(),
-            spotRadius, null,
-            options.minSpotColor, null).append();
+        target
+            .drawCircle(canvasLeft +
+                ((x - minx) * (canvasWidth / rangex)).round(), canvasTop +
+                (canvasHeight - (canvasHeight * ((minyorg - miny) / rangey)))
+                    .round(), spotRadius, null, options.minSpotColor, null)
+            .append();
       }
-      if (spotRadius != null&& options.maxSpotColor != null) {
-          x = xvalues[yvalues.indexOf(maxyorg)];
-          target.drawCircle(canvasLeft + ((x - minx) * (canvasWidth / rangex)).round(),
-              canvasTop + (canvasHeight - (canvasHeight * ((maxyorg - miny) / rangey))).round(),
-              spotRadius, null,
-              options.maxSpotColor, null).append();
+      if (spotRadius != null && options.maxSpotColor != null) {
+        x = xvalues[yvalues.indexOf(maxyorg)];
+        target
+            .drawCircle(canvasLeft +
+                ((x - minx) * (canvasWidth / rangex)).round(), canvasTop +
+                (canvasHeight - (canvasHeight * ((maxyorg - miny) / rangey)))
+                    .round(), spotRadius, null, options.maxSpotColor, null)
+            .append();
       }
     }
 
@@ -1229,7 +1295,9 @@ class Bar extends ChartBase with BarHighlightMixin {
   int canvasHeightEf;
   int barWidth;
 
-  Bar(BwuSparkline el, List<List<num>> values, BarOptions options, String width, String height) : super.sub(BAR_TYPE, el, values, options, width, height) {
+  Bar(BwuSparkline el, List<List<num>> values, BarOptions options, String width,
+      String height)
+      : super.sub(BAR_TYPE, el, values, options, width, height) {
     initBarHighlightMixing(this);
     barWidth = options.barWidth;
     int barSpacing = options.barSpacing;
@@ -1257,7 +1325,6 @@ class Bar extends ChartBase with BarHighlightMixin {
     List<num> val;
     int yMaxCalc;
 
-
     // scan values to determine whether to stack bars
     vlen = values.length;
     for (i = 0; i < vlen; i++) {
@@ -1281,13 +1348,15 @@ class Bar extends ChartBase with BarHighlightMixin {
     }
 
     totalBarWidth = barWidth + barSpacing;
-    this.width = ((values.length * barWidth) + ((values.length - 1) * barSpacing)).toString();
+    this.width = ((values.length * barWidth) +
+        ((values.length - 1) * barSpacing)).toString();
 
     initTarget();
 
     if (chartRangeClip != null) {
-      clipMin = chartRangeMin == null ? double.NEGATIVE_INFINITY : chartRangeMin;
-      clipMax = chartRangeMax == null ? double.INFINITY: chartRangeMax;
+      clipMin =
+          chartRangeMin == null ? double.NEGATIVE_INFINITY : chartRangeMin;
+      clipMax = chartRangeMax == null ? double.INFINITY : chartRangeMax;
     }
 
     numValues = [];
@@ -1303,7 +1372,9 @@ class Bar extends ChartBase with BarHighlightMixin {
         stackRanges.add([0]);
         stackRangesNeg.add([0]);
         for (int j = 0, slen = vlist.length; j < slen; j++) {
-          val = chartRangeClip != null ? [clipval(vlist[j], clipMin, clipMax)] : [vlist[j]];
+          val = chartRangeClip != null
+              ? [clipval(vlist[j], clipMin, clipMax)]
+              : [vlist[j]];
           svals.add(val);
           if (val[0] != null) {
             if (val[0] > 0) {
@@ -1316,13 +1387,16 @@ class Bar extends ChartBase with BarHighlightMixin {
                 stackRanges[i][0] += val[0];
               }
             } else {
-              stackRanges[i][0] += (val[0] - (val[0] < 0 ? stackMax : stackMin)).abs();
+              stackRanges[i][0] +=
+                  (val[0] - (val[0] < 0 ? stackMax : stackMin)).abs();
             }
             numValues.add(val);
           }
         }
       } else {
-        val = chartRangeClip != null ? [clipval(values[i][0], clipMin, clipMax)] : values[i].toList();
+        val = chartRangeClip != null
+            ? [clipval(values[i][0], clipMin, clipMax)]
+            : values[i].toList();
         val = values[i] = normalizeValue(val);
         if (val != null && val.every((e) => e != null)) {
           numValues.add(val);
@@ -1331,13 +1405,17 @@ class Bar extends ChartBase with BarHighlightMixin {
     }
     max = numValues.reduce((a, b) => [math.max(a[0], b[0])])[0];
     min = numValues.reduce((a, b) => [math.min(a[0], b[0])])[0];
-    stackMax = stackMax = stacked ? stackTotals.reduce((a, b) => [math.max(a[0], b[0])])[0] : max;
-    stackMin = stackMin = stacked ? numValues.reduce((a, b) => [math.min(a[0], b[0])])[0] : min;
+    stackMax = stackMax =
+        stacked ? stackTotals.reduce((a, b) => [math.max(a[0], b[0])])[0] : max;
+    stackMin = stackMin =
+        stacked ? numValues.reduce((a, b) => [math.min(a[0], b[0])])[0] : min;
 
-    if (options.chartRangeMin != null && (options.chartRangeClip != null || options.chartRangeMin < min)) {
+    if (options.chartRangeMin != null &&
+        (options.chartRangeClip != null || options.chartRangeMin < min)) {
       min = options.chartRangeMin;
     }
-    if (options.chartRangeMax != null && (options.chartRangeClip != null|| options.chartRangeMax > max)) {
+    if (options.chartRangeMax != null &&
+        (options.chartRangeClip != null || options.chartRangeMax > max)) {
       max = options.chartRangeMax;
     }
 
@@ -1352,11 +1430,15 @@ class Bar extends ChartBase with BarHighlightMixin {
       xaxisOffset = max;
     }
 
-    range = stacked ? stackRanges.reduce((a, b) => [math.max(a[0], b[0])])[0] + stackRangesNeg.reduce((a, b) => [math.max(a[0], b[0])])[0] : max - min;
+    range = stacked
+        ? stackRanges.reduce((a, b) => [math.max(a[0], b[0])])[0] +
+            stackRangesNeg.reduce((a, b) => [math.max(a[0], b[0])])[0]
+        : max - min;
 
     // as we plot zero/min values a single pixel line, we add a pixel to all other
     // values - Reduce the effective canvas size to suit
-    canvasHeightEf = (zeroAxis != null && min < 0) ? canvasHeight - 2 : canvasHeight - 1;
+    canvasHeightEf =
+        (zeroAxis != null && min < 0) ? canvasHeight - 2 : canvasHeight - 1;
 
     if (min < xaxisOffset) {
       yMaxCalc = (stacked && max >= 0) ? stackMax : max;
@@ -1373,16 +1455,16 @@ class Bar extends ChartBase with BarHighlightMixin {
     if (options.colorList != null) {
       colorMapByIndex = options.colorList;
       //colorMapByValue = null;
-    } else if(options.colorMap != null ){
+    } else if (options.colorMap != null) {
       //colorMapByIndex = null;
       var map = options.colorMap;
       //if (colorMapByValue && colorMapByValue.get == null) {
-        colorMapByValue = new RangeMap(map);
+      colorMapByValue = new RangeMap(map);
       //}
     }
   }
 
-  int getRegion(/*dom.HtmlElement el, */int x, int y) {
+  int getRegion(/*dom.HtmlElement el, */ int x, int y) {
     var result = (x / totalBarWidth).floor();
     return (result < 0 || result >= values.length) ? null : result;
   }
@@ -1415,9 +1497,10 @@ class Bar extends ChartBase with BarHighlightMixin {
     if (value == 0 && options.zeroColor != null) {
       color = options.zeroColor;
     }
-    if (colorMapByValue != null && ((newColor = colorMapByValue.get(value)) != null)) {
+    if (colorMapByValue != null &&
+        ((newColor = colorMapByValue.get(value)) != null)) {
       color = newColor;
-    } else if (colorMapByIndex != null&& colorMapByIndex.length > valuenum) {
+    } else if (colorMapByIndex != null && colorMapByIndex.length > valuenum) {
       color = colorMapByIndex[valuenum];
     }
     return color is List ? color[stacknum % color.length] : color;
@@ -1446,7 +1529,9 @@ class Bar extends ChartBase with BarHighlightMixin {
 
     if (isNull) {
       if (options.nullColor != null) {
-        color = highlight ? options.nullColor : calcHighlightColor(options.nullColor, options);
+        color = highlight
+            ? options.nullColor
+            : calcHighlightColor(options.nullColor, options);
         y = (yoffset > 0) ? yoffset - 1 : yoffset;
         return target.drawRect(x, y, barWidth - 1, 0, color, color);
       } else {
@@ -1465,7 +1550,9 @@ class Bar extends ChartBase with BarHighlightMixin {
       }
 
       if (range > 0) {
-        height = (canvasHeightEf * (((val - xaxisOffset).abs() / range))).floor() + 1;
+        height = (canvasHeightEf * (((val - xaxisOffset).abs() / range)))
+                .floor() +
+            1;
       } else {
         height = 1;
       }
@@ -1493,7 +1580,6 @@ class Bar extends ChartBase with BarHighlightMixin {
  * Tristate charts
  */
 class Tristate extends ChartBase with BarHighlightMixin {
-
   TristateOptions get options => super.options;
 
   int barWidth;
@@ -1501,48 +1587,53 @@ class Tristate extends ChartBase with BarHighlightMixin {
   List colorMapByIndex;
   RangeMap colorMapByValue;
 
-  Tristate(dom.HtmlElement el, List<List<num>> values, TristateOptions options, String width, String height)
-      : super.sub(TRISTATE_TYPE, el, values, options, width, height){
+  Tristate(dom.HtmlElement el, List<List<num>> values, TristateOptions options,
+      String width, String height)
+      : super.sub(TRISTATE_TYPE, el, values, options, width, height) {
     barWidth = options.barWidth;
     int barSpacing = options.barSpacing;
 
     regionShapes; // TODO = {};
     totalBarWidth = barWidth + barSpacing;
     //values = $.map(values, Number);
-    this.width = ((values.length * barWidth) + ((values.length - 1) * barSpacing)).toString();
+    this.width = ((values.length * barWidth) +
+        ((values.length - 1) * barSpacing)).toString();
 
     if (options.colorList != null) {
       colorMapByIndex = options.colorList;
       //colorMapByValue = null;
-    } else if(options.colorMap != null ){
+    } else if (options.colorMap != null) {
       //colorMapByIndex = null;
       var map = options.colorMap;
       //if (colorMapByValue && colorMapByValue.get == null) {
-        colorMapByValue = new RangeMap(map);
+      colorMapByValue = new RangeMap(map);
       //}
     }
 
     initTarget();
   }
 
-  int getRegion(/*dom.HtmlElement el, */int x, int y) {
+  int getRegion(/*dom.HtmlElement el, */ int x, int y) {
     return (x / totalBarWidth).floor();
   }
 
   List<Map> getCurrentRegionFields() {
-    return [{
-      'isNull': values[currentRegion] == null,
-      'value': values[currentRegion],
-      'color': calcColor(values[currentRegion][0], currentRegion),
-      'offset': currentRegion
-    }];
+    return [
+      {
+        'isNull': values[currentRegion] == null,
+        'value': values[currentRegion],
+        'color': calcColor(values[currentRegion][0], currentRegion),
+        'offset': currentRegion
+      }
+    ];
   }
 
   String calcColor(int value, int valuenum) {
     String color;
     String newColor;
 
-    if (colorMapByValue != null&& ((newColor = colorMapByValue.get(value)) != null)) {
+    if (colorMapByValue != null &&
+        ((newColor = colorMapByValue.get(value)) != null)) {
       color = newColor;
     } else if (colorMapByIndex != null && colorMapByIndex.length > valuenum) {
       color = colorMapByIndex[valuenum];
@@ -1580,7 +1671,7 @@ class Tristate extends ChartBase with BarHighlightMixin {
     }
     color = calcColor(values[valuenum][0], valuenum);
     if (color == null) {
-        return null;
+      return null;
     }
     if (highlight) {
       color = calcHighlightColor(color, options);
@@ -1593,7 +1684,6 @@ class Tristate extends ChartBase with BarHighlightMixin {
  * Discrete charts
  */
 class Discrete extends ChartBase with BarHighlightMixin {
-
   DiscreteOptions get options => super.options;
 
   int range;
@@ -1603,39 +1693,45 @@ class Discrete extends ChartBase with BarHighlightMixin {
   int min;
   int max;
 
-  Discrete (dom.HtmlElement el, List<List<num>> values, DiscreteOptions options, String width, String height)
-      : super.sub(DISCRETE_TYPE, el, values, options, width, height){
+  Discrete(dom.HtmlElement el, List<List<num>> values, DiscreteOptions options,
+      String width, String height)
+      : super.sub(DISCRETE_TYPE, el, values, options, width, height) {
     //regionShapes = {};
     //values = $.map(values, Number);
     min = values.reduce((a, b) => [math.min(a[0], b[0])])[0];
     max = values.reduce((a, b) => [math.max(a[0], b[0])])[0];
     range = max - min;
     width = options.width == null ? values.length * 2 : width;
-    if (options.chartRangeMin != null && (options.chartRangeClip || options.chartRangeMin < min)) {
-        min = options.chartRangeMin;
+    if (options.chartRangeMin != null &&
+        (options.chartRangeClip || options.chartRangeMin < min)) {
+      min = options.chartRangeMin;
     }
-    if (options.chartRangeMax != null && (options.chartRangeClip || options.chartRangeMax > max)) {
+    if (options.chartRangeMax != null &&
+        (options.chartRangeClip || options.chartRangeMax > max)) {
       max = options.chartRangeMax;
     }
     initTarget();
     if (target != null) {
-      lineHeight = options.lineHeight == null ? (canvasHeight * 0.3).round() : options.lineHeight;
+      lineHeight = options.lineHeight == null
+          ? (canvasHeight * 0.3).round()
+          : options.lineHeight;
     }
     interval = (canvasWidth / values.length).floor();
     itemWidth = (canvasWidth / values.length).round();
-
   }
 
-  int getRegion(/*dom.HtmlElement el, */int x, int y) {
-      return (x / itemWidth).floor();
+  int getRegion(/*dom.HtmlElement el, */ int x, int y) {
+    return (x / itemWidth).floor();
   }
 
   List<Map> getCurrentRegionFields() {
-    return [{
+    return [
+      {
         'isNull': values[currentRegion] == null,
         'value': values[currentRegion],
         'offset': currentRegion
-    }];
+      }
+    ];
   }
 
   VShape renderRegion(int valuenum, [bool highlight = false]) {
@@ -1648,7 +1744,9 @@ class Discrete extends ChartBase with BarHighlightMixin {
     val = clipval(values[valuenum][0], min, max);
     x = valuenum * interval;
     ytop = (pheight - pheight * ((val - min) / range)).round();
-    color = (options.thresholdColor != null && val < options.thresholdValue) ? options.thresholdColor : options.lineColor;
+    color = (options.thresholdColor != null && val < options.thresholdValue)
+        ? options.thresholdColor
+        : options.lineColor;
     if (highlight) {
       color = calcHighlightColor(color, options);
     }
@@ -1660,11 +1758,11 @@ class Discrete extends ChartBase with BarHighlightMixin {
  * Bullet charts
  */
 class Bullet extends ChartBase {
-
   BulletOptions get options => super.options;
 
-  Bullet(dom.HtmlElement el, List<List<num>> values, BulletOptions options, String width, String height)
-    : super.sub(BULLET_TYPE, el, values, options, width, height) {
+  Bullet(dom.HtmlElement el, List<List<num>> values, BulletOptions options,
+      String width, String height)
+      : super.sub(BULLET_TYPE, el, values, options, width, height) {
     int min;
     int max;
     List<int> vals;
@@ -1696,15 +1794,19 @@ class Bullet extends ChartBase {
 
   void getRegion(dom.HtmlElement el, int x, int y) {
     var shapeid = target.getShapeAt(el, x, y);
-    return (shapeid != null && shapes[shapeid] != null) ? shapes[shapeid] : null;
+    return (shapeid != null && shapes[shapeid] != null)
+        ? shapes[shapeid]
+        : null;
   }
 
   List<Map> getCurrentRegionFields() {
-    return [{
-      'fieldkey': currentRegion.substr(0, 1),
-      'value': values[currentRegion.substr(1)],
-      'region': currentRegion
-    }];
+    return [
+      {
+        'fieldkey': currentRegion.substr(0, 1),
+        'value': values[currentRegion.substr(1)],
+        'region': currentRegion
+      }
+    ];
   }
 
   void changeHighlight(bool highlight) {
@@ -1734,7 +1836,8 @@ class Bullet extends ChartBase {
     if (highlight) {
       color = calcHighlightColor(color, options);
     }
-    return target.drawRect(0, 0, rangewidth - 1, canvasHeight - 1, color, color);
+    return target.drawRect(
+        0, 0, rangewidth - 1, canvasHeight - 1, color, color);
   }
 
   void renderPerformance(bool highlight) {
@@ -1750,14 +1853,16 @@ class Bullet extends ChartBase {
 
   void renderTarget(bool highlight) {
     int targetval = values[0];
-    int x = (canvasWidth * ((targetval - min) / range) - (options.targetWidth / 2)).round();
+    int x = (canvasWidth * ((targetval - min) / range) -
+        (options.targetWidth / 2)).round();
     int targettop = (canvasHeight * 0.10).round();
     int targetheight = canvasHeight - (targettop * 2);
     String color = options.targetColor;
     if (highlight) {
       color = calcHighlightColor(color, options);
     }
-    return target.drawRect(x, targettop, options.targetWidth - 1, targetheight - 1, color, color);
+    return target.drawRect(
+        x, targettop, options.targetWidth - 1, targetheight - 1, color, color);
   }
 
   void render() {
@@ -1790,11 +1895,11 @@ class Bullet extends ChartBase {
  * Pie charts
  */
 class Pie extends ChartBase {
-
   PieOptions get options => super.options;
 
-  Pie(dom.HtmlElement el, List<List<num>> values, PieOptions options, String width, String height)
-      : super.sub(PIE_TYPE, el, values, options, width, height){
+  Pie(dom.HtmlElement el, List<List<num>> values, PieOptions options,
+      String width, String height)
+      : super.sub(PIE_TYPE, el, values, options, width, height) {
     int total = 0;
     int i;
 
@@ -1816,18 +1921,23 @@ class Pie extends ChartBase {
   }
 
   void getRegion(dom.HtmlElement el, int x, int y) {
-      int shapeid = target.getShapeAt(el, x, y);
-      return (shapeid != null && shapes[shapeid] != null) ? shapes[shapeid] : null;
+    int shapeid = target.getShapeAt(el, x, y);
+    return (shapeid != null && shapes[shapeid] != null)
+        ? shapes[shapeid]
+        : null;
   }
 
   List<Map> getCurrentRegionFields() {
-    return [{
-      'isNull': values[currentRegion] == null,
-      'value': values[currentRegion],
-      'percent': values[currentRegion] / total * 100,
-      'color': options.sliceColors[currentRegion % options.sliceColors.length],
-      'offset': currentRegion
-    }];
+    return [
+      {
+        'isNull': values[currentRegion] == null,
+        'value': values[currentRegion],
+        'percent': values[currentRegion] / total * 100,
+        'color':
+            options.sliceColors[currentRegion % options.sliceColors.length],
+        'offset': currentRegion
+      }
+    ];
   }
 
   void changeHighlight(bool highlight) {
@@ -1843,7 +1953,7 @@ class Pie extends ChartBase {
     int borderWidth = options.borderWidth;
     int offset = options.offset;
     int circle = 2 * math.PI;
-    int next = offset ? (2 * math.PI) * (offset/360) : 0;
+    int next = offset ? (2 * math.PI) * (offset / 360) : 0;
     int start;
     int end;
     int i;
@@ -1854,7 +1964,8 @@ class Pie extends ChartBase {
     for (i = 0; i < vlen; i++) {
       start = next;
       end = next;
-      if (total > 0) {  // avoid divide by zero
+      if (total > 0) {
+        // avoid divide by zero
         end = next + (circle * (values[i] / total));
       }
       if (valuenum == i) {
@@ -1863,7 +1974,8 @@ class Pie extends ChartBase {
           color = calcHighlightColor(color, options);
         }
 
-        return target.drawPieSlice(radius, radius, radius - borderWidth, start, end, null, color);
+        return target.drawPieSlice(
+            radius, radius, radius - borderWidth, start, end, null, color);
       }
       next = end;
     }
@@ -1877,11 +1989,14 @@ class Pie extends ChartBase {
       return;
     }
     if (borderWidth == null) {
-      target.drawCircle(radius, radius, (radius - (borderWidth / 2)).floor(),
-          options.borderColor, null, borderWidth).append();
+      target
+          .drawCircle(radius, radius, (radius - (borderWidth / 2)).floor(),
+              options.borderColor, null, borderWidth)
+          .append();
     }
     for (i = values.length; i--;) {
-      if (values[i]) { // don't render zero values
+      if (values[i]) {
+        // don't render zero values
         shape = renderSlice(i).append();
         valueShapes[i] = shape.id; // store just the shapeid
         shapes[shape.id] = i;
@@ -1895,16 +2010,16 @@ class Pie extends ChartBase {
  * Box plots
  */
 class Box extends ChartBase {
-
   BoxOptions get options => super.options;
 
-  Box(dom.HtmlElement el, List<List<num>> values, BoxOptions options, String width, String height)
+  Box(dom.HtmlElement el, List<List<num>> values, BoxOptions options,
+      String width, String height)
       : super.sub(BOX_TYPE, el, values, options, width, height) {
     values = $.map(values, Number);
     width = options.width == null ? '4.0em' : width;
     initTarget();
     if (values.length == 0) {
-        disabled = true;
+      disabled = true;
     }
   }
 
@@ -1912,34 +2027,38 @@ class Box extends ChartBase {
    * Simulate a single region
    */
   int getRegion() {
-      return 1;
+    return 1;
   }
 
   List<Map> getCurrentRegionFields() {
     var result = [
-        { 'field': 'lq', 'value': quartiles[0] },
-        { 'field': 'med', 'value': quartiles[1] },
-        { 'field': 'uq', 'value': quartiles[2] }
+      {'field': 'lq', 'value': quartiles[0]},
+      {'field': 'med', 'value': quartiles[1]},
+      {'field': 'uq', 'value': quartiles[2]}
     ];
     if (loutlier != null) {
-        result.add({ 'field': 'lo', 'value': loutlier});
+      result.add({'field': 'lo', 'value': loutlier});
     }
     if (routlier != null) {
-        result.add({ 'field': 'ro', 'value': routlier});
+      result.add({'field': 'ro', 'value': routlier});
     }
     if (lwhisker != null) {
-        result.add({ 'field': 'lw', 'value': lwhisker});
+      result.add({'field': 'lw', 'value': lwhisker});
     }
     if (rwhisker != null) {
-        result.add({ 'field': 'rw', 'value': rwhisker});
+      result.add({'field': 'rw', 'value': rwhisker});
     }
     return result;
   }
 
   void render() {
     int vlen = values.length;
-    int minValue = options.chartRangeMin == null ? math.min(Math, values) : options.chartRangeMin;
-    int maxValue = options.chartRangeMax == null ? math.max(Math, values) : options.chartRangeMax;
+    int minValue = options.chartRangeMin == null
+        ? math.min(Math, values)
+        : options.chartRangeMin;
+    int maxValue = options.chartRangeMax == null
+        ? math.max(Math, values)
+        : options.chartRangeMax;
     int canvasLeft = 0;
     int lwhisker;
     int loutlier;
@@ -1974,7 +2093,9 @@ class Box extends ChartBase {
         rwhisker = values[4];
       }
     } else {
-      values.sort((a, b) { return a - b; });
+      values.sort((a, b) {
+        return a - b;
+      });
       q1 = quartile(values, 1);
       q2 = quartile(values, 2);
       q3 = quartile(values, 3);
@@ -2004,75 +2125,77 @@ class Box extends ChartBase {
       canvasWidth -= 2 * (options.spotRadius).ceil();
       unitSize = canvasWidth / (maxValue - minValue + 1);
       if (loutlier < lwhisker) {
-        target.drawCircle((loutlier - minValue) * unitSize + canvasLeft,
-            canvasHeight / 2,
-            options.spotRadius,
-            options.outlierLineColor,
-            options.outlierFillColor).append();
+        target
+            .drawCircle((loutlier - minValue) * unitSize + canvasLeft,
+                canvasHeight / 2, options.spotRadius, options.outlierLineColor,
+                options.outlierFillColor)
+            .append();
       }
       if (routlier > rwhisker) {
-        target.drawCircle((routlier - minValue) * unitSize + canvasLeft,
-            canvasHeight / 2,
-            options.spotRadius,
-            options.outlierLineColor,
-            options.outlierFillColor).append();
+        target
+            .drawCircle((routlier - minValue) * unitSize + canvasLeft,
+                canvasHeight / 2, options.spotRadius, options.outlierLineColor,
+                options.outlierFillColor)
+            .append();
       }
     }
 
     // box
-    target.drawRect(
-        ((q1 - minValue) * unitSize + canvasLeft).round(),
-        (canvasHeight * 0.1).round(),
-        ((q3 - q1) * unitSize).round(),
-        (canvasHeight * 0.8).round(),
-        options.boxLineColor,
-        options.boxFillColor).append();
+    target
+        .drawRect(((q1 - minValue) * unitSize + canvasLeft).round(),
+            (canvasHeight * 0.1).round(), ((q3 - q1) * unitSize).round(),
+            (canvasHeight * 0.8).round(), options.boxLineColor,
+            options.boxFillColor)
+        .append();
     // left whisker
-    target.drawLine(
-        ((lwhisker - minValue) * unitSize + canvasLeft).round(),
-        (canvasHeight / 2).round(),
-        ((q1 - minValue) * unitSize + canvasLeft).round(),
-        (canvasHeight / 2).round(),
-        options.lineColor).append();
-    target.drawLine(
-        ((lwhisker - minValue) * unitSize + canvasLeft).round(),
-        (canvasHeight / 4).round(),
-        ((lwhisker - minValue) * unitSize + canvasLeft).round(),
-        (canvasHeight - canvasHeight / 4).round(),
-        options.whiskerColor).append();
+    target
+        .drawLine(((lwhisker - minValue) * unitSize + canvasLeft).round(),
+            (canvasHeight / 2).round(),
+            ((q1 - minValue) * unitSize + canvasLeft).round(),
+            (canvasHeight / 2).round(), options.lineColor)
+        .append();
+    target
+        .drawLine(((lwhisker - minValue) * unitSize + canvasLeft).round(),
+            (canvasHeight / 4).round(),
+            ((lwhisker - minValue) * unitSize + canvasLeft).round(),
+            (canvasHeight - canvasHeight / 4).round(), options.whiskerColor)
+        .append();
     // right whisker
-    target.drawLine(((rwhisker - minValue) * unitSize + canvasLeft).round(),
-        (canvasHeight / 2).round(),
-        ((q3 - minValue) * unitSize + canvasLeft).round(),
-        (canvasHeight / 2).round(),
-        options.lineColor).append();
-    target.drawLine(
-        ((rwhisker - minValue) * unitSize + canvasLeft).round(),
-        (canvasHeight / 4).round(),
-        ((rwhisker - minValue) * unitSize + canvasLeft).round(),
-        (canvasHeight - canvasHeight / 4).round(),
-        options.whiskerColor).append();
+    target
+        .drawLine(((rwhisker - minValue) * unitSize + canvasLeft).round(),
+            (canvasHeight / 2).round(),
+            ((q3 - minValue) * unitSize + canvasLeft).round(),
+            (canvasHeight / 2).round(), options.lineColor)
+        .append();
+    target
+        .drawLine(((rwhisker - minValue) * unitSize + canvasLeft).round(),
+            (canvasHeight / 4).round(),
+            ((rwhisker - minValue) * unitSize + canvasLeft).round(),
+            (canvasHeight - canvasHeight / 4).round(), options.whiskerColor)
+        .append();
     // median line
-    target.drawLine(
-        ((q2 - minValue) * unitSize + canvasLeft).round(),
-        (canvasHeight * 0.1).round(),
-        ((q2 - minValue) * unitSize + canvasLeft).round(),
-        (canvasHeight * 0.9).round(),
-        options.medianColor).append();
+    target
+        .drawLine(((q2 - minValue) * unitSize + canvasLeft).round(),
+            (canvasHeight * 0.1).round(),
+            ((q2 - minValue) * unitSize + canvasLeft).round(),
+            (canvasHeight * 0.9).round(), options.medianColor)
+        .append();
     if (options.target) {
       size = (options.get('spotRadius')).ciel();
-      target.drawLine(
-          ((options.target - minValue) * unitSize + canvasLeft).round(),
-          ((canvasHeight / 2) - size).round(),
-          ((options.target - minValue) * unitSize + canvasLeft).round(),
-          ((canvasHeight / 2) + size).round(),
-          options.targetColor).append();
-      target.drawLine(
-          ((options.get('target') - minValue) * unitSize + canvasLeft - size).round(),
-          (canvasHeight / 2).round(),
-          ((options.target - minValue) * unitSize + canvasLeft + size).round(),
-          (canvasHeight / 2).round(),
-          options.targetColor).append();
+      target
+          .drawLine(
+              ((options.target - minValue) * unitSize + canvasLeft).round(),
+              ((canvasHeight / 2) - size).round(),
+              ((options.target - minValue) * unitSize + canvasLeft).round(),
+              ((canvasHeight / 2) + size).round(), options.targetColor)
+          .append();
+      target
+          .drawLine(((options.get('target') - minValue) * unitSize +
+                  canvasLeft -
+                  size).round(), (canvasHeight / 2).round(),
+              ((options.target - minValue) * unitSize + canvasLeft + size)
+                  .round(), (canvasHeight / 2).round(), options.targetColor)
+          .append();
     }
     target.render();
   }
@@ -2131,7 +2254,7 @@ abstract class VCanvasBase {
 
   void replaceWithShapes(VShape shapeids, List<VShape> shapes);
 
-  VCanvasBase (this.width, this.height, this.target) {
+  VCanvasBase(this.width, this.height, this.target) {
     if (width == null) {
       return;
     }
@@ -2141,24 +2264,56 @@ abstract class VCanvasBase {
 //    $.data(target, '_jqs_vcanvas', this);
   }
 
-  VShape drawLine(int x1, int y1, int x2, int y2, String lineColor, int lineWidth) {
+  VShape drawLine(
+      int x1, int y1, int x2, int y2, String lineColor, int lineWidth) {
     return drawShape([[x1, y1], [x2, y2]], lineColor, lineWidth);
   }
 
-  VShape drawShape(List<List<num>> path, String lineColor, int lineWidth, {String fillColor}) {
-    return _genShape(VShape.SHAPE, {'path': path, 'lineColor':lineColor, 'fillColor':fillColor, 'lineWidth':lineWidth});
+  VShape drawShape(List<List<num>> path, String lineColor, int lineWidth,
+      {String fillColor}) {
+    return _genShape(VShape.SHAPE, {
+      'path': path,
+      'lineColor': lineColor,
+      'fillColor': fillColor,
+      'lineWidth': lineWidth
+    });
   }
 
-  VShape drawCircle(int x, int y, double radius, String lineColor, String fillColor, int lineWidth) {
-    return _genShape(VShape.CIRCLE, {'x':x, 'y':y, 'radius':radius, 'lineColor':lineColor, 'fillColor':fillColor, 'lineWidth':lineWidth});
+  VShape drawCircle(int x, int y, double radius, String lineColor,
+      String fillColor, int lineWidth) {
+    return _genShape(VShape.CIRCLE, {
+      'x': x,
+      'y': y,
+      'radius': radius,
+      'lineColor': lineColor,
+      'fillColor': fillColor,
+      'lineWidth': lineWidth
+    });
   }
 
-  VShape drawPieSlice(int x, int y, double radius, int startAngle, int endAngle, String lineColor, String fillColor) {
-    return _genShape(VShape.PIE_SLICE, {'x':x, 'y':y, 'radius':radius, 'startAngle':startAngle, 'endAngle':endAngle, 'lineColor':lineColor, 'fillColor':fillColor});
+  VShape drawPieSlice(int x, int y, double radius, int startAngle, int endAngle,
+      String lineColor, String fillColor) {
+    return _genShape(VShape.PIE_SLICE, {
+      'x': x,
+      'y': y,
+      'radius': radius,
+      'startAngle': startAngle,
+      'endAngle': endAngle,
+      'lineColor': lineColor,
+      'fillColor': fillColor
+    });
   }
 
-  VShape drawRect(int x, int y, int width, int height, String lineColor, String fillColor) {
-    return _genShape(VShape.RECT, {'x':x, 'y':y, 'width':width, 'height':height, 'lineColor':lineColor, 'fillColor':fillColor});
+  VShape drawRect(
+      int x, int y, int width, int height, String lineColor, String fillColor) {
+    return _genShape(VShape.RECT, {
+      'x': x,
+      'y': y,
+      'width': width,
+      'height': height,
+      'lineColor': lineColor,
+      'fillColor': fillColor
+    });
   }
 
   dom.CanvasElement getElement() {
@@ -2183,14 +2338,15 @@ abstract class VCanvasBase {
   void _insert(dom.CanvasElement el, BwuSparkline target) {
     //$(target).html(el);
     target
-        ..children.clear()
-        ..append(el);
+      ..children.clear()
+      ..append(el);
   }
 
   /**
    * Calculate the pixel dimensions of the canvas
    */
-  void _calculatePixelDims(String width, String height, dom.CanvasElement canvas) {
+  void _calculatePixelDims(
+      String width, String height, dom.CanvasElement canvas) {
     var match;
     var regex = new RegExp(_pxregex);
     match = regex.firstMatch(height);
@@ -2212,7 +2368,7 @@ abstract class VCanvasBase {
   /**
    * Generate a shape object and id for later rendering
    */
-  VShape _genShape (String shapetype, Map shapeargs) {
+  VShape _genShape(String shapetype, Map shapeargs) {
     var id = shapeCount++;
     shapeargs['id'] = id;
     return new VShape(this, id, shapetype, shapeargs);
@@ -2221,35 +2377,40 @@ abstract class VCanvasBase {
   /**
    * Add a shape to the end of the render queue
    */
-  void appendShape(VShape shape); /* {
+  void appendShape(
+      VShape shape); /* {
     throw 'appendShape not implemented';
   }*/
 
   /**
    * Replace one shape with another
    */
-  void replaceWithShape(VShape shapeid, VShape shape); /* {
+  void replaceWithShape(VShape shapeid,
+      VShape shape); /* {
     throw 'replaceWithShape not implemented';
   }*/
 
   /**
    * Insert one shape after another in the render queue
    */
-  void insertAfterShape(int shapeid, VShape shape); /* {
+  void insertAfterShape(int shapeid,
+      VShape shape); /* {
     throw 'insertAfterShape not implemented';
   }*/
 
   /**
    * Remove a shape from the queue
    */
-  void removeShapeId(int shapeid); /* {
+  void removeShapeId(
+      int shapeid); /* {
     throw('removeShapeId not implemented');
   },*/
 
   /**
    * Find a shape at the specified x/y co-ordinates
    */
-  void getShapeAt(dom.HtmlElement el, int x, int y); /* {
+  void getShapeAt(dom.HtmlElement el, int x,
+      int y); /* {
       alert('getShapeAt not implemented');
   },*/
 
@@ -2262,7 +2423,7 @@ abstract class VCanvasBase {
 }
 
 class VCanvas extends VCanvasBase {
-  Map<int,VShape> shapes = <int,VShape>{};
+  Map<int, VShape> shapes = <int, VShape>{};
   List<int> shapeseq = [];
   int currentTargetShapeId;
   int pixelHeight;
@@ -2273,7 +2434,8 @@ class VCanvas extends VCanvasBase {
 
   VCanvas(String width, String height, BwuSparkline target, this.interact)
       : super(width, height, target) {
-    canvas = target.$['canvas'] as dom.CanvasElement; //dom.document.createElement('canvas');
+    canvas = target.$[
+        'canvas'] as dom.CanvasElement; //dom.document.createElement('canvas');
 //    if (target[0]) {
 //      target = target[0];
 //    }
@@ -2287,17 +2449,18 @@ class VCanvas extends VCanvasBase {
     canvas.width = pixelWidth;
     canvas.height = pixelHeight;
     canvas
-        ..width = pixelWidth
-        ..height = pixelHeight;
+      ..width = pixelWidth
+      ..height = pixelHeight;
     _getContext().fillStyle = '#fff';
   }
 
-  dom.CanvasRenderingContext2D _getContext({String lineColor, String fillColor, int lineWidth}) {
+  dom.CanvasRenderingContext2D _getContext(
+      {String lineColor, String fillColor, int lineWidth}) {
     dom.CanvasRenderingContext2D context = canvas.getContext('2d');
     if (lineColor != null) {
       context.strokeStyle = lineColor;
     }
-    context.lineWidth = lineWidth == null? 1 : lineWidth;
+    context.lineWidth = lineWidth == null ? 1 : lineWidth;
     if (fillColor != null) {
       context.fillStyle = fillColor;
     }
@@ -2312,14 +2475,17 @@ class VCanvas extends VCanvasBase {
     currentTargetShapeId = null;
   }
 
-  void _drawShape(int shapeid, List<List<num>> path, String lineColor, String fillColor, int lineWidth) {
-    dom.CanvasRenderingContext2D context = _getContext(lineColor: lineColor, fillColor: fillColor, lineWidth: lineWidth);
+  void _drawShape(int shapeid, List<List<num>> path, String lineColor,
+      String fillColor, int lineWidth) {
+    dom.CanvasRenderingContext2D context = _getContext(
+        lineColor: lineColor, fillColor: fillColor, lineWidth: lineWidth);
     int i;
-    int plen= path.length;
+    int plen = path.length;
     context.beginPath();
     context.moveTo(path[0][0] + 0.5, path[0][1] + 0.5);
-    for (i = 1; i < plen ; i++) {
-      context.lineTo(path[i][0] + 0.5, path[i][1] + 0.5); // the 0.5 offset gives us crisp pixel-width lines
+    for (i = 1; i < plen; i++) {
+      context.lineTo(path[i][0] + 0.5,
+          path[i][1] + 0.5); // the 0.5 offset gives us crisp pixel-width lines
     }
     if (lineColor != null) {
       context.stroke();
@@ -2327,18 +2493,22 @@ class VCanvas extends VCanvasBase {
     if (fillColor != null) {
       context.fill();
     }
-    if (targetX != null && targetY != null &&
-      context.isPointInPath(targetX, targetY)) {
+    if (targetX != null &&
+        targetY != null &&
+        context.isPointInPath(targetX, targetY)) {
       currentTargetShapeId = shapeid;
     }
   }
 
-  void _drawCircle(int shapeid, int x, int y, double radius, String lineColor, String fillColor, int lineWidth) {
-    var context = _getContext(lineColor: lineColor, fillColor: fillColor, lineWidth: lineWidth);
+  void _drawCircle(int shapeid, int x, int y, double radius, String lineColor,
+      String fillColor, int lineWidth) {
+    var context = _getContext(
+        lineColor: lineColor, fillColor: fillColor, lineWidth: lineWidth);
     context.beginPath();
     context.arc(x, y, radius, 0, 2 * math.PI, false);
-    if (targetX != null && targetY != null &&
-      context.isPointInPath(targetX, targetY)) {
+    if (targetX != null &&
+        targetY != null &&
+        context.isPointInPath(targetX, targetY)) {
       currentTargetShapeId = shapeid;
     }
     if (lineColor != null) {
@@ -2349,8 +2519,10 @@ class VCanvas extends VCanvasBase {
     }
   }
 
-  void _drawPieSlice(int shapeid, int x, int y, double radius, int startAngle, int endAngle, String lineColor, String fillColor) {
-    dom.CanvasRenderingContext2D context = _getContext(lineColor: lineColor, fillColor: fillColor);
+  void _drawPieSlice(int shapeid, int x, int y, double radius, int startAngle,
+      int endAngle, String lineColor, String fillColor) {
+    dom.CanvasRenderingContext2D context =
+        _getContext(lineColor: lineColor, fillColor: fillColor);
     context.beginPath();
     context.moveTo(x, y);
     context.arc(x, y, radius, startAngle, endAngle, false);
@@ -2362,14 +2534,22 @@ class VCanvas extends VCanvasBase {
     if (fillColor != null) {
       context.fill();
     }
-    if (targetX != null && targetY != null &&
-      context.isPointInPath(targetX, targetY)) {
+    if (targetX != null &&
+        targetY != null &&
+        context.isPointInPath(targetX, targetY)) {
       currentTargetShapeId = shapeid;
     }
   }
 
-  void _drawRect(int shapeid, int x, int y, int width, int height, String lineColor, String fillColor) {
-    return _drawShape(shapeid, [[x, y], [x + width, y], [x + width, y + height], [x, y + height], [x, y]], lineColor, fillColor, null);
+  void _drawRect(int shapeid, int x, int y, int width, int height,
+      String lineColor, String fillColor) {
+    return _drawShape(shapeid, [
+      [x, y],
+      [x + width, y],
+      [x + width, y + height],
+      [x, y + height],
+      [x, y]
+    ], lineColor, fillColor, null);
   }
 
   int appendShape(VShape shape) {
@@ -2380,7 +2560,7 @@ class VCanvas extends VCanvasBase {
   }
 
   void replaceWithShape(VShape shapeid, VShape shape) {
-    int  i;
+    int i;
     shapes[shape.id] = shape;
     for (i = shapeseq.length - 1; i >= 0; i--) {
       if (shapeseq[i] == shapeid) {
@@ -2407,7 +2587,7 @@ class VCanvas extends VCanvasBase {
         first = i;
       }
     }
-    for (i = shapes.length -1; i >= 0; i--) {
+    for (i = shapes.length - 1; i >= 0; i--) {
       shapeseq.insert(0, shapes[i].id);
       shapes[shapes[i].id] = shapes[i];
     }
@@ -2426,7 +2606,7 @@ class VCanvas extends VCanvasBase {
 
   void removeShapeId(int shapeid) {
     int i;
-    for (i = shapeseq.length - 1; i >= 0;  i--) {
+    for (i = shapeseq.length - 1; i >= 0; i--) {
       if (shapeseq[i] == shapeid) {
         shapeseq.removeAt(i);
         break;
@@ -2453,18 +2633,27 @@ class VCanvas extends VCanvasBase {
       shapeid = shapeseq[i];
       shape = shapes[shapeid];
       //this['_draw' + shape.type].apply(this, shape.args);
-      switch(shape.type) {
+      switch (shape.type) {
         case VShape.CIRCLE:
-          _drawCircle(shape.args['shapeid'], shape.args['x'], shape.args['y'], shape.args['radius'], shape.args['lineColor'], shape.args['fillColor'], shape.args['lineWidth']);
+          _drawCircle(shape.args['shapeid'], shape.args['x'], shape.args['y'],
+              shape.args['radius'], shape.args['lineColor'],
+              shape.args['fillColor'], shape.args['lineWidth']);
           break;
         case VShape.PIE_SLICE:
-          _drawPieSlice(shape.args['shapeid'], shape.args['x'], shape.args['y'], shape.args['radius'], shape.args['startAngle'], shape.args['endAngle'], shape.args['lineColor'], shape.args['fillColor']);
+          _drawPieSlice(shape.args['shapeid'], shape.args['x'], shape.args['y'],
+              shape.args['radius'], shape.args['startAngle'],
+              shape.args['endAngle'], shape.args['lineColor'],
+              shape.args['fillColor']);
           break;
         case VShape.RECT:
-          _drawRect(shape.args['shapeid'], shape.args['x'], shape.args['y'], shape.args['width'], shape.args['height'], shape.args['lineColor'], shape.args['fillColor']);
+          _drawRect(shape.args['shapeid'], shape.args['x'], shape.args['y'],
+              shape.args['width'], shape.args['height'],
+              shape.args['lineColor'], shape.args['fillColor']);
           break;
         case VShape.SHAPE:
-          _drawShape(shape.args['shapeid'], shape.args['path'], shape.args['lineColor'], shape.args['fillColor'], shape.args['lineWidth']);
+          _drawShape(shape.args['shapeid'], shape.args['path'],
+              shape.args['lineColor'], shape.args['fillColor'],
+              shape.args['lineWidth']);
       }
     }
     if (!interact) {
@@ -2640,7 +2829,6 @@ class VCanvas extends VCanvasBase {
 //    }
 //  }
 
-
 //  bool getDefaults;
 //  String createClass;
 //  int SPFormat;
@@ -2676,7 +2864,6 @@ class VCanvas extends VCanvasBase {
 //  int shapeCount = 0;
 //  Map UNSET_OPTION = {};
 
-
 ///**
 // * Utilities
 // */
@@ -2704,8 +2891,6 @@ class VCanvas extends VCanvasBase {
 //    Class.prototype.cls = Class;
 //    return Class;
 //};
-
-
 
 //// convience method to avoid needing the new operator
 //$.spformat = function(format, fclass) {

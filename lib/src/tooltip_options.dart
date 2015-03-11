@@ -7,7 +7,8 @@ import 'options_base.dart';
 import 'options.dart';
 import 'sp_format.dart';
 
-typedef String TooltipFormatterFn(BwuSparkline, Options options, List<Map> fields);
+typedef String TooltipFormatterFn(
+    BwuSparkline, Options options, List<Map> fields);
 
 class Tooltip extends OptionsBase {
   static const SKIP_NULL = 'skipNull';
@@ -33,10 +34,12 @@ class Tooltip extends OptionsBase {
   final Map _v = {};
 
   @override
-  List<String> get optionKeys => new coll.UnmodifiableListView(new List<String>.from(_keys)..addAll(super.optionKeys));
+  List<String> get optionKeys => new coll.UnmodifiableListView(
+      new List<String>.from(_keys)..addAll(super.optionKeys));
 
   @override
-  Map get optionValues => new coll.UnmodifiableMapView(new Map.from(_v)..addAll(super.optionValues));
+  Map get optionValues => new coll.UnmodifiableMapView(
+      new Map.from(_v)..addAll(super.optionValues));
 
   @override
   Map get optionDefaults => new coll.UnmodifiableMapView(_defaults);
@@ -55,12 +58,12 @@ class Tooltip extends OptionsBase {
   ];
 
   final Map _defaults = {
-    SKIP_NULL : true,
-    PREFIX : '',
-    SUFFIX : '',
-    CSS_CLASS : 'jqstooltip',
-    OFFSET_X : 10,
-    OFFSET_Y : 12
+    SKIP_NULL: true,
+    PREFIX: '',
+    SUFFIX: '',
+    CSS_CLASS: 'jqstooltip',
+    OFFSET_X: 10,
+    OFFSET_Y: 12
   };
 
   bool get skipNull => this[SKIP_NULL];
@@ -95,7 +98,7 @@ class Tooltip extends OptionsBase {
 
   @override
   dynamic operator [](String key) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       return super[key];
     }
     return _v[key];
@@ -103,10 +106,9 @@ class Tooltip extends OptionsBase {
 
   @override
   void operator []=(String key, val) {
-    if(!_keys.contains(key)) {
+    if (!_keys.contains(key)) {
       super[key] = val;
     }
     _v[key] = val;
   }
 }
-

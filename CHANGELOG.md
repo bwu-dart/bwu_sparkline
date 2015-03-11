@@ -1,3 +1,7 @@
+## 0.0.7+2
+- extend dependency constraints to support Polymer 0.16.0
+- use dartformat
+
 ## 0.0.7+1
 - update dependency constraints
 - fix issue #3

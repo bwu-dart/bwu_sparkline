@@ -17,20 +17,19 @@ class AppElement extends PolymerElement {
     super.attached();
 
     try {
-      values = [10,8,5,7,4,4,1];
+      values = [10, 8, 5, 7, 4, 4, 1];
       // The options for the dynamicbar chart.
       dynamicbarOptions = new BarOptions()..barColor = 'green';
 
       // The options for the inlinebar chart.
       inlinebarOptions = new BarOptions()..barColor = 'red';
-
     } on NoSuchMethodError catch (e) {
       print('simple - app-element - attached: $e\n\n${e.stackTrace}');
-    }  on RangeError catch (e) {
+    } on RangeError catch (e) {
       print('simple - app-element - attached: $e\n\n${e.stackTrace}');
-    } on TypeError catch(e) {
+    } on TypeError catch (e) {
       print('simple - app-element - attached: $e\n\n${e.stackTrace}');
-    } catch(e, s) {
+    } catch (e, s) {
       print('simple - app-element - attached: $e\n\n${s}');
     }
   }
