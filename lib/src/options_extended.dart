@@ -266,11 +266,11 @@ class BarOptions extends Options {
   int get barSpacing => this[BAR_SPACING];
   set barSpacing(int val) => this[BAR_SPACING] = val;
 
-  int get chartRangeMax => this[CHART_RANGE_MAX];
-  set chartRangeMax(int val) => this[CHART_RANGE_MAX] = val;
+  num get chartRangeMax => this[CHART_RANGE_MAX];
+  set chartRangeMax(num val) => this[CHART_RANGE_MAX] = val;
 
-  int get chartRangeMin => this[CHART_RANGE_MIN];
-  set chartRangeMin(int val) => this[CHART_RANGE_MIN] = val;
+  num get chartRangeMin => this[CHART_RANGE_MIN];
+  set chartRangeMin(num val) => this[CHART_RANGE_MIN] = val;
 
   bool get chartRangeClip => this[CHART_RANGE_CLIP];
   set chartRangeClip(bool val) => this[CHART_RANGE_CLIP] = val;

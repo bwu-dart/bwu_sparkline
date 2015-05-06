@@ -1301,8 +1301,8 @@ class Bar extends ChartBase with BarHighlightMixin {
     initBarHighlightMixing(this);
     barWidth = options.barWidth;
     int barSpacing = options.barSpacing;
-    int chartRangeMin = options.chartRangeMin;
-    int chartRangeMax = options.chartRangeMax;
+    num chartRangeMin = options.chartRangeMin;
+    num chartRangeMax = options.chartRangeMax;
     bool chartRangeClip = options.chartRangeClip;
     num stackMin = double.INFINITY;
     num stackMax = double.NEGATIVE_INFINITY;

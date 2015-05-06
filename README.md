@@ -1,4 +1,4 @@
-<img src="http://bwu-dart.github.io/core_elements/assets/polymer/p-logo.svg" alt="Polymer logo" width="120px" />
+<!--<img src="http://bwu-dart.github.io/core_elements/assets/polymer/p-logo.svg" alt="Polymer logo" width="120px" />-->
 [![Build Status](https://drone.io/github.com/bwu-dart/bwu_sparkline/status.png)](https://drone.io/github.com/bwu-dart/bwu_sparkline/latest)
 
 # Welcome to BWU Sparkline
@@ -6,7 +6,7 @@
 ## BWU Sparkline is a Polymer.dart inline chart component
 BWU Sparkline is a Dart port from [jQuery Sparklines](http://www.omnipotent.net/jquery.sparkline) 
 
-**UPDATE:  June 18th, 2014
+**UPDATE:  May 6th, 2015
 
 ### Screenshots
 ![Simple example](https://raw.githubusercontent.com/bwu-dart/bwu_sparkline/master/doc/screenshots/screenshot1.png)
