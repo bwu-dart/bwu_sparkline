@@ -1,4 +1,4 @@
-<!--<img src="http://bwu-dart.github.io/core_elements/assets/polymer/p-logo.svg" alt="Polymer logo" width="120px" />-->
+![Polmyer Element](https://raw.githubusercontent.com/bwu-dart/bwu_datagrid/master/doc/screenshots/polymer_logo.png)
 [![Build Status](https://drone.io/github.com/bwu-dart/bwu_sparkline/status.png)](https://drone.io/github.com/bwu-dart/bwu_sparkline/latest)
 
 # Welcome to BWU Sparkline
