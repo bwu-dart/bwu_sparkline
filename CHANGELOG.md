@@ -1,3 +1,6 @@
+## 0.0.8
+- support double for chartRangeMin/chartRangeMax
+
 ## 0.0.7+2
 - extend dependency constraints to support Polymer 0.16.0
 - use dartformat

@@ -18,13 +18,11 @@ packages:
     source: hosted
     version: "0.10.0+2"
   bwu_utils:
-    description: bwu_utils
-    source: hosted
-    version: "0.0.2"
-  bwu_utils_browser:
-    description: bwu_utils_browser
-    source: hosted
-    version: "0.0.3+1"
+    description:
+      path: "../bwu_utils"
+      relative: true
+    source: path
+    version: "0.1.0-dev.2"
   cli_util:
     description: cli_util
     source: hosted
@@ -36,7 +34,7 @@ packages:
   collection:
     description: collection
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   crypto:
     description: crypto
     source: hosted
@@ -120,11 +118,11 @@ packages:
   pub_semver:
     description: pub_semver
     source: hosted
-    version: "1.1.0"
+    version: "1.2.0"
   quiver:
     description: quiver
     source: hosted
-    version: "0.21.0"
+    version: "0.21.3"
   quiver_log:
     description: quiver_log
     source: hosted

@@ -209,8 +209,8 @@ import 'dart:math' as math;
 import 'dart:collection' as coll;
 
 import 'package:polymer/polymer.dart';
-import 'package:bwu_utils/math/math.dart' as um;
-import 'package:bwu_utils_browser/html/html.dart' as ub;
+import 'package:bwu_utils/bwu_utils.dart' as utils;
+import 'package:bwu_utils/bwu_utils_browser.dart' as utilsbr;
 
 import 'src/utilities.dart';
 import 'src/sp_format.dart';
@@ -284,10 +284,10 @@ class BwuSparkline extends PolymerElement {
 
   VCanvas canvas(String width, String height, bool interact) {
     if (width == null) {
-      width = ub.innerWidth(this).toString();
+      width = utilsbr.innerWidth(this).toString();
     }
     if (height == null) {
-      height = ub.innerHeight(this).toString();
+      height = utilsbr.innerHeight(this).toString();
     }
     var target = new VCanvas(width, height, this /*$['canvas']*/, interact);
     //mhandler = $(this).data('_jqs_mhandler');
@@ -988,12 +988,12 @@ class Line extends ChartBase {
 
     if (yminmax.length != 0) {
       maxy = maxyorg = yminmax
-          .reduce(um.nullSafeMax); // TODO is this nullsafe really necessary?
-      miny = minyorg = yminmax.reduce(um.nullSafeMin);
+          .reduce(utils.nullSafeMax); // TODO is this nullsafe really necessary?
+      miny = minyorg = yminmax.reduce(utils.nullSafeMin);
     }
     if (xvalues.length != 0) {
-      maxx = xvalues.reduce(um.nullSafeMax);
-      minx = xvalues.reduce(um.nullSafeMin);
+      maxx = xvalues.reduce(utils.nullSafeMax);
+      minx = xvalues.reduce(utils.nullSafeMin);
     }
   }
 

@@ -9,16 +9,21 @@ environment:
   sdk: '>=1.0.0 <2.0.0'
 
 dependencies:
-  bwu_utils_browser: '>=0.0.2 <0.1.0'
+  bwu_utils: #'>=0.1.0-dev.1 <0.1.0'
+    path: ../bwu_utils
   polymer: '>=0.12.1 <0.17.0'
-  quiver: '>=0.18.2 <0.22.0'
+  quiver: '>=0.21.3 <0.22.0'
   quiver_log: '>=1.0.1 <2.0.0'
 
 dev_dependencies:
   grinder: '>=0.7.0 <0.8.0'
   test: '>=0.12.0 <0.13.0'
 
+dependency_overrides:
+  matcher: '>=0.12.0 <0.13.0'
+
 transformers:
+
 - polymer:
     entry_points:
     - example/simple.html
@@ -26,3 +31,6 @@ transformers:
 
 - test/pub_serve:
     $include: test/**_test{.*,}.dart
+
+- $dart2js:
+   commandLineOptions: ['--trust-type-annotations', '--trust-primitives']
