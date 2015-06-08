@@ -1,14 +1,16 @@
 ![Polmyer Element](https://raw.githubusercontent.com/bwu-dart/bwu_datagrid/master/doc/screenshots/polymer_logo.png)
 
-
-[![Build Status](https://drone.io/github.com/bwu-dart/bwu_sparkline/status.png)](https://drone.io/github.com/bwu-dart/bwu_sparkline/latest)
+[![Star this Repo](https://img.shields.io/github/stars/bwu-dart/bwu_sparkline.svg?style=flat)](https://github.com/bwu-dart/bwu_sparkline)
+[![Pub Package](https://img.shields.io/pub/v/bwu_sparkline.svg?style=flat)](https://pub.dartlang.org/packages/bwu_sparkline)
+[![Build Status](https://travis-ci.org/bwu-dart/bwu_sparkline.svg?branch=travis)](https://travis-ci.org/bwu-dart/bwu_sparkline)
+[![Coverage Status](https://coveralls.io/repos/bwu-dart/bwu_sparkline/badge.svg)](https://coveralls.io/r/bwu-dart/bwu_sparkline)
 
 # Welcome to BWU Sparkline
 
 ## BWU Sparkline is a Polymer.dart inline chart component
 BWU Sparkline is a Dart port from [jQuery Sparklines](http://www.omnipotent.net/jquery.sparkline) 
 
-**UPDATE:  May 6th, 2015
+**UPDATE:  June 8th, 2015
 
 ### Screenshots
 ![Simple example](https://raw.githubusercontent.com/bwu-dart/bwu_sparkline/master/doc/screenshots/screenshot1.png)

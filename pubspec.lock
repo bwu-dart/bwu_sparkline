@@ -9,6 +9,10 @@ packages:
     description: ansicolor
     source: hosted
     version: "0.0.9"
+  archive:
+    description: archive
+    source: hosted
+    version: "1.0.19"
   args:
     description: args
     source: hosted
@@ -21,10 +25,18 @@ packages:
     description: browser
     source: hosted
     version: "0.10.0+2"
+  bwu_dart_archive_downloader:
+    description: bwu_dart_archive_downloader
+    source: hosted
+    version: "0.2.0+1"
   bwu_utils:
     description: bwu_utils
     source: hosted
-    version: "0.1.0-dev.2"
+    version: "0.1.0-dev.3"
+  bwu_utils_dev:
+    description: bwu_utils_dev
+    source: hosted
+    version: "0.1.0-dev.9"
   cli_util:
     description: cli_util
     source: hosted
@@ -61,6 +73,10 @@ packages:
     description: html
     source: hosted
     version: "0.12.1+1"
+  http:
+    description: http
+    source: hosted
+    version: "0.11.2"
   http_multi_server:
     description: http_multi_server
     source: hosted
@@ -184,7 +200,7 @@ packages:
   test:
     description: test
     source: hosted
-    version: "0.12.2"
+    version: "0.12.3"
   unscripted:
     description: unscripted
     source: hosted
@@ -201,6 +217,10 @@ packages:
     description: web_components
     source: hosted
     version: "0.11.4+1"
+  webdriver:
+    description: webdriver
+    source: hosted
+    version: "0.10.0-pre.9"
   webkit_inspection_protocol:
     description: webkit_inspection_protocol
     source: hosted
