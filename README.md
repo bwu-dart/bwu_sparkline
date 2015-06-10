@@ -2,8 +2,8 @@
 
 [![Star this Repo](https://img.shields.io/github/stars/bwu-dart/bwu_sparkline.svg?style=flat)](https://github.com/bwu-dart/bwu_sparkline)
 [![Pub Package](https://img.shields.io/pub/v/bwu_sparkline.svg?style=flat)](https://pub.dartlang.org/packages/bwu_sparkline)
-[![Build Status](https://travis-ci.org/bwu-dart/bwu_sparkline.svg?branch=travis)](https://travis-ci.org/bwu-dart/bwu_sparkline)
-[![Coverage Status](https://coveralls.io/repos/bwu-dart/bwu_sparkline/badge.svg)](https://coveralls.io/r/bwu-dart/bwu_sparkline)
+[![Build Status](https://travis-ci.org/bwu-dart/bwu_sparkline.svg?branch=master)](https://travis-ci.org/bwu-dart/bwu_sparkline)
+[![Coverage Status](https://coveralls.io/repos/bwu-dart/bwu_sparkline/badge.svg?branch=master)](https://coveralls.io/r/bwu-dart/bwu_sparkline)
 
 # Welcome to BWU Sparkline
 
