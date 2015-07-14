@@ -28,7 +28,7 @@ packages:
   bwu_grinder_tasks:
     description: bwu_grinder_tasks
     source: hosted
-    version: "0.1.0"
+    version: "0.1.1-dev.0"
   bwu_utils:
     description: bwu_utils
     source: hosted
